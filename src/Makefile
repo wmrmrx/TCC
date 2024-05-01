@@ -18,3 +18,11 @@ bootstrap-boost: artifacts/boost
 
 include/boost: bootstrap-boost
 lib/boost: bootstrap-boost
+
+CXX=g++
+CXXFLAGS=-Wall -pedantic -O2 -std=c++17 -Iinclude
+
+COMPILE.cpp = $(CXX) $(CXXFLAGS)
+
+%.o: %.cpp
+	$(COMPILE.cpp) $<
