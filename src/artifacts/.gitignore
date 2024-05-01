@@ -1,1 +1,3 @@
-boost.tar.gz
+*
+!.gitignore
+!Makefile

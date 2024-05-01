@@ -1,3 +1,3 @@
 clean:
-	rm -rf boost*
+	rm -rf boost
 .PHONY: clean
