@@ -11,13 +11,14 @@ artifacts/boost: artifacts/boost.tar.gz
 	tar xf artifacts/boost.tar.gz -C artifacts
 	mv artifacts/$(BOOST_DIR) artifacts/boost
 
-bootstrap-boost: artifacts/boost
+artifacts/boost_bootstrapped: artifacts/boost
 	cd artifacts/boost && \
 		./bootstrap.sh --includedir=../../include --libdir=../../lib && \
 		./b2 install
+	touch artifacts/boost_bootstrapped
 
-include/boost: bootstrap-boost
-lib/boost: bootstrap-boost
+include/boost: artifacts/boost_bootstrapped
+lib/boost: artifacts/boost_bootstrapped
 
 CXX=g++
 CXXFLAGS=-Wall -pedantic -O2 -std=c++17 -Iinclude
