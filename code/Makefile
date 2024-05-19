@@ -1,8 +1,7 @@
 BOOST_DIR = boost_1_85_0
 BOOST_URL = https://boostorg.jfrog.io/artifactory/main/release/1.85.0/source/boost_1_85_0.tar.gz
 
-boost: include/boost lib/boost
-.PHONY: boost
+default: build
 
 artifacts/boost.tar.gz:
 	wget $(BOOST_URL) -O artifacts/boost.tar.gz
@@ -20,10 +19,18 @@ artifacts/boost_bootstrapped: artifacts/boost
 include/boost: artifacts/boost_bootstrapped
 lib/boost: artifacts/boost_bootstrapped
 
-CXX=g++
-CXXFLAGS=-Wall -pedantic -O2 -std=c++17 -Iinclude
+boost: include/boost lib/boost
+.PHONY: boost
 
+CXX=g++
+CXXFLAGS=-Wall -Wextra -pedantic -O2 -std=c++20 -Iinclude
 COMPILE.cpp = $(CXX) $(CXXFLAGS)
 
 %.o: %.cpp
 	$(COMPILE.cpp) $<
+
+build: boost
+	$(COMPILE.cpp) -o main src/main.cpp
+
+clean: 
+	rm -f main

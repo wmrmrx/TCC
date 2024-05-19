@@ -1,6 +1,5 @@
 #include <cstdlib>              // for size_t, EXIT_SUCCESS, and EXIT_FAILURE
 
-#include <exception>
 #include <iostream>
 #include <tuple>                // for std::tie and std::ignore
 #include <vector>
@@ -11,11 +10,7 @@
 
 #include "graph.h"
 
-using boost::optional;
 using boost::num_vertices;
-
-using std::cout;
-using std::endl;
 
 int ceil_div(int a, int b) {
     return (a + b - 1) / b;
