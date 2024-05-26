@@ -50,6 +50,7 @@ namespace graph {
         edges.push_back(e);
       }
       vertices.push_back(v);
+      return true;
     }
   };
 
