@@ -8,6 +8,7 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/optional.hpp>
 
+#include "boost/graph/detail/adjacency_list.hpp"
 #include "graph.hpp"
 
 using boost::num_vertices;
@@ -16,19 +17,19 @@ int ceil_div(int a, int b) {
     return (a + b - 1) / b;
 }
 
-std::pair<Graph, std::vector<Graph>> read_graph(std::istream& is)
+std::pair<graph::Graph, std::vector<graph::Graph>> read_graph(std::istream& is)
 {
-  typename boost::graph_traits<Graph>::vertices_size_type n; is >> n;
+  typename boost::graph_traits<graph::Graph>::vertices_size_type n; is >> n;
 
-  Graph GG (n);
-  std::vector<Graph> G (n, Graph(n));
+  graph::Graph GG (n);
+  std::vector<graph::Graph> G (n, graph::Graph(n));
 
   size_t m; is >> m;
 
   while (m--) {
     int u, v, color; is >> u >> v >> color;
     u--; v--; color--;
-    Edge a;
+    graph::Edge a;
     std::tie(a, std::ignore) = boost::add_edge(u, v, GG);
     boost::add_edge(u, v, G[color]);
     GG[a].color = color;
@@ -55,7 +56,7 @@ int main(int argc, char** argv)
 
   // We can greedily increase the path until it has size greather than n / 2
   // due to degree constraints: deg(v) >= n / 2 for all v
-  std::vector<Vertex> path = {0};
+  std::vector<graph::Vertex> path = {0};
   usedVertex[0] = true;
 
   while (path.size() <= n / 2) {
@@ -73,7 +74,6 @@ int main(int argc, char** argv)
         throw std::runtime_error("?");
     }
   }
-
 
   return EXIT_SUCCESS;
 }
