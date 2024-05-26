@@ -22,7 +22,7 @@ lib/boost: artifacts/boost_bootstrapped
 boost: include/boost lib/boost
 .PHONY: boost
 
-CXX=g++
+CXX=g++-14
 CXXFLAGS=-Wall -Wextra -pedantic -O2 -std=c++20 -Iinclude
 COMPILE.cpp = $(CXX) $(CXXFLAGS)
 

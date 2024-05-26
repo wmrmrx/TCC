@@ -13,6 +13,47 @@
 
 using boost::num_vertices;
 
+struct Path {
+  std::vector<Vertex> vertices;
+  std::vector<Edge> edges;
+  
+  int size() const {
+    return edges.size();
+  }
+
+  Vertex back() const {
+    return vertices.back();
+  }
+
+  void push_back(Vertex v) {
+    if (vertices.size() > 0) {
+      Edge e;
+      bool b;
+      // std::tie(e, b) = boost::edge(vertices.back(), v, GG);
+      // if (not b) {
+      //   throw std::runtime_error("?");
+      // }
+      // edges.push_back(e);
+    }
+    vertices.push_back(v);
+  }
+};
+
+struct Circuit {
+  std::vector<Vertex> vertices;
+  std::vector<Edge> edges;
+
+  Circuit (const Path& path) {
+    assert(path.vertices.size() == path.edges.size() + 1);
+    vertices = path.vertices; vertices.pop_back();
+    edges = path.edges;
+  }
+
+  int size() const {
+    return edges.size();
+  }
+};
+
 int ceil_div(int a, int b) {
     return (a + b - 1) / b;
 }
@@ -26,13 +67,17 @@ std::pair<graph::Graph, std::vector<graph::Graph>> read_graph(std::istream& is)
 
   size_t m; is >> m;
 
-  while (m--) {
+  for (int i = 0; i < m; i++) {
     int u, v, color; is >> u >> v >> color;
     u--; v--; color--;
     graph::Edge a;
     std::tie(a, std::ignore) = boost::add_edge(u, v, GG);
-    boost::add_edge(u, v, G[color]);
     GG[a].color = color;
+    GG[a].id = i;
+
+    Edge b;
+    std::tie(b, std::ignore) = boost::add_edge(u, v, G[color]);
+    G[color][b].id = i;
   }
 
   for (int i = 0; i < n; i++) {
@@ -51,29 +96,37 @@ int main(int argc, char** argv)
   auto [GG, G] = read_graph(std::cin);
 
   size_t n = num_vertices(GG);
+
+  for (int i = 0; i < n; i++) {
+    for (const auto& vertex : boost::make_iterator_range(boost::vertices(G[i]))) {
+      std::cout << "Vertex " << vertex << " has degree " << boost::degree(vertex, G[i]) << std::endl;
+      for (const auto& edge : boost::make_iterator_range(boost::out_edges(vertex, G[i]))) {
+        std::cout << "Edge " << G[i][edge].id << " has color " << G[i][edge].color << std::endl;
+      }
+    }
+  }
   
   std::vector<bool> usedColors (n), usedVertex (n);
 
   // We can greedily increase the path until it has size greather than n / 2
   // due to degree constraints: deg(v) >= n / 2 for all v
-  std::vector<graph::Vertex> path = {0};
-  usedVertex[0] = true;
+  // Path path;
 
-  while (path.size() <= n / 2) {
-    auto u = path.back();
-    int c = std::find(usedColors.begin(), usedColors.end(), false) - usedColors.begin();
-    for (const auto &v : boost::make_iterator_range(boost::adjacent_vertices(u, G[c]))) {
-        if(not usedVertex[v]) {
-            usedColors[c] = true;
-            usedVertex[v] = true;
-            path.push_back(v);
-            break;
-        }
-    }
-    if(not usedColors[c]) {
-        throw std::runtime_error("?");
-    }
-  }
+  // while (path.size() <= n / 2) {
+  //   auto u = path.back();
+  //   int c = std::find(usedColors.begin(), usedColors.end(), false) - usedColors.begin();
+  //   for (const auto &v : boost::make_iterator_range(boost::adjacent_vertices(u, G[c]))) {
+  //       if(not usedVertex[v]) {
+  //           usedColors[c] = true;
+  //           usedVertex[v] = true;
+  //           path.push_back(v);
+  //           break;
+  //       }
+  //   }
+  //   if(not usedColors[c]) {
+  //       throw std::runtime_error("?");
+  //   }
+  // }
 
   return EXIT_SUCCESS;
 }
