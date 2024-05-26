@@ -20,9 +20,15 @@ namespace graph {
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 
+
+  using graphPointer = std::shared_ptr<Graph>;
+
   struct Path {
+    graphPointer G;
     std::vector<Vertex> vertices;
     std::vector<Edge> edges;
+
+    Path (graphPointer _G) : G(_G) {}
     
     int size() const {
       return edges.size();
@@ -32,11 +38,11 @@ namespace graph {
       return vertices.back();
     }
 
-    void push_back(Graph& G, Vertex v) {
+    void push_back(Vertex v) {
       if (vertices.size() > 0) {
         Edge e;
         bool b;
-        std::tie(e, b) = boost::edge(vertices.back(), v, G);
+        std::tie(e, b) = boost::edge(vertices.back(), v, *G);
         if (not b) {
           throw std::runtime_error("Edge not found on graph");
         }
@@ -47,8 +53,11 @@ namespace graph {
   };
 
   struct Cycle {
+    graphPointer G;
     std::vector<Vertex> vertices;
     std::vector<Edge> edges;
+
+    Cycle (graphPointer _G) : G(_G) {}
 
     Cycle (const Path& path) {
       assert(path.vertices.size() == path.edges.size() + 1);
@@ -61,5 +70,5 @@ namespace graph {
     }
   };
 
-  using Instance = std::pair<Graph, std::vector<Graph>>;
+  using Instance = std::pair<graphPointer, std::vector<Graph>>;
 }

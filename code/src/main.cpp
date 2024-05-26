@@ -37,6 +37,7 @@ graph::Instance read_graph(std::istream& is)
     graph::Edge b;
     std::tie(b, std::ignore) = boost::add_edge(u, v, G[color]);
     G[color][b].id = i;
+    G[color][b].color = color;
   }
 
   for (int i = 0; i < n; i++) {
@@ -47,15 +48,29 @@ graph::Instance read_graph(std::istream& is)
     }
   }
 
-  return {GG, G};
+  return {std::make_shared<graph::Graph>(GG), G};
 }
 
 int main(int argc, char** argv)
 {
   auto [GG, G] = read_graph(std::cin);
 
-  size_t n = num_vertices(GG);
+  size_t n = num_vertices(*GG);
 
+  for (int i = 0; i < n; i++) {
+    for (const auto& vertex : boost::make_iterator_range(boost::vertices(G[i]))) {
+      std::cout << "Vertex " << vertex << " has degree " << boost::degree(vertex, G[i]) << std::endl;
+      for (const auto& edge : boost::make_iterator_range(boost::out_edges(vertex, G[i]))) {
+        std::cout << "Edge " << G[i][edge].id << " has color " << G[i][edge].color << std::endl;
+      }
+    }
+  }
+  for (const auto& vertex : boost::make_iterator_range(boost::vertices(*GG))) {
+    std::cout << "Vertex " << vertex << " has degree " << boost::degree(vertex, *GG) << std::endl;
+    for (const auto& edge : boost::make_iterator_range(boost::out_edges(vertex, *GG))) {
+      std::cout << "Edge " << (*GG)[edge].id << " has color " << (*GG)[edge].color << std::endl;
+    }
+  }
   
   std::vector<bool> usedColors (n), usedVertex (n), usedEdges (n * (n - 1) / 2);
 
