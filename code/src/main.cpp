@@ -8,7 +8,7 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/optional.hpp>
 
-#include "graph.h"
+#include "graph.hpp"
 
 using boost::num_vertices;
 
@@ -36,7 +36,7 @@ std::pair<Graph, std::vector<Graph>> read_graph(std::istream& is)
 
   for (int i = 0; i < n; i++) {
     for (const auto& vertex : boost::make_iterator_range(boost::vertices(G[i]))) {
-      if (boost::degree(vertex, G[i]) < ceil_div(num_vertices(G[i]), 2)) {
+      if (boost::degree(vertex, G[i]) < (uint64_t) ceil_div(num_vertices(G[i]), 2)) {
         throw std::runtime_error("Input graph is not valid.");
       }
     }

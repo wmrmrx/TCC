@@ -1,6 +1,3 @@
-#ifndef GRAPH_H
-#define GRAPH_H
-
 #define BOOST_ALLOW_DEPRECATED_HEADERS // silence warnings
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
@@ -21,5 +18,3 @@ typedef boost::adjacency_list<boost::vecS,
                               BundledEdge> Graph;
 typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 typedef boost::graph_traits<Graph>::edge_descriptor Edge;
-
-#endif // #ifndef GRAPH_H
