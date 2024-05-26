@@ -57,20 +57,20 @@ int main(int argc, char** argv)
 
   size_t n = num_vertices(*GG);
 
-  for (int i = 0; i < n; i++) {
-    for (const auto& vertex : boost::make_iterator_range(boost::vertices(G[i]))) {
-      std::cout << "Vertex " << vertex << " has degree " << boost::degree(vertex, G[i]) << std::endl;
-      for (const auto& edge : boost::make_iterator_range(boost::out_edges(vertex, G[i]))) {
-        std::cout << "Edge " << G[i][edge].id << " has color " << G[i][edge].color << std::endl;
-      }
-    }
-  }
-  for (const auto& vertex : boost::make_iterator_range(boost::vertices(*GG))) {
-    std::cout << "Vertex " << vertex << " has degree " << boost::degree(vertex, *GG) << std::endl;
-    for (const auto& edge : boost::make_iterator_range(boost::out_edges(vertex, *GG))) {
-      std::cout << "Edge " << (*GG)[edge].id << " has color " << (*GG)[edge].color << std::endl;
-    }
-  }
+  // for (int i = 0; i < n; i++) {
+  //   for (const auto& vertex : boost::make_iterator_range(boost::vertices(G[i]))) {
+  //     std::cout << "Vertex " << vertex << " has degree " << boost::degree(vertex, G[i]) << std::endl;
+  //     for (const auto& edge : boost::make_iterator_range(boost::out_edges(vertex, G[i]))) {
+  //       std::cout << "Edge " << G[i][edge].id << " has color " << G[i][edge].color << std::endl;
+  //     }
+  //   }
+  // }
+  // for (const auto& vertex : boost::make_iterator_range(boost::vertices(*GG))) {
+  //   std::cout << "Vertex " << vertex << " has degree " << boost::degree(vertex, *GG) << std::endl;
+  //   for (const auto& edge : boost::make_iterator_range(boost::out_edges(vertex, *GG))) {
+  //     std::cout << "Edge " << (*GG)[edge].id << " has color " << (*GG)[edge].color << std::endl;
+  //   }
+  // }
   
   std::vector<bool> usedColors (n), usedVertex (n), usedEdges (n * (n - 1) / 2);
 

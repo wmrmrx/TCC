@@ -38,13 +38,14 @@ namespace graph {
       return vertices.back();
     }
 
-    void push_back(Vertex v) {
+    // returns false if the edge does not exist
+    bool push_back(Vertex v) {
       if (vertices.size() > 0) {
         Edge e;
         bool b;
         std::tie(e, b) = boost::edge(vertices.back(), v, *G);
         if (not b) {
-          throw std::runtime_error("Edge not found on graph");
+          return false;
         }
         edges.push_back(e);
       }
