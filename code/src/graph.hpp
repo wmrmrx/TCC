@@ -3,8 +3,8 @@
 #include <boost/graph/adjacency_list.hpp>
 
 namespace graph {
-	struct BundledVertex {
-	};
+  struct BundledVertex {
+  };
 
   struct BundledEdge {
     int color;       // color label
@@ -12,14 +12,13 @@ namespace graph {
     BundledEdge(int _color = -1, int _id = -1) : color(_color), id(_id) {}
   };
 
-	/* the remainder of the file must not be changed */
-	typedef boost::adjacency_list<boost::vecS,
-				      boost::vecS,
-				      boost::undirectedS,
-				      BundledVertex,
-				      BundledEdge> Graph;
-	typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
-	typedef boost::graph_traits<Graph>::edge_descriptor Edge;
+  typedef boost::adjacency_list<boost::vecS,
+	  boost::vecS,
+	  boost::undirectedS,
+	  BundledVertex,
+	  BundledEdge> Graph;
+  typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
+  typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 
   struct Path {
     std::vector<Vertex> vertices;

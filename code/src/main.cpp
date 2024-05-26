@@ -13,47 +13,6 @@
 
 using boost::num_vertices;
 
-struct Path {
-  std::vector<Vertex> vertices;
-  std::vector<Edge> edges;
-  
-  int size() const {
-    return edges.size();
-  }
-
-  Vertex back() const {
-    return vertices.back();
-  }
-
-  void push_back(Vertex v) {
-    if (vertices.size() > 0) {
-      Edge e;
-      bool b;
-      // std::tie(e, b) = boost::edge(vertices.back(), v, GG);
-      // if (not b) {
-      //   throw std::runtime_error("?");
-      // }
-      // edges.push_back(e);
-    }
-    vertices.push_back(v);
-  }
-};
-
-struct Circuit {
-  std::vector<Vertex> vertices;
-  std::vector<Edge> edges;
-
-  Circuit (const Path& path) {
-    assert(path.vertices.size() == path.edges.size() + 1);
-    vertices = path.vertices; vertices.pop_back();
-    edges = path.edges;
-  }
-
-  int size() const {
-    return edges.size();
-  }
-};
-
 int ceil_div(int a, int b) {
     return (a + b - 1) / b;
 }
