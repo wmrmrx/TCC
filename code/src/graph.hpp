@@ -46,11 +46,11 @@ namespace graph {
     }
   };
 
-  struct Circuit {
+  struct Cycle {
     std::vector<Vertex> vertices;
     std::vector<Edge> edges;
 
-    Circuit (const Path& path) {
+    Cycle (const Path& path) {
       assert(path.vertices.size() == path.edges.size() + 1);
       vertices = path.vertices; vertices.pop_back();
       edges = path.edges;
