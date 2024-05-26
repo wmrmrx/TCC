@@ -17,7 +17,7 @@ int ceil_div(int a, int b) {
     return (a + b - 1) / b;
 }
 
-std::pair<graph::Graph, std::vector<graph::Graph>> read_graph(std::istream& is)
+graph::Instance read_graph(std::istream& is)
 {
   typename boost::graph_traits<graph::Graph>::vertices_size_type n; is >> n;
 
@@ -34,7 +34,7 @@ std::pair<graph::Graph, std::vector<graph::Graph>> read_graph(std::istream& is)
     GG[a].color = color;
     GG[a].id = i;
 
-    Edge b;
+    graph::Edge b;
     std::tie(b, std::ignore) = boost::add_edge(u, v, G[color]);
     G[color][b].id = i;
   }

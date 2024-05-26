@@ -60,4 +60,6 @@ namespace graph {
       return edges.size();
     }
   };
+
+  using Instance = std::pair<Graph, std::vector<Graph>>;
 }
