@@ -32,15 +32,15 @@ namespace graph {
       return vertices.back();
     }
 
-    void push_back(Vertex v) {
+    void push_back(Graph& G, Vertex v) {
       if (vertices.size() > 0) {
         Edge e;
         bool b;
-        // std::tie(e, b) = boost::edge(vertices.back(), v, GG);
-        // if (not b) {
-        //   throw std::runtime_error("?");
-        // }
-        // edges.push_back(e);
+        std::tie(e, b) = boost::edge(vertices.back(), v, G);
+        if (not b) {
+          throw std::runtime_error("Edge not found on graph");
+        }
+        edges.push_back(e);
       }
       vertices.push_back(v);
     }
