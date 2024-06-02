@@ -1,8 +1,10 @@
 #include "increment.hpp"
 
 // Given a Path
-std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& instance, const graph::Path& path) {
+std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& instance, graph::Path path) {
     const auto& GG = *instance.first;
+    const auto G = instance.second;
+
     auto n = boost::num_vertices(GG);
     
     if (path.size() == 0) {
@@ -34,7 +36,59 @@ std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& in
     }
     else {
         // esse eh o caso de adicionar uma cor com crossing
+
+        // iterate through adjacenct vertices of y
+        // for (const auto& edge : boost::make_iterator_range(boost::out_edges(y, GG))) {
+        //     int u = boost::target(edge, GG);
+        //     if (GG[edge].color == cy && !usedVertices[u]) {
+        //         path.push_back(u);
+        //         return path;
+        //     }
+        // }
+
+        int cx = GG[path.edges.back()].color, cy = -1;
+
+        for (int i = 0; i < n; i++) if (!usedColors[i]) {
+            cy = i;
+            break;
+        }
+
+        path.pop_back();
+        int x = path.vertices[0], y = path.vertices.back();
+
         
+        // vamos ver se sao adjacentes da cor cx ou cy
+        for (auto c : {cx, cy}) {
+            auto [b, edge] = graph::checkEdge(x, y, c, GG);
+            if (b) {
+                graph::Cycle cycle(instance.first, edge);
+                return cycle;
+            }
+        }
+        // verificamos se nao tem um vertice que seja adjacente a x e y nas cores cx e cy
+        for (int i = 0; i < n; i++) if (!usedVertices[i]) {
+            auto [bX, edgeX] = graph::checkEdge(x, i, cx, GG);
+            auto [bY, edgeY] = graph::checkEdge(y, i, cy, GG);
+            if (bX && bY) {
+                path.push_back(i);
+                graph::Cycle cycle(instance.first, edgeX);
+                return cycle;
+            }
+        }
+        // quantidade de vertices
+        int l = path.size() + 1;
+        std::vector<int> I1 (n), I2(n);
+        
+        for (int i = 1; i < path.size() - 1; i++) {
+            int u = path.vertices[i], v = path.vertices[i + 1];
+            auto [bX, edgeX] = checkEdge(x, v, cx);
+            auto [bY, edgeY] = checkEdge(u, y, cy);
+
+            if (bX && bY) {
+                // achamos um crossing
+                // graph::Path newPath;
+            }
+        }
     }
     
 

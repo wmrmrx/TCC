@@ -22,7 +22,7 @@ graph::Instance read_graph(std::istream& is)
   typename boost::graph_traits<graph::Graph>::vertices_size_type n; is >> n;
 
   graph::Graph GG (n);
-  std::vector<graph::Graph> G (n, graph::Graph(n));
+  std::vector<graph::Graph2> G (n, graph::Graph2(n));
 
   size_t m; is >> m;
 
@@ -32,12 +32,10 @@ graph::Instance read_graph(std::istream& is)
     graph::Edge a;
     std::tie(a, std::ignore) = boost::add_edge(u, v, GG);
     GG[a].color = color;
-    GG[a].id = i;
 
     graph::Edge b;
     std::tie(b, std::ignore) = boost::add_edge(u, v, G[color]);
-    G[color][b].id = i;
-    G[color][b].color = color;
+    G[color][b].id = a;
   }
 
   for (int i = 0; i < n; i++) {
@@ -47,6 +45,38 @@ graph::Instance read_graph(std::istream& is)
       }
     }
   }
+  // for (auto ei = boost::edges(GG); ei.first != ei.second; ++ei.first) {
+  //   graph::Edge e = *ei.first;
+  //   std::cout << e << "\n";
+  //   // std::cout << " " << boost::source(e, GG) << " " << boost::target(e, GG) << " " << GG[e].color << std::endl;
+  //   // auto x = boost::source(e, GG), y = boost::target(e, GG), color = GG[e].color;
+  //   // graph::Edge a;
+  //   // std::tie(a, std::ignore) = boost::add_edge(x, y, G[color]);
+  //   // G[color][a].id = GG[e].id;
+  //   // G[color][a].color = color;
+  // }
+  // for (const auto &edge : boost::make_iterator_range(boost::edges(GG))) {
+  //   // std::cout << edge << "\n";
+  //   auto x = boost::source(edge, GG), y = boost::target(edge, GG), color = GG[edge].color;
+  //   graph::Edge a;
+  //   std::tie(a, std::ignore) = boost::add_edge(x, y, G[color]);
+  //   G[color][a].id = GG[edge].id;
+  //   G[color][a].color = color;
+  // }
+  // for (const auto& edge : boost::edges(GG)) {
+
+    // int x = boost::source(edge, GG), y = boost::target(edge, GG), color = GG[edge].color;
+    // // std::tie(e, b) = boost::edge(x, y, GG);
+    // graph::Edge e; bool b;
+    // std::tie(e, b) = boost::edge(y, x, GG);
+    // for (int id = 0; id < boost::num_edges(GG); id++) {
+    //   // if (boost::ed)
+    // }
+    // std::cout << " " << x << " " << y << " " << color << " " << b << " " << e << std::endl;
+    // if (not b) {
+    //   return false;
+    // }
+  // }
 
   return {std::make_shared<graph::Graph>(GG), G};
 }
