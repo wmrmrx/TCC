@@ -1,5 +1,5 @@
 BOOST_DIR = boost_1_85_0
-BOOST_URL = https://boostorg.jfrog.io/artifactory/main/release/1.85.0/source/boost_1_85_0.tar.gz
+BOOST_URL = https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz
 
 default: build
 
@@ -33,7 +33,7 @@ run:
 	make src/main && ./src/main < tests/in
 
 build: boost
-	$(COMPILE.cpp) -o main src/main.cpp
+	$(COMPILE.cpp) -o main src/*.cpp
 
 clean: 
 	rm -f main

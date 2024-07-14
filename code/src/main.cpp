@@ -10,12 +10,9 @@
 
 #include "boost/graph/detail/adjacency_list.hpp"
 #include "graph.hpp"
+#include "util.hpp"
 
 using boost::num_vertices;
-
-int ceil_div(int a, int b) {
-    return (a + b - 1) / b;
-}
 
 graph::Instance read_graph(std::istream& is)
 {
@@ -40,7 +37,7 @@ graph::Instance read_graph(std::istream& is)
 
   for (int i = 0; i < n; i++) {
     for (const auto& vertex : boost::make_iterator_range(boost::vertices(G[i]))) {
-      if (boost::degree(vertex, G[i]) < (uint64_t) ceil_div(num_vertices(G[i]), 2)) {
+      if (boost::degree(vertex, G[i]) < ceil_div(num_vertices(G[i]), 2ull)) {
         throw std::runtime_error("Input graph is not valid.");
       }
     }

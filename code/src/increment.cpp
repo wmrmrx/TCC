@@ -1,9 +1,10 @@
 #include "increment.hpp"
+#include "util.hpp"
 
 // Given a Path
 std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& instance, graph::Path path) {
     const auto& GG = *instance.first;
-    const auto G = instance.second;
+    const auto& G = instance.second;
 
     auto n = boost::num_vertices(GG);
     
@@ -102,4 +103,18 @@ std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& in
     
     return graph::Cycle(instance.first);
 }
-std::variant<graph::Cycle, graph::Path> increment_cycle(const graph::Instance& instance, const graph::Cycle& cycle);
+
+std::variant<graph::Cycle, graph::Path> increment_cycle(const graph::Instance& instance, const graph::Cycle& cycle) {
+    const auto& GG = *instance.first;
+    const auto& G = instance.second;
+
+    const auto n = boost::num_vertices(GG);
+    assert(cycle.size() >= (uint64_t) ceil_div(n, 2) + 1);
+    if(cycle.size() == n - 1) {
+	// Ciclo de tamanho n - 1 é tratado diferente
+
+    } else {
+	// Pra ciclo menor 
+    
+    }
+}

@@ -1,3 +1,5 @@
+#ifndef _GRAPH_HPP
+#define _GRAPH_HPP
 #define BOOST_ALLOW_DEPRECATED_HEADERS // silence warnings
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
@@ -109,3 +111,4 @@ namespace graph {
 
   using Instance = std::pair<graphPointer, std::vector<Graph2>>;
 }
+#endif
