@@ -5,12 +5,11 @@
 #include <boost/graph/adjacency_list.hpp>
 
 namespace graph {
-  struct BundledVertex {
-  };
+  struct BundledVertex {};
 
   struct BundledEdge {
     int color;       // color label
-    BundledEdge(int _color = -1) : color(_color) {}
+    BundledEdge(int _color = -1);
   };
 
   typedef boost::adjacency_list<boost::vecS,
@@ -25,7 +24,7 @@ namespace graph {
 
   struct BundledEdge2 {
     Edge id;          // unique identifier
-    BundledEdge2(Edge _id = Edge()) : id(_id) {}
+    BundledEdge2(Edge _id = Edge());
   };
   typedef boost::adjacency_list<boost::vecS,
 	  boost::vecS,
@@ -39,49 +38,24 @@ namespace graph {
   using graphPointer = std::shared_ptr<Graph>;
 
   // TODO: otimizar usando referencia de edges de G[i] para GG
-  std::pair<bool, graph::Edge> checkEdge (int u, int v, int color, const Graph& GG) {
-      for (const auto& edge : boost::make_iterator_range(boost::out_edges(u, GG))) {
-          if (boost::source(edge, GG) == u && boost::target(edge, GG) == v && GG[edge].color == color) {
-              return {true, edge};
-          }
-          if (boost::source(edge, GG) == v && boost::target(edge, GG) == u && GG[edge].color == color) {
-              return {true, edge};
-          }
-      }
-      return {false, graph::Edge()};
-  };
+  std::pair<bool, graph::Edge> checkEdge (int u, int v, int color, const Graph& GG);
 
   struct Path {
     graphPointer G;
     std::vector<Vertex> vertices;
     std::vector<Edge> edges;
 
-    Path (graphPointer _G) : G(_G) {}
+    Path (graphPointer _G);
     
-    int size() const {
-      return edges.size();
-    }
+    int size() const;
 
-    Vertex back() const {
-      return vertices.back();
-    }
+    Vertex back() const;
 
     // returns false if the edge does not exist
     // TODO: FIX ADD CORRECT DESCRIPTOR
-    bool push_back(Vertex v, Edge e = Edge()) {
-      if (vertices.size() > 0) {
-        assert(e != Edge() && "Edge must be provided.");
-        edges.push_back(e);
-      }
-      vertices.push_back(v);
-      return true;
-    }
+    bool push_back(Vertex v, Edge e);
 
-    void pop_back() {
-      assert(vertices.size() > 0 && "Cannot pop from empty path.");
-      vertices.pop_back();
-      edges.pop_back();
-    }
+    void pop_back();
   };
 
   struct Cycle {
@@ -89,26 +63,13 @@ namespace graph {
     std::vector<Vertex> vertices;
     std::vector<Edge> edges;
 
-    Cycle (graphPointer _G) : G(_G) {}
+    Cycle (graphPointer _G);
 
-    Cycle (const Path& path, Edge edge) : G(path.G) {
-      assert(path.vertices.size() == path.edges.size() + 1);
-      int x = path.vertices[0], y = path.vertices.back();
+    Cycle (const Path& path, Edge edge);
 
-      if (target(edge, *G) != x) std::swap(x, y);
-      assert(source(edge, *G) == x && "Edge does not belong to the graph.");
-      assert(target(edge, *G) == y && "Edge does not belong to the graph.");
-
-      vertices = path.vertices;
-      edges = path.edges;
-      edges.push_back(edge);
-    }
-
-    int size() const {
-      return edges.size();
-    }
+    int size() const;
   };
-
+  
   using Instance = std::pair<graphPointer, std::vector<Graph2>>;
 }
 #endif
