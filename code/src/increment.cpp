@@ -92,7 +92,7 @@ std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& in
             }
         }
     }
-    assert(false && "Should not reach here. Did not found crossing.");
+    throw std::runtime_error("Should not reach here. Did not found crossing.");
 }
 
 std::variant<graph::Cycle, graph::Path> increment_cycle(const graph::Instance& instance, const graph::Cycle& cycle) {
