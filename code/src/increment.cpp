@@ -36,20 +36,8 @@ std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& in
                 }
             }
         }
-        assert(false);
     }
     else {
-        // esse eh o caso de adicionar uma cor com crossing
-
-        // iterate through adjacenct vertices of y
-        // for (const auto& edge : boost::make_iterator_range(boost::out_edges(y, GG))) {
-        //     int u = boost::target(edge, GG);
-        //     if (GG[edge].color == cy && !usedVertices[u]) {
-        //         path.push_back(u);
-        //         return path;
-        //     }
-        // }
-
         // temos duas cores que nao foram usadas
         int cx = GG[path.edges.back()].color, cy = -1;
 
@@ -79,29 +67,32 @@ std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& in
             auto [bY, edgeY] = graph::checkEdge(y, i, cy, GG);
             if (bX && bY) {
                 path.push_back(i, edgeY);
-                graph::Cycle cycle(instance.first, edgeX);
+                graph::Cycle cycle(path, edgeX);
                 return cycle;
             }
         }
-        // quantidade de vertices
-        // int l = path.size() + 1;
-        // std::vector<int> I1 (n), I2(n);
-        
-        // for (int i = 1; i < path.size() - 1; i++) {
-        //     int u = path.vertices[i], v = path.vertices[i + 1];
-        //     auto [bX, edgeX] = graph::checkEdge(x, v, cx);
-        //     auto [bY, edgeY] = graph::checkEdge(u, y, cy);
 
-        //     if (bX && bY) {
-        //         // achamos um crossing
-        //         // graph::Path newPath;
-        //     }
-        // }
+        for (int i = 1; i < path.size() - 1; i++) {
+            int u = path.vertices[i], v = path.vertices[i + 1];
+            auto [bX, edgeX] = graph::checkEdge(x, v, cx, GG);
+            auto [bY, edgeY] = graph::checkEdge(u, y, cy, GG);
+
+            if (bX && bY) {
+                // achamos um crossing
+                graph::Path newPath(instance.first);
+                for (int j = 0; j <= i; j++) {
+                    newPath.push_back(path.vertices[j], j ? path.edges[j - 1] : graph::Edge());
+                }
+                newPath.push_back(y, edgeY);
+                for (int j = path.size() - 1; j >= i + 1; j--) {
+                    newPath.push_back(path.vertices[j - 1], path.edges[j - 1]);
+                }
+                graph::Cycle cycle(newPath, edgeX);
+                return cycle;
+            }
+        }
     }
-    
-
-    
-    return graph::Cycle(instance.first);
+    assert(false && "Should not reach here. Did not found crossing.");
 }
 
 std::variant<graph::Cycle, graph::Path> increment_cycle(const graph::Instance& instance, const graph::Cycle& cycle) {
