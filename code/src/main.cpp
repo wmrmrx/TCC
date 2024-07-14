@@ -12,6 +12,8 @@
 #include "graph.hpp"
 #include "util.hpp"
 
+#include "increment.hpp"
+
 using boost::num_vertices;
 
 graph::Instance read_graph(std::istream& is)
@@ -52,7 +54,19 @@ int main(int argc, char** argv)
 
   size_t n = num_vertices(*GG);
 
-  std::vector<bool> usedColors (n), usedVertex (n), usedEdges (n * (n - 1) / 2);
+  graph::Path path(GG);
+  path.push_back(0, graph::Edge());
+
+  auto object = std::variant<graph::Cycle, graph::Path>(path);
+  // std::holds_alternative<graph::Cycle>(result)
+  while (true) {
+    auto result = increment({GG, G}, object);
+    object = result;
+    if (std::holds_alternative<graph::Cycle>(result)) {
+      auto cycle = std::get<graph::Cycle>(result);
+      if (cycle.size() == n - 1) break;
+    }
+  }
 
   return EXIT_SUCCESS;
 }
