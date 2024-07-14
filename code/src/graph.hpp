@@ -66,14 +66,9 @@ namespace graph {
 
     // returns false if the edge does not exist
     // TODO: FIX ADD CORRECT DESCRIPTOR
-    bool push_back(Vertex v) {
+    bool push_back(Vertex v, Edge e = Edge()) {
       if (vertices.size() > 0) {
-        Edge e;
-        bool b;
-        std::tie(e, b) = boost::edge(vertices.back(), v, *G);
-        if (not b) {
-          return false;
-        }
+        assert(e != Edge() && "Edge must be provided.");
         edges.push_back(e);
       }
       vertices.push_back(v);

@@ -25,9 +25,12 @@ std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& in
         graph::Path newPath(instance.first);
         newPath.vertices = path.vertices;
         newPath.edges = path.edges;
+        int finalVertex = path.back();
         for (int color = 0; color < n; color++) if (usedColors[color] == 0) {
             for (int i = 0; i < n; i++) if (usedVertices[i] == 0) {
-                if (newPath.push_back(i)) {
+                auto [b, edge] = graph::checkEdge(finalVertex, i, color, GG);
+                if (b) {
+                    newPath.push_back(i, edge);
                     return newPath;
                 }
             }
@@ -46,6 +49,7 @@ std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& in
         //     }
         // }
 
+        // temos duas cores que nao foram usadas
         int cx = GG[path.edges.back()].color, cy = -1;
 
         for (int i = 0; i < n; i++) if (!usedColors[i]) {
@@ -53,11 +57,14 @@ std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& in
             break;
         }
 
+        // tiramos a ultima aresta
         path.pop_back();
         int x = path.vertices[0], y = path.vertices.back();
 
         
         // vamos ver se sao adjacentes da cor cx ou cy
+        // se forem, entao temos um ciclo com o mesmo tamanho do path original
+        // embaixo de (1) no pdf
         for (auto c : {cx, cy}) {
             auto [b, edge] = graph::checkEdge(x, y, c, GG);
             if (b) {
@@ -70,25 +77,25 @@ std::variant<graph::Cycle, graph::Path> increment_path(const graph::Instance& in
             auto [bX, edgeX] = graph::checkEdge(x, i, cx, GG);
             auto [bY, edgeY] = graph::checkEdge(y, i, cy, GG);
             if (bX && bY) {
-                path.push_back(i);
+                path.push_back(i, edgeY);
                 graph::Cycle cycle(instance.first, edgeX);
                 return cycle;
             }
         }
         // quantidade de vertices
-        int l = path.size() + 1;
-        std::vector<int> I1 (n), I2(n);
+        // int l = path.size() + 1;
+        // std::vector<int> I1 (n), I2(n);
         
-        for (int i = 1; i < path.size() - 1; i++) {
-            int u = path.vertices[i], v = path.vertices[i + 1];
-            auto [bX, edgeX] = checkEdge(x, v, cx);
-            auto [bY, edgeY] = checkEdge(u, y, cy);
+        // for (int i = 1; i < path.size() - 1; i++) {
+        //     int u = path.vertices[i], v = path.vertices[i + 1];
+        //     auto [bX, edgeX] = graph::checkEdge(x, v, cx);
+        //     auto [bY, edgeY] = graph::checkEdge(u, y, cy);
 
-            if (bX && bY) {
-                // achamos um crossing
-                // graph::Path newPath;
-            }
-        }
+        //     if (bX && bY) {
+        //         // achamos um crossing
+        //         // graph::Path newPath;
+        //     }
+        // }
     }
     
 

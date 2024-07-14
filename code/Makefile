@@ -29,6 +29,9 @@ COMPILE.cpp = $(CXX) $(CXXFLAGS)
 %.o: %.cpp
 	$(COMPILE.cpp) $<
 
+run:
+	make src/main && ./src/main < tests/in
+
 build: boost
 	$(COMPILE.cpp) -o main src/main.cpp
 
