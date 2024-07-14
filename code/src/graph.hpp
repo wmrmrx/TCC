@@ -4,72 +4,78 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
 
-namespace graph {
-  struct BundledVertex {};
+namespace graph
+{
+    struct BundledVertex
+    {
+    };
 
-  struct BundledEdge {
-    int color;       // color label
-    BundledEdge(int _color = -1);
-  };
+    struct BundledEdge
+    {
+        int color; // color label
+        BundledEdge(int _color = -1);
+    };
 
-  typedef boost::adjacency_list<boost::vecS,
-	  boost::vecS,
-	  boost::undirectedS,
-	  BundledVertex,
-	  BundledEdge> Graph;
-  typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
-  typedef boost::graph_traits<Graph>::edge_descriptor Edge;
+    typedef boost::adjacency_list<boost::vecS,
+                                  boost::vecS,
+                                  boost::undirectedS,
+                                  BundledVertex,
+                                  BundledEdge>
+        Graph;
+    typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
+    typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 
+    struct BundledEdge2
+    {
+        Edge id; // unique identifier
+        BundledEdge2(Edge _id = Edge());
+    };
+    typedef boost::adjacency_list<boost::vecS,
+                                  boost::vecS,
+                                  boost::undirectedS,
+                                  BundledVertex,
+                                  BundledEdge2>
+        Graph2;
+    typedef boost::graph_traits<Graph2>::vertex_descriptor Vertex2;
+    typedef boost::graph_traits<Graph2>::edge_descriptor Edge2;
 
+    using graphPointer = std::shared_ptr<Graph>;
 
-  struct BundledEdge2 {
-    Edge id;          // unique identifier
-    BundledEdge2(Edge _id = Edge());
-  };
-  typedef boost::adjacency_list<boost::vecS,
-	  boost::vecS,
-	  boost::undirectedS,
-	  BundledVertex,
-	  BundledEdge2> Graph2;
-  typedef boost::graph_traits<Graph2>::vertex_descriptor Vertex2;
-  typedef boost::graph_traits<Graph2>::edge_descriptor Edge2;
+    // TODO: otimizar usando referencia de edges de G[i] para GG
+    std::pair<bool, graph::Edge> checkEdge(int u, int v, int color, const Graph &GG);
 
+    struct Path
+    {
+        graphPointer G;
+        std::vector<Vertex> vertices;
+        std::vector<Edge> edges;
 
-  using graphPointer = std::shared_ptr<Graph>;
+        Path(graphPointer _G);
 
-  // TODO: otimizar usando referencia de edges de G[i] para GG
-  std::pair<bool, graph::Edge> checkEdge (int u, int v, int color, const Graph& GG);
+        int size() const;
 
-  struct Path {
-    graphPointer G;
-    std::vector<Vertex> vertices;
-    std::vector<Edge> edges;
+        Vertex back() const;
 
-    Path (graphPointer _G);
-    
-    int size() const;
+        // returns false if the edge does not exist
+        // TODO: FIX ADD CORRECT DESCRIPTOR
+        bool push_back(Vertex v, Edge e);
 
-    Vertex back() const;
+        void pop_back();
+    };
 
-    // returns false if the edge does not exist
-    // TODO: FIX ADD CORRECT DESCRIPTOR
-    bool push_back(Vertex v, Edge e);
+    struct Cycle
+    {
+        graphPointer G;
+        std::vector<Vertex> vertices;
+        std::vector<Edge> edges;
 
-    void pop_back();
-  };
+        Cycle(graphPointer _G);
 
-  struct Cycle {
-    graphPointer G;
-    std::vector<Vertex> vertices;
-    std::vector<Edge> edges;
+        Cycle(const Path &path, Edge edge);
 
-    Cycle (graphPointer _G);
+        int size() const;
+    };
 
-    Cycle (const Path& path, Edge edge);
-
-    int size() const;
-  };
-  
-  using Instance = std::pair<graphPointer, std::vector<Graph2>>;
+    using Instance = std::pair<graphPointer, std::vector<Graph2>>;
 }
 #endif
