@@ -100,12 +100,12 @@ std::variant<graph::Cycle, graph::Path> increment_cycle(const graph::Instance& i
     const auto& G = instance.second;
 
     const auto n = boost::num_vertices(GG);
-    assert(cycle.size() >= (uint64_t) ceil_div(n, 2) + 1);
-    if(cycle.size() == n - 1) {
-	// Ciclo de tamanho n - 1 é tratado diferente
-
+    const uint64_t cycle_size = cycle.size();
+    if(cycle_size < 3) {
+        throw std::runtime_error("Every cycle must have at least 3 vertices");
+    }
+    if(cycle_size < ceil_div(n, 2) + 1) {
+    } else if(cycle_size == n - 1) {
     } else {
-	// Pra ciclo menor 
-    
     }
 }
