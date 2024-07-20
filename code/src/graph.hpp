@@ -52,7 +52,7 @@ namespace graph
 
         Path(graphPointer _G);
 
-        int size() const;
+        size_t size() const;
 
         Vertex back() const;
 

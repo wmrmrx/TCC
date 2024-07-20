@@ -19,8 +19,6 @@ struct Visitor
             throw std::runtime_error("Path is empty.");
         }
 
-        int lastVertex = path.back();
-
         std::vector<int> usedColors(n, 0), usedVertices(n, 0);
         for (const auto &edge : path.edges)
         {
@@ -37,10 +35,10 @@ struct Visitor
             newPath.vertices = path.vertices;
             newPath.edges = path.edges;
             int finalVertex = path.back();
-            for (int color = 0; color < n; color++)
+            for (size_t color = 0; color < n; color++)
                 if (usedColors[color] == 0)
                 {
-                    for (int i = 0; i < n; i++)
+                    for (size_t i = 0; i < n; i++)
                         if (usedVertices[i] == 0)
                         {
                             auto [b, edge] = graph::checkEdge(finalVertex, i, color, GG);
@@ -57,7 +55,7 @@ struct Visitor
             // temos duas cores que nao foram usadas
             int cx = GG[path.edges.back()].color, cy = -1;
 
-            for (int i = 0; i < n; i++)
+            for (size_t i = 0; i < n; i++)
                 if (!usedColors[i])
                 {
                     cy = i;
@@ -81,7 +79,7 @@ struct Visitor
                 }
             }
             // verificamos se nao tem um vertice que seja adjacente a x e y nas cores cx e cy
-            for (int i = 0; i < n; i++)
+            for (size_t i = 0; i < n; i++)
                 if (!usedVertices[i])
                 {
                     auto [bX, edgeX] = graph::checkEdge(x, i, cx, GG);
@@ -94,7 +92,7 @@ struct Visitor
                     }
                 }
 
-            for (int i = 1; i < path.size() - 1; i++)
+            for (size_t i = 1; i < path.size() - 1; i++)
             {
                 int u = path.vertices[i], v = path.vertices[i + 1];
                 auto [bX, edgeX] = graph::checkEdge(x, v, cx, GG);

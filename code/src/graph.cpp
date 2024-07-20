@@ -11,11 +11,11 @@ namespace graph
   {
     for (const auto &edge : boost::make_iterator_range(boost::out_edges(u, GG)))
     {
-      if (boost::source(edge, GG) == u && boost::target(edge, GG) == v && GG[edge].color == color)
+      if (boost::source(edge, GG) == (size_t) u && boost::target(edge, GG) == (size_t) v && GG[edge].color == color)
       {
         return {true, edge};
       }
-      if (boost::source(edge, GG) == v && boost::target(edge, GG) == u && GG[edge].color == color)
+      if (boost::source(edge, GG) == (size_t) v && boost::target(edge, GG) == (size_t) u && GG[edge].color == color)
       {
         return {true, edge};
       }
@@ -25,7 +25,7 @@ namespace graph
 
   Path::Path(graphPointer _G) : G(_G) {}
 
-  int Path::size() const
+  size_t Path::size() const
   {
     return edges.size();
   }
@@ -62,10 +62,10 @@ namespace graph
     assert(path.vertices.size() == path.edges.size() + 1);
     int x = path.vertices[0], y = path.vertices.back();
 
-    if (target(edge, *G) != x)
+    if (target(edge, *G) != (size_t) x)
       std::swap(x, y);
-    assert(source(edge, *G) == x && "Edge does not belong to the graph.");
-    assert(target(edge, *G) == y && "Edge does not belong to the graph.");
+    assert(source(edge, *G) == (size_t) x && "Edge does not belong to the graph.");
+    assert(target(edge, *G) == (size_t) y && "Edge does not belong to the graph.");
 
     vertices = path.vertices;
     edges = path.edges;

@@ -57,16 +57,16 @@ int main(int argc, char** argv)
   graph::Path path(GG);
   path.push_back(0, graph::Edge());
 
-  auto object = std::variant<graph::Cycle, graph::Path>(path);
-  // std::holds_alternative<graph::Cycle>(result)
-  while (true) {
-    auto result = increment({GG, G}, object);
-    object = result;
-    if (std::holds_alternative<graph::Cycle>(result)) {
-      auto cycle = std::get<graph::Cycle>(result);
-      if (cycle.size() == n - 1) break;
-    }
-  }
+  // auto object = std::variant<graph::Cycle, graph::Path>(path);
+  // // std::holds_alternative<graph::Cycle>(result)
+  // while (true) {
+  //   auto result = increment({GG, G}, object);
+  //   object = result;
+  //   if (std::holds_alternative<graph::Cycle>(result)) {
+  //     auto cycle = std::get<graph::Cycle>(result);
+  //     if (cycle.size() == n - 1) break;
+  //   }
+  // }
 
-  return EXIT_SUCCESS;
+  // return EXIT_SUCCESS;
 }
