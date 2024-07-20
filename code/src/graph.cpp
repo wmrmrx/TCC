@@ -24,6 +24,7 @@ namespace graph
   };
 
   Path::Path(graphPointer _G) : G(_G) {}
+  Path::Path(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges) : G(_G), vertices(_vertices), edges(_edges) {}
 
   size_t Path::size() const
   {
@@ -57,6 +58,8 @@ namespace graph
 
   Cycle::Cycle(graphPointer _G) : G(_G) {}
 
+  Cycle::Cycle(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges) : G(_G), vertices(_vertices), edges(_edges) {}
+
   Cycle::Cycle(const Path &path, Edge edge) : G(path.G)
   {
     assert(path.vertices.size() == path.edges.size() + 1);
@@ -71,6 +74,7 @@ namespace graph
     edges = path.edges;
     edges.push_back(edge);
   }
+  
 
   int Cycle::size() const
   {

@@ -25,7 +25,7 @@ graph::Instance read_graph(std::istream& is)
 
   size_t m; is >> m;
 
-  for (int i = 0; i < m; i++) {
+  for (size_t i = 0; i < m; i++) {
     int u, v, color; is >> u >> v >> color;
     u--; v--; color--;
     graph::Edge a;

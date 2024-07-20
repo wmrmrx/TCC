@@ -28,12 +28,10 @@ struct Visitor
         {
             usedVertices[vertex]++;
         }
-        if (path.size() < (n + 1) / 2)
+        if (path.size() < ceil_div((uint64_t)n, uint64_t(2)))
         {
             // esse caso eh so adicionar uma cor que nao tem ainda
-            graph::Path newPath(instance.first);
-            newPath.vertices = path.vertices;
-            newPath.edges = path.edges;
+            graph::Path newPath(instance.first, path.vertices, path.edges);
             int finalVertex = path.back();
             for (size_t color = 0; color < n; color++)
                 if (usedColors[color] == 0)
@@ -49,6 +47,7 @@ struct Visitor
                             }
                         }
                 }
+            std::runtime_error("Should not reach here. Small path should return a new path.");
         }
         else
         {
@@ -131,25 +130,214 @@ struct Visitor
         {
             throw std::runtime_error("Every cycle must have at least 3 vertices");
         }
-        std::vector<bool> used_colors(n);
+        std::vector<bool> colors_in_cycle(n), vertices_in_cycle(n);
         int miss1 = 0, miss2 = n - 1;
-        while (used_colors[miss1])
+        while (colors_in_cycle[miss1])
             miss1++;
-        while (used_colors[miss2])
+        while (colors_in_cycle[miss2])
             miss2--;
         for (auto &e : cycle.edges)
-            used_colors[GG[e].color] = true;
+            colors_in_cycle[GG[e].color] = true;
+        
+        for (auto &v : cycle.vertices)
+            vertices_in_cycle[v] = true;
+        
 
         if (cycle_size < ceil_div((uint64_t)n, uint64_t(2)) + 1)
         {
-            auto &x = cycle.vertices;
-            // missed colors
+            std::runtime_error("Should not reach here. Should never get small cycle.");
         }
         else if (cycle_size == n - 1)
         {
+            std::vector<int> newColorId(n);
+            // y eh o vertice que nao esta no ciclo
+            // fazemos o relabel das cores
+            int y = -1, cy = -1, cycle_sz = cycle.size();
+            for (size_t i = 0; i < n; i++) {
+                if (!vertices_in_cycle[i]) y = i;
+                if (!colors_in_cycle[i]) cy = i, newColorId[i] = n - 1;
+            }
+            for (int i = 0; i < cycle_sz; i++) {
+                auto color = GG[cycle.edges[i]].color;
+                newColorId[color] = i;
+            }
+
+            std::vector<int> posCic(n, -1), posColorCic(n, -1);
+            for (size_t i = 0; i < cycle_sz; i++) {
+                posCic[cycle.vertices[i]] = i;
+                posColorCic[i] = GG[cycle.edges[i]].color;
+            }
+            
+            // vamos montar o digrafo desse cara
+            std::vector<size_t> I, _I;
+            std::vector<int> inDegree(n), outDegree(n);
+            
+            // aqui vamos achar os indices dos vertice no ciclo que ligam com y
+            for (int i = 0; i < cycle_sz; i++) {
+                int u = cycle.vertices[i], v = cycle.vertices[(i + 1) % cycle_sz], color = posColorCic[i];
+                
+                for (const auto &edge : boost::make_iterator_range(boost::out_edges(u, G[color]))) {
+                    auto src = boost::source(edge, G[color]), tgt = boost::target(edge, G[color]);
+                    // tiramos arestas de u pra v
+                    if (tgt == v) continue;
+                    assert(u == src && newColorId[color] == i);
+
+                    outDegree[u]++;
+                    inDegree[tgt]++;
+                    
+                    if (tgt == y) I.push_back(i);
+                }
+            }
+
+            auto findAdjacency = [&] (int color) -> std::vector<size_t> {
+                std::vector<size_t> ans;
+                for (const auto &edge : boost::make_iterator_range(boost::out_edges(y, G[color]))) {
+                    auto src = boost::source(edge, G[color]), tgt = boost::target(edge, G[color]);
+                    assert(y == src);
+                    int i = posCic[tgt];
+                    assert(i != -1);
+                    ans.push_back(i);
+                }
+                return ans;
+            };
+            _I = findAdjacency(cy);
+            for (auto &u : _I) u = (u - 1 + cycle_sz) % cycle_sz;
+
+            // aqui eh se achamos uma resposta que vai tirar a aresta i do ciclo
+            auto find_answer = [&] (std::vector<graph::Vertex> vertices, std::vector<graph::Edge> edges, int i) {
+                std::rotate(vertices.begin(), vertices.begin() + (i + 1), vertices.end());
+                std::rotate(edges.begin(), edges.begin() + (i + 1), edges.end());
+
+                edges.pop_back();
+
+                auto [_, edge] = graph::checkEdge(vertices.back(), y, posColorCic[i], GG);
+                auto [__, edge2] = graph::checkEdge(y, vertices[0], cy, GG);
+
+                assert(_ && __);
+
+                vertices.push_back(y);
+                edges.push_back(edge);
+                edges.push_back(edge2);
+
+                return graph::Cycle(cycle.G, vertices, edges);
+            };
+
+            for (auto i : I) {
+                // achamos a resposta final. vai ser basicamente o ciclo, mas com a aresta de x_i pra y com cor i
+                // e de y pra x_{i+1} com cor n - 1
+                if (std::find(_I.begin(), _I.end(), i) != _I.end()) {
+                    return find_answer(cycle.vertices, cycle.edges, i);
+                }
+            }
+            auto vertices = cycle.vertices;
+            auto edges = cycle.edges;
+            
+            bool foundVertex = false;
+            for (int i = 0; i < cycle_sz; i++) {
+                int u = vertices[i];
+                if (inDegree[u] > n / 2 - 1) {
+                    foundVertex = true;
+                    std::rotate(vertices.begin(), vertices.begin() + i, vertices.end());
+                    std::rotate(edges.begin(), edges.begin() + i, edges.end());
+
+                    // reconstruimos o que precisa
+                    for (size_t i = 0; i < cycle_sz; i++) {
+                        auto color = GG[edges[i]].color;
+                        newColorId[color] = i;
+
+                        posCic[vertices[i]] = i;
+                        posColorCic[i] = GG[edges[i]].color;
+                    }
+                    break;
+                }
+            }
+            if (not foundVertex) {
+                std::runtime_error("Did not found vertex with high in degree!");
+            }
+
+            auto I1 = findAdjacency(posColorCic[0]);
+            auto In = findAdjacency(cy);
+            for (auto &u : In) u = (u - 1 + cycle_sz) % cycle_sz;
+
+            assert(I1.size() + In.size() >= n);
+
+            std::vector<graph::Vertex> newVertices;
+            std::vector<graph::Edge> newEdges;
+            for (auto i : I1) {
+                if (std::find(In.begin(), In.end(), i) != In.end()) {
+                    if (i == 0) return find_answer(vertices, edges, 0);
+                    // construimos o novo path desse desgracado
+                    for (int j = 1; j <= i; j++) 
+                        newVertices.push_back(vertices[j]);
+                    newVertices.push_back(y);
+                    for (int j = i + 1; j < cycle_sz; j++)
+                        newVertices.push_back(vertices[j]);
+                    newVertices.push_back(vertices[0]);
+
+                    for (int j = 1; j < i; j++)
+                        newEdges.push_back(edges[j]);
+                    {
+                        auto [_, edge] = graph::checkEdge(vertices[i], y, posColorCic[i], GG);
+                        auto [__, edge2] = graph::checkEdge(y, vertices[0], cy, GG);
+                        assert(_ && __);
+                        newEdges.push_back(edge);
+                        newEdges.push_back(edge2);
+                    }
+                    for (int j = i + 1; j < cycle_sz; j++)
+                        newEdges.push_back(edges[j]);
+                    assert(newVertices.size() == n && newVertices.size() == newEdges.size() + 1);
+                }
+            }
         }
         else
         {
+            for(size_t i: {miss1, miss2}) for(size_t u = 0; u < n; u++) if(not vertices_in_cycle[u]) for (const auto &u_edge : boost::make_iterator_range(boost::out_edges(u, G[i]))) {
+                auto v = boost::target(u_edge, G[i]);
+                if(vertices_in_cycle[v]) continue;
+                // uv is an edge of color i outside disjoint with the cycle
+                for (const auto &v_edge : boost::make_iterator_range(boost::out_edges(v, G[i]))) {
+                    auto w = boost::target(v_edge, G[i]);
+                    if(not vertices_in_cycle[w]) continue;
+                    // "append" the path uvw to the cycle, generating a path of size l + 1
+                    auto vertices = cycle.vertices;
+                    auto edges = cycle.edges;
+                    size_t w_id = std::find(vertices.begin(), vertices.end(), w) - vertices.begin();
+                    assert(vertices[w_id] == w);
+                    // make w the last vertex
+                    std::rotate(vertices.begin(), vertices.begin() + (w_id + 1), vertices.end() );
+                    std::rotate(edges.begin(), edges.begin() + (w_id + 1), edges.end() );
+                    edges.pop_back();
+                    graph::Path path(cycle.G);
+                    path.vertices = vertices;
+                    path.edges = edges;
+                    path.push_back(v, v_edge);
+                    path.push_back(u, u_edge);
+                    return path; // path of length l + 1
+                }
+            }
+            // now, for every vertex not u in the cycle, all edges of colors miss1 and miss2 incident to u
+            // must be incident to the cycle
+            for(size_t u = 0; u < n; u++) if(not vertices_in_cycle[u]) {
+                auto vertices = cycle.vertices;
+                auto edges = cycle.edges;
+                for(size_t i = 0; i < vertices.size(); i++) {
+                    auto x1 = vertices[i], x2 = vertices[(i+1) % n];
+                    for(auto [c1, c2]: {std::pair(miss1, miss2), std::pair(miss2, miss1)}) {
+                        auto [exists1, edge1] = graph::checkEdge(u, x1, c1, GG);
+                        auto [exists2, edge2] = graph::checkEdge(u, x2, c2, GG);
+                        if(exists1 and exists2) {
+                            std::rotate(vertices.begin(), vertices.begin() + (i + 1), vertices.end());
+                            std::rotate(edges.begin(), edges.begin() + (i + 1), edges.end());
+                            edges.pop_back();
+                            edges.push_back(edge1);
+                            vertices.push_back(u);
+                            edges.push_back(edge2);
+                            return graph::Cycle (cycle.G, vertices, edges); // cycle of length l + 1
+                        }
+                    }
+                }
+            }
+            std::runtime_error("Unreachable code!");
         }
     }
 };

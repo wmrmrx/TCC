@@ -1,5 +1,6 @@
 CXX=g++
-CXXFLAGS=-Wall -Wextra -pedantic -O2 -std=c++20
+BOOST_INCLUDE=/opt/homebrew/opt/boost@1.85/include
+CXXFLAGS=-Wall -Wextra -pedantic -O2 -std=c++20 -I$(BOOST_INCLUDE)
 COMPILE.cpp = $(CXX) $(CXXFLAGS)
 
 %.o: %.cpp

@@ -51,6 +51,7 @@ namespace graph
         std::vector<Edge> edges;
 
         Path(graphPointer _G);
+        Path(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges);
 
         size_t size() const;
 
@@ -70,6 +71,7 @@ namespace graph
         std::vector<Edge> edges;
 
         Cycle(graphPointer _G);
+        Cycle(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges);
 
         Cycle(const Path &path, Edge edge);
 
