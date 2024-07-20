@@ -5,8 +5,8 @@ COMPILE.cpp = $(CXX) $(CXXFLAGS)
 %.o: %.cpp
 	$(COMPILE.cpp) $<
 
-run:
-	make src/main && ./src/main < tests/in
+run: build
+	./main < tests/in
 
 build:
 	$(COMPILE.cpp) -o main src/*.cpp
