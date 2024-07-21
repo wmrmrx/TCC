@@ -251,43 +251,42 @@ struct Visitor
                     break;
                 }
             }
-            if (not foundVertex) {
-                std::runtime_error("Did not found vertex with high in degree!");
-            }
+            if (foundVertex) {
+		auto I1 = findAdjacency(posColorCic[0]);
+		auto In = findAdjacency(cy);
+		for (auto &u : In) u = (u - 1 + cycle_sz) % cycle_sz;
 
-            auto I1 = findAdjacency(posColorCic[0]);
-            auto In = findAdjacency(cy);
-            for (auto &u : In) u = (u - 1 + cycle_sz) % cycle_sz;
+		assert(I1.size() + In.size() >= n);
 
-            assert(I1.size() + In.size() >= n);
+		std::vector<graph::Vertex> newVertices;
+		std::vector<graph::Edge> newEdges;
+		for (auto i : I1) {
+		    if (std::find(In.begin(), In.end(), i) != In.end()) {
+			if (i == 0) return find_answer(vertices, edges, 0);
+			// construimos o novo path desse desgracado
+			for (int j = 1; j <= i; j++) 
+			    newVertices.push_back(vertices[j]);
+			newVertices.push_back(y);
+			for (int j = i + 1; j < cycle_sz; j++)
+			    newVertices.push_back(vertices[j]);
+			newVertices.push_back(vertices[0]);
 
-            std::vector<graph::Vertex> newVertices;
-            std::vector<graph::Edge> newEdges;
-            for (auto i : I1) {
-                if (std::find(In.begin(), In.end(), i) != In.end()) {
-                    if (i == 0) return find_answer(vertices, edges, 0);
-                    // construimos o novo path desse desgracado
-                    for (int j = 1; j <= i; j++) 
-                        newVertices.push_back(vertices[j]);
-                    newVertices.push_back(y);
-                    for (int j = i + 1; j < cycle_sz; j++)
-                        newVertices.push_back(vertices[j]);
-                    newVertices.push_back(vertices[0]);
-
-                    for (int j = 1; j < i; j++)
-                        newEdges.push_back(edges[j]);
-                    {
-                        auto [_, edge] = graph::checkEdge(vertices[i], y, posColorCic[i], GG);
-                        auto [__, edge2] = graph::checkEdge(y, vertices[0], cy, GG);
-                        assert(_ && __);
-                        newEdges.push_back(edge);
-                        newEdges.push_back(edge2);
-                    }
-                    for (int j = i + 1; j < cycle_sz; j++)
-                        newEdges.push_back(edges[j]);
-                    assert(newVertices.size() == n && newVertices.size() == newEdges.size() + 1);
-                }
-            }
+			for (int j = 1; j < i; j++)
+			    newEdges.push_back(edges[j]);
+			{
+			    auto [_, edge] = graph::checkEdge(vertices[i], y, posColorCic[i], GG);
+			    auto [__, edge2] = graph::checkEdge(y, vertices[0], cy, GG);
+			    assert(_ && __);
+			    newEdges.push_back(edge);
+			    newEdges.push_back(edge2);
+			}
+			for (int j = i + 1; j < cycle_sz; j++)
+			    newEdges.push_back(edges[j]);
+			assert(newVertices.size() == n && newVertices.size() == newEdges.size() + 1);
+		    }
+		}
+            } else {
+	    }
         }
         else
         {
