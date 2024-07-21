@@ -175,9 +175,9 @@ struct Visitor
             // vamos montar o digrafo desse cara
             std::vector<size_t> I, _I;
             std::vector<size_t> inDegree(n), outDegree(n);
-            std::vector<size_t> Jn;
+            std::vector<std::vector<graph::Vertex>> incomingNeighborhood(n);
 
-            auto getEdgeColor = [&] (graph::Edge edge) -> int
+            auto getEdgeColor = [&](graph::Edge edge) -> int
             {
                 return GG[edge].color;
             };
@@ -193,27 +193,25 @@ struct Visitor
                     // tiramos arestas de u pra v
                     if (tgt == v)
                         continue;
-                    assert(u == src && (size_t) newColorId[color] == i);
+                    assert(u == src && (size_t)newColorId[color] == i);
 
                     outDegree[u]++;
                     inDegree[tgt]++;
+                    incomingNeighborhood[tgt].push_back(u);
 
                     // isso eh la pro final
-                    if (tgt == cycle.vertices[0]) // se for o primeiro vertice do ciclo
-                        Jn.push_back(u);
-
                     if (tgt == y)
                         I.push_back(i);
                 }
             }
 
-            auto findAdjacency = [&](int src, int color, std::vector<int>& pos) -> std::vector<size_t>
+            auto findAdjacency = [&](int src, int color, std::vector<int> &pos) -> std::vector<size_t>
             {
                 std::vector<size_t> ans;
                 for (const auto &edge : boost::make_iterator_range(boost::out_edges(src, G[color])))
                 {
                     auto tgt = boost::target(edge, G[color]);
-                    assert((size_t) src == boost::source(edge, G[color]) && pos[tgt] != -1);
+                    assert((size_t)src == boost::source(edge, G[color]) && pos[tgt] != -1);
                     ans.push_back(pos[tgt]);
                 }
                 return ans;
@@ -326,7 +324,8 @@ struct Visitor
                 {
                     // esse eh o caso em que so fecha o ciclo bonitinho
                     auto [found, edge] = graph::checkEdge(newVertices[0], newVertices.back(), posColorCic[J], GG);
-                    if (found) {
+                    if (found)
+                    {
                         newEdges.push_back(edge);
                         return graph::Cycle(cycle.G, newVertices, newEdges);
                     }
@@ -336,7 +335,9 @@ struct Visitor
                 for (auto &u : J1)
                     u = (u - 1 + n) % n;
 
-                for (auto &u : Jn) u = newPos[u];
+                auto Jn = incomingNeighborhood[cycle.vertices[0]];
+                for (auto &u : Jn)
+                    u = newPos[u];
 
                 for (auto i : J1)
                 {
@@ -344,7 +345,8 @@ struct Visitor
                     {
                         // achamos uma resposta!!!
                         // pegamos o cara certo
-                        if(newVertices[i + 1] == y) continue;
+                        if (newVertices[i + 1] == y)
+                            continue;
 
                         std::vector<graph::Vertex> finalVertices;
                         std::vector<graph::Edge> finalEdges;
@@ -377,70 +379,77 @@ struct Visitor
             }
             else
             {
-                auto get_Q_and_cj = [&]() {
-                    for(size_t j = 0; j < n - 1; j++) {
-                        auto [has_edge, edge] = graph::checkEdge(y, x[j], cy, GG);
-                        if(not has_edge or inDegree[cycle.vertices[j]] != n / 2 - 1) continue;
+                auto get_Q_and_cj = [&]()
+                {
+                    for (size_t j = 0; j < n - 1; j++)
+                    {
+                        auto [has_edge, edge] = graph::checkEdge(y, cycle.vertices[j], cy, GG);
+                        if (not has_edge or inDegree[cycle.vertices[j]] != n / 2 - 1)
+                            continue;
                         auto new_vertices = cycle.vertices;
                         auto new_edges = cycle.edges;
-                        std::rotate(new_x.begin(), new_x.begin() + (j + 1), new_x.end());
+                        std::rotate(new_vertices.begin(), new_vertices.begin() + (j + 1), new_vertices.end());
                         std::rotate(new_edges.begin(), new_edges.begin() + (j + 1), new_edges.end());
                         size_t cj = GG[new_edges.back()].color;
                         new_edges.pop_back();
                         new_vertices.insert(new_vertices.begin(), y);
                         new_edges.insert(new_edges.begin(), edge);
-                        return std::pair<graph::Path, size_t>(graph::Path(GG, new_vertices, new_edges), cj);
+                        return std::pair<graph::Path, size_t>(graph::Path(instance.first, new_vertices, new_edges), cj);
                     }
-                    std::runtime_error("j not found!");
+                    throw std::runtime_error("j not found!");
                 };
                 auto [Q, cj] = get_Q_and_cj();
                 // assert that Q misses cj
-                for(auto edge: Q.edges) assert(GG[edge].color != cj);
+                for (auto edge : Q.edges)
+                    assert(GG[edge].color != cj);
                 auto x = Q.vertices;
                 {
-                    auto [has_edge, edge] = checkEdge(x[n-2], x[0], cj, GG);
-                    if(has_edge) {
+                    auto [has_edge, edge] = checkEdge(x[n - 2], x[0], cj, GG);
+                    if (has_edge)
+                    {
                         auto edges = Q.edges;
                         edges.push_back(edge);
-                        return graph::Cycle(GG, vertices, edges);
+                        return graph::Cycle(instance.first, vertices, edges);
                     }
                 }
                 std::vector<std::pair<graph::Vertex, graph::Edge>> J1(n);
-                for(size_t i = 0; i < n - 2; i++) {
-                    auto [has_edge, edge] = checkEdge(x[0], x[i+1], cj, GG);
+                for (size_t i = 0; i < n - 2; i++)
+                {
+                    auto [has_edge, edge] = checkEdge(x[0], x[i + 1], cj, GG);
                     J1.emplace_back(i, edge);
                 }
-                for(size_t i = 0; i < n; i++) position[x[i]] = i;
-                std::vector<std::pair<size_t, graph::Edge>> J1;
-                for(size_t i = 0; i < n - 2; i++) {
-                    auto [has_edge, edge] = graph::checkEdge(x[0], x[i+1], cj, GG);
-                    if(has_edge) J1.emplace_back(i, edge);
-                }
+                std::vector<size_t> position(n);
+                for (size_t i = 0; i < n; i++)
+                    position[x[i]] = i;
                 std::vector<bool> inJn(n);
-                for(auto edge: incomingEdges[x[n-1]]) {
-                    auto v = boost::target(edge, GG);
+                for (auto v : incomingNeighborhood[x[n - 1]])
+                {
                     inJn[position[v]] = true;
                 }
-                for(auto [k, edge_from_first]: J1) {
+                for (auto [k, edge_from_first] : J1)
+                {
                     size_t color = GG[Q.edges[k]].color;
-                    auto [has_edge, edge_from_last] = graph::checkEdge(x[n-1], x[k], color);
-                    if(not has_edge) continue;
+                    auto [has_edge, edge_from_last] = graph::checkEdge(x[n - 1], x[k], color, GG);
+                    if (not has_edge)
+                        continue;
                     std::vector<graph::Vertex> new_vertices;
                     std::vector<graph::Edge> new_edges;
                     new_vertices.push_back(x[0]);
-                    new_vertices.push_back(x[k+1]);
+                    new_vertices.push_back(x[k + 1]);
                     new_edges.push_back(edge_from_first);
-                    for(size_t i = k + 1; i + 1 < n; i++) {
-                        new_vertices.push_back(x[i+1]);
+                    for (size_t i = k + 1; i + 1 < n; i++)
+                    {
+                        new_vertices.push_back(x[i + 1]);
                         new_edges.push_back(Q.edges[i]);
                     }
                     new_edges.push_back(edge_from_last);
-                    for(size_t i = k; i > 0; i--) {
-                        auto [_has_edge, edge] = graph::checkEdge(x[i], x[i-1], GG[Q.edges[i-1]].color, GG);
+                    for (size_t i = k; i > 0; i--)
+                    {
+                        auto [_has_edge, edge] = graph::checkEdge(x[i], x[i - 1], GG[Q.edges[i - 1]].color, GG);
                         assert(_has_edge);
                         new_edges.push_back(edge);
                     }
-                    return graph::Cycle(GG, new_vertices, new_edges);
+                    return graph::Cycle(instance.first, new_vertices, new_edges);
                 }
                 std::runtime_error("Not found");
             }
@@ -505,8 +514,9 @@ struct Visitor
                         }
                     }
                 }
-            std::runtime_error("Unreachable code!");
+            throw std::runtime_error("Unreachable code!");
         }
+        throw std::runtime_error("Unreachable code!");
     }
 };
 

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <tuple>                // for std::tie and std::ignore
 #include <vector>
+#include <numeric>
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -13,7 +14,6 @@
 #include "util.hpp"
 
 #include "increment.hpp"
-#include <__numeric/iota.h>
 
 using boost::num_vertices;
 
@@ -71,14 +71,14 @@ graph::Cycle brute_force(const graph::Instance& instance)
       return graph::Cycle(GG, vertices, edges);
     }
   } while (std::next_permutation(vertices.begin(), vertices.end()));
-  std::runtime_error("No cycle found. Small test case.");
+  throw std::runtime_error("No cycle found. Small test case.");
 }
 
 void print_cycle(const graph::Cycle& cycle)
 {
   std::cout << cycle.size() << '\n';
   for (size_t i = 0; i < cycle.size(); i++) {
-    std::cout << cycle.vertices[i] + 1 << ' ' << cycle.vertices[(i + 1) % cycle.size()] + 1 << ' ' << cycle.edges[i] << '\n';
+    std::cout << cycle.vertices[i] + 1 << ' ' << cycle.vertices[(i + 1) % cycle.size()] + 1 << ' ' << cycle.edges[i] << ' ' << (*cycle.G)[cycle.edges[i]].color << '\n';
   }
 }
 

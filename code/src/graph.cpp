@@ -2,12 +2,13 @@
 
 namespace graph
 {
-  BundledEdge::BundledEdge(int _color) : color(_color) {}
+	BundledEdge::BundledEdge(): color(std::numeric_limits<size_t>::max()) {}
+  BundledEdge::BundledEdge(size_t _color) : color(_color) {}
 
   BundledEdge2::BundledEdge2(Edge _id) : id(_id) {}
 
   // TODO: otimizar usando referencia de edges de G[i] para GG
-  std::pair<bool, graph::Edge> checkEdge(int u, int v, int color, const Graph &GG)
+  std::pair<bool, graph::Edge> checkEdge(int u, int v, size_t color, const Graph &GG)
   {
     for (const auto &edge : boost::make_iterator_range(boost::out_edges(u, GG)))
     {

@@ -12,8 +12,9 @@ namespace graph
 
     struct BundledEdge
     {
-        int color; // color label
-        BundledEdge(int _color = -1);
+        size_t color; // color label
+	BundledEdge();
+        BundledEdge(size_t _color);
     };
 
     typedef boost::adjacency_list<boost::vecS,
@@ -42,7 +43,7 @@ namespace graph
     using graphPointer = std::shared_ptr<Graph>;
 
     // TODO: otimizar usando referencia de edges de G[i] para GG
-    std::pair<bool, graph::Edge> checkEdge(int u, int v, int color, const Graph &GG);
+    std::pair<bool, graph::Edge> checkEdge(int u, int v, size_t color, const Graph &GG);
 
     struct Path
     {
