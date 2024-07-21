@@ -24,7 +24,34 @@ namespace graph
   };
 
   Path::Path(graphPointer _G) : G(_G) {}
-  Path::Path(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges) : G(_G), vertices(_vertices), edges(_edges) {}
+  Path::Path(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges) : G(_G), vertices(_vertices), edges(_edges) {
+    assert(vertices.size() == edges.size() + 1);
+    std::vector<int> usedVertex(G->m_vertices.size(), 0), usedColors(G->m_vertices.size(), 0);
+    for (const auto &vertex : vertices) {
+      if (usedVertex[vertex] > 0) {
+        throw std::runtime_error("Cycle has repeated vertices.");
+      }
+      usedVertex[vertex]++;
+    }
+    for (const auto &edge : edges) {
+      if (usedColors[(*G)[edge].color] > 0) {
+        throw std::runtime_error("Cycle has repeated colors.");
+      }
+      usedColors[(*G)[edge].color]++;
+    }
+    for (int i = 0; i + 1 < (int) vertices.size(); i++) {
+      bool valid = false;
+      if (source(edges[i], *G) != (size_t) vertices[i] 
+          && target(edges[i], *G) != (size_t) vertices[(i + 1) % vertices.size()])
+        valid = true;
+      if (source(edges[i], *G) != (size_t) vertices[(i + 1) % vertices.size()] 
+          && target(edges[i], *G) != (size_t) vertices[i])
+        valid = true;
+      if (!valid) {
+        throw std::runtime_error("Cycle has invalid edges.");
+      }
+    }
+  }
 
   size_t Path::size() const
   {
@@ -58,7 +85,34 @@ namespace graph
 
   Cycle::Cycle(graphPointer _G) : G(_G) {}
 
-  Cycle::Cycle(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges) : G(_G), vertices(_vertices), edges(_edges) {}
+  Cycle::Cycle(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges) : G(_G), vertices(_vertices), edges(_edges) {
+    assert(vertices.size() == edges.size());
+    std::vector<int> usedVertex(G->m_vertices.size(), 0), usedColors(G->m_vertices.size(), 0);
+    for (const auto &vertex : vertices) {
+      if (usedVertex[vertex] > 0) {
+        throw std::runtime_error("Cycle has repeated vertices.");
+      }
+      usedVertex[vertex]++;
+    }
+    for (const auto &edge : edges) {
+      if (usedColors[(*G)[edge].color] > 0) {
+        throw std::runtime_error("Cycle has repeated colors.");
+      }
+      usedColors[(*G)[edge].color]++;
+    }
+    for (int i = 0; i < (int) vertices.size(); i++) {
+      bool valid = false;
+      if (source(edges[i], *G) != (size_t) vertices[i] 
+          && target(edges[i], *G) != (size_t) vertices[(i + 1) % vertices.size()])
+        valid = true;
+      if (source(edges[i], *G) != (size_t) vertices[(i + 1) % vertices.size()] 
+          && target(edges[i], *G) != (size_t) vertices[i])
+        valid = true;
+      if (!valid) {
+        throw std::runtime_error("Cycle has invalid edges.");
+      }
+    }
+  }
 
   Cycle::Cycle(const Path &path, Edge edge) : G(path.G)
   {
