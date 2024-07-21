@@ -75,7 +75,7 @@ namespace graph
 
         Cycle(const Path &path, Edge edge);
 
-        int size() const;
+        size_t size() const;
     };
 
     using Instance = std::pair<graphPointer, std::vector<Graph2>>;

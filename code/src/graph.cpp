@@ -130,7 +130,7 @@ namespace graph
   }
   
 
-  int Cycle::size() const
+  size_t Cycle::size() const
   {
     return edges.size();
   }

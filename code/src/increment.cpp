@@ -10,7 +10,6 @@ struct Visitor
     Variant operator()(graph::Path path)
     {
         const auto &GG = *instance.first;
-        const auto &G = instance.second;
 
         auto n = boost::num_vertices(GG);
 
@@ -101,12 +100,12 @@ struct Visitor
                 {
                     // achamos um crossing
                     graph::Path newPath(instance.first);
-                    for (int j = 0; j <= i; j++)
+                    for (size_t j = 0; j <= i; j++)
                     {
                         newPath.push_back(path.vertices[j], j ? path.edges[j - 1] : graph::Edge());
                     }
                     newPath.push_back(y, edgeY);
-                    for (int j = path.size() - 1; j >= i + 1; j--)
+                    for (size_t j = path.size() - 1; j >= i + 1; j--)
                     {
                         newPath.push_back(path.vertices[j - 1], path.edges[j - 1]);
                     }
@@ -151,7 +150,8 @@ struct Visitor
             std::vector<int> newColorId(n);
             // y eh o vertice que nao esta no ciclo
             // fazemos o relabel das cores
-            int y = -1, cy = -1, cycle_sz = cycle.size();
+            size_t y, cy;
+            size_t cycle_sz = cycle.size();
             for (size_t i = 0; i < n; i++)
             {
                 if (!vertices_in_cycle[i])
@@ -159,7 +159,7 @@ struct Visitor
                 if (!colors_in_cycle[i])
                     cy = i, newColorId[i] = n - 1;
             }
-            for (int i = 0; i < cycle_sz; i++)
+            for (size_t i = 0; i < cycle_sz; i++)
             {
                 auto color = GG[cycle.edges[i]].color;
                 newColorId[color] = i;
@@ -174,8 +174,8 @@ struct Visitor
 
             // vamos montar o digrafo desse cara
             std::vector<size_t> I, _I;
-            std::vector<int> inDegree(n), outDegree(n);
-            std::vector<int> Jn;
+            std::vector<size_t> inDegree(n), outDegree(n);
+            std::vector<size_t> Jn;
 
             auto getEdgeColor = [&] (graph::Edge edge) -> int
             {
@@ -183,9 +183,9 @@ struct Visitor
             };
 
             // aqui vamos achar os indices dos vertice no ciclo que ligam com y
-            for (int i = 0; i < cycle_sz; i++)
+            for (size_t i = 0; i < cycle_sz; i++)
             {
-                int u = cycle.vertices[i], v = cycle.vertices[(i + 1) % cycle_sz], color = posColorCic[i];
+                size_t u = cycle.vertices[i], v = cycle.vertices[(i + 1) % cycle_sz], color = posColorCic[i];
 
                 for (const auto &edge : boost::make_iterator_range(boost::out_edges(u, G[color])))
                 {
@@ -193,7 +193,7 @@ struct Visitor
                     // tiramos arestas de u pra v
                     if (tgt == v)
                         continue;
-                    assert(u == src && newColorId[color] == i);
+                    assert(u == src && (size_t) newColorId[color] == i);
 
                     outDegree[u]++;
                     inDegree[tgt]++;
@@ -213,7 +213,7 @@ struct Visitor
                 for (const auto &edge : boost::make_iterator_range(boost::out_edges(src, G[color])))
                 {
                     auto tgt = boost::target(edge, G[color]);
-                    assert(src == boost::source(edge, G[color]) && pos[tgt] != -1);
+                    assert((size_t) src == boost::source(edge, G[color]) && pos[tgt] != -1);
                     ans.push_back(pos[tgt]);
                 }
                 return ans;
@@ -255,7 +255,7 @@ struct Visitor
             auto edges = cycle.edges;
 
             bool foundVertex = false;
-            for (int i = 0; i < cycle_sz; i++)
+            for (size_t i = 0; i < cycle_sz; i++)
             {
                 int u = vertices[i];
                 if (inDegree[u] > n / 2 - 1)
