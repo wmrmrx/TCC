@@ -74,8 +74,6 @@ namespace graph
         Cycle(graphPointer _G);
         Cycle(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges);
 
-        Cycle(const Path &path, Edge edge);
-
         size_t size() const;
     };
 

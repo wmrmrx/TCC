@@ -115,22 +115,6 @@ namespace graph
     }
   }
 
-  Cycle::Cycle(const Path &path, Edge edge) : G(path.G)
-  {
-    assert(path.vertices.size() == path.edges.size() + 1);
-    int x = path.vertices[0], y = path.vertices.back();
-
-    if (target(edge, *G) != (size_t) x)
-      std::swap(x, y);
-    assert(source(edge, *G) == (size_t) x && "Edge does not belong to the graph.");
-    assert(target(edge, *G) == (size_t) y && "Edge does not belong to the graph.");
-
-    vertices = path.vertices;
-    edges = path.edges;
-    edges.push_back(edge);
-  }
-  
-
   size_t Cycle::size() const
   {
     return edges.size();

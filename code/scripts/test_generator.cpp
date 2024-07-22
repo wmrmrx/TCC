@@ -39,6 +39,6 @@ int main(int argc, char* argv[] )
     }
     std::cout << n << " " << colored_edges.size() << "\n";
     for (auto [u, v, color] : colored_edges) {
-        std::cout << u << " " << v << " " << color << "\n";
+        std::cout << u + 1 << " " << v + 1 << " " << color << "\n";
     }
 }

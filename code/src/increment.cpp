@@ -13,36 +13,38 @@ struct Visitor
 
         auto n = boost::num_vertices(GG);
 
-        if (path.size() == 0)
+        if (path.vertices.size() == 0)
         {
             throw std::runtime_error("Path is empty.");
         }
 
-        std::vector<int> usedColors(n, 0), usedVertices(n, 0);
+        std::vector<int> colorsInPath(n, 0), verticesInPath(n, 0);
         for (const auto &edge : path.edges)
         {
-            usedColors[GG[edge].color]++;
+            colorsInPath[GG[edge].color]++;
         }
         for (const auto &vertex : path.vertices)
         {
-            usedVertices[vertex]++;
+            verticesInPath[vertex]++;
         }
         if (path.size() < ceil_div((uint64_t)n, uint64_t(2)))
         {
             // esse caso eh so adicionar uma cor que nao tem ainda
-            graph::Path newPath(instance.first, path.vertices, path.edges);
+            auto vertices = path.vertices;
+            auto edges = path.edges;
             int finalVertex = path.back();
             for (size_t color = 0; color < n; color++)
-                if (usedColors[color] == 0)
+                if (colorsInPath[color] == 0)
                 {
                     for (size_t i = 0; i < n; i++)
-                        if (usedVertices[i] == 0)
+                        if (verticesInPath[i] == 0)
                         {
                             auto [b, edge] = graph::checkEdge(finalVertex, i, color, GG);
                             if (b)
                             {
-                                newPath.push_back(i, edge);
-                                return newPath;
+                                vertices.push_back(i);
+                                edges.push_back(edge);
+                                return graph::Path(instance.first, vertices, edges);
                             }
                         }
                 }
@@ -54,7 +56,7 @@ struct Visitor
             int cx = GG[path.edges.back()].color, cy = -1;
 
             for (size_t i = 0; i < n; i++)
-                if (!usedColors[i])
+                if (!colorsInPath[i])
                 {
                     cy = i;
                     break;
@@ -72,25 +74,29 @@ struct Visitor
                 auto [b, edge] = graph::checkEdge(x, y, c, GG);
                 if (b)
                 {
-                    graph::Cycle cycle(instance.first, edge);
-                    return cycle;
+                    auto vertices = path.vertices;
+                    auto edges = path.edges; edges.push_back(edge);
+                    return graph::Cycle(instance.first, vertices, edges);
                 }
             }
             // verificamos se nao tem um vertice que seja adjacente a x e y nas cores cx e cy
             for (size_t i = 0; i < n; i++)
-                if (!usedVertices[i])
+                if (!verticesInPath[i])
                 {
                     auto [bX, edgeX] = graph::checkEdge(x, i, cx, GG);
                     auto [bY, edgeY] = graph::checkEdge(y, i, cy, GG);
                     if (bX && bY)
                     {
-                        path.push_back(i, edgeY);
-                        graph::Cycle cycle(path, edgeX);
-                        return cycle;
+                        auto vertices = path.vertices; vertices.push_back(i);
+                        auto edges = path.edges; 
+                        
+                        edges.push_back(edgeY);
+                        edges.push_back(edgeX);
+                        return graph::Cycle(instance.first, vertices, edges);
                     }
                 }
 
-            for (size_t i = 1; i < path.size() - 1; i++)
+            for (size_t i = 1; i < path.vertices.size() - 1; i++)
             {
                 int u = path.vertices[i], v = path.vertices[i + 1];
                 auto [bX, edgeX] = graph::checkEdge(x, v, cx, GG);
@@ -99,18 +105,23 @@ struct Visitor
                 if (bX && bY)
                 {
                     // achamos um crossing
-                    graph::Path newPath(instance.first);
+                    std::vector<graph::Vertex> vertices;
+                    std::vector<graph::Edge> edges;
+
                     for (size_t j = 0; j <= i; j++)
                     {
-                        newPath.push_back(path.vertices[j], j ? path.edges[j - 1] : graph::Edge());
+                        vertices.push_back(path.vertices[j]);
+                        if (j) edges.push_back(path.edges[j - 1]);
                     }
-                    newPath.push_back(y, edgeY);
-                    for (size_t j = path.size() - 1; j >= i + 1; j--)
+                    vertices.push_back(y);
+                    edges.push_back(edgeY);
+                    for (size_t j = path.vertices.size() - 1; j > i; j--)
                     {
-                        newPath.push_back(path.vertices[j - 1], path.edges[j - 1]);
+                        vertices.push_back(path.vertices[j - 1]);
+                        edges.push_back(path.edges[j - 1]);
                     }
-                    graph::Cycle cycle(newPath, edgeX);
-                    return cycle;
+                    edges.push_back(edgeX);
+                    return graph::Cycle(instance.first, vertices, edges);
                 }
             }
         }
