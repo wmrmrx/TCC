@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <array>
 #include <random>
 #include <set>
 #include <iostream>
