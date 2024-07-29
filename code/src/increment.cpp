@@ -18,14 +18,14 @@ struct Visitor
             throw std::runtime_error("Path is empty.");
         }
 
-        std::vector<int> colorsInPath(n, 0), verticesInPath(n, 0);
-        for (const auto &edge : path.edges)
+        std::vector<bool> colorsInPath(n, false), verticesInPath(n, false);
+        for (auto &edge : path.edges)
         {
-            colorsInPath[GG[edge].color]++;
+            colorsInPath[graph::color(GG, edge)] = true;
         }
-        for (const auto &vertex : path.vertices)
+        for (auto &vertex : path.vertices)
         {
-            verticesInPath[vertex]++;
+            verticesInPath[vertex] = true;
         }
         if (path.size() < ceil_div((uint64_t)n, uint64_t(2)))
         {
@@ -187,11 +187,6 @@ struct Visitor
             std::vector<size_t> I, _I;
             std::vector<size_t> inDegree(n), outDegree(n);
             std::vector<std::vector<graph::Vertex>> incomingNeighborhood(n);
-
-            auto getEdgeColor = [&](graph::Edge edge) -> int
-            {
-                return GG[edge].color;
-            };
 
             // aqui vamos achar os indices dos vertice no ciclo que ligam com y
             for (size_t i = 0; i < cycle_sz; i++)
@@ -372,7 +367,7 @@ struct Visitor
                         for (size_t j = 0; j < i; j++)
                             finalEdges.push_back(newEdges[j]);
                         {
-                            auto [_, edge] = graph::checkEdge(newVertices[i], newVertices.back(), getEdgeColor(newEdges[i]), GG);
+                            auto [_, edge] = graph::checkEdge(newVertices[i], newVertices.back(), graph::color(GG, newEdges[i]), GG);
                             assert(_);
                             finalEdges.push_back(edge);
                         }
@@ -467,11 +462,14 @@ struct Visitor
         }
         else
         {
+            // TODO: Ajeitar bug dentro desses fors. Ele adicionar um ciclo em que as duas ultimas arestas
+            // tem a mesma cor
             for (size_t i : {miss1, miss2})
                 for (size_t u = 0; u < n; u++)
                     if (not vertices_in_cycle[u])
                         for (const auto &u_edge : boost::make_iterator_range(boost::out_edges(u, G[i])))
                         {
+                            assert(boost::source(u_edge, G[i]) == u);
                             auto v = boost::target(u_edge, G[i]);
                             if (vertices_in_cycle[v])
                                 continue;

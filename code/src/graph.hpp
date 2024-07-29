@@ -42,6 +42,8 @@ namespace graph
 
     using graphPointer = std::shared_ptr<Graph>;
 
+    size_t color(const Graph &GG, Edge &edge);
+
     // TODO: otimizar usando referencia de edges de G[i] para GG
     std::pair<bool, graph::Edge> checkEdge(int u, int v, size_t color, const Graph &GG);
 

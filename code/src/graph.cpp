@@ -1,4 +1,5 @@
 #include "graph.hpp"
+#include <iostream>
 
 namespace graph
 {
@@ -6,6 +7,10 @@ namespace graph
   BundledEdge::BundledEdge(size_t _color) : color(_color) {}
 
   BundledEdge2::BundledEdge2(Edge _id) : id(_id) {}
+
+  size_t color (const Graph &GG, Edge &edge) {
+    return GG[edge].color;
+  }
 
   // TODO: otimizar usando referencia de edges de G[i] para GG
   std::pair<bool, graph::Edge> checkEdge(int u, int v, size_t color, const Graph &GG)

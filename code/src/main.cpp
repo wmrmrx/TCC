@@ -76,9 +76,27 @@ graph::Cycle brute_force(const graph::Instance& instance)
 
 void print_cycle(const graph::Cycle& cycle)
 {
-  std::cout << cycle.size() << '\n';
+  std::cout << "CYCLE SIZE: " << cycle.size() << '\n';
   for (size_t i = 0; i < cycle.size(); i++) {
-    std::cout << cycle.vertices[i] + 1 << ' ' << cycle.vertices[(i + 1) % cycle.size()] + 1 << ' ' << cycle.edges[i] << ' ' << (*cycle.G)[cycle.edges[i]].color << '\n';
+    std::cout << cycle.vertices[i] + 1 << ' ' << cycle.vertices[(i + 1) % cycle.size()] + 1 << ' ' << cycle.edges[i] << ' ' << (*cycle.G)[cycle.edges[i]].color << std::endl;
+  }
+}
+
+void print_path(const graph::Path& path) {
+  std::cout << "PATH SIZE: " << path.size() << '\n';
+  for (size_t i = 0; i < path.size(); i++) {
+    std::cout << path.vertices[i] + 1 << ' ' << path.vertices[i + 1] + 1 << ' ' << path.edges[i] << ' ' << (*path.G)[path.edges[i]].color << std::endl;
+  }
+}
+
+void print_object (std::variant<graph::Cycle, graph::Path> object) {
+  if (std::holds_alternative<graph::Cycle>(object)) {
+    auto cycle = std::get<graph::Cycle>(object);
+    print_cycle(cycle);
+  }
+  else {
+    auto path = std::get<graph::Path>(object);
+    print_path(path);
   }
 }
 
@@ -102,8 +120,8 @@ int main()
         if (cycle.size() == n - 1) break;
       }
       object = increment({GG, G}, object);
+      print_object(object);
     }
-    print_cycle(std::get<graph::Cycle>(object));
   }
 
   return EXIT_SUCCESS;
