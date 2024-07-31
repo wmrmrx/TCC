@@ -489,11 +489,11 @@ struct Visitor
                                 std::rotate(edges.begin(), edges.begin() + (w_id + 1), edges.end());
                                 edges.pop_back();
                                 graph::Path path(cycle.G);
-                                path.vertices = vertices;
-                                path.edges = edges;
-                                path.push_back(v, v_edge);
-                                path.push_back(u, u_edge);
-                                return path; // path of length l + 1
+				vertices.push_back(v);
+				edges.push_back(v_edge);
+				vertices.push_back(u);
+				edges.push_back(u_edge);
+                                return graph::Path(cycle.G, vertices, edges); // path of length l + 1
                             }
                         }
             // now, for every vertex not u in the cycle, all edges of colors miss1 and miss2 incident to u
