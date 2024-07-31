@@ -141,13 +141,14 @@ struct Visitor
             throw std::runtime_error("Every cycle must have at least 3 vertices");
         }
         std::vector<bool> colors_in_cycle(n), vertices_in_cycle(n);
+        for (auto &e : cycle.edges)
+            colors_in_cycle[GG[e].color] = true;
         int miss1 = 0, miss2 = n - 1;
         while (colors_in_cycle[miss1])
             miss1++;
         while (colors_in_cycle[miss2])
             miss2--;
-        for (auto &e : cycle.edges)
-            colors_in_cycle[GG[e].color] = true;
+	assert(miss1 < miss2);
 
         for (auto &v : cycle.vertices)
             vertices_in_cycle[v] = true;
@@ -473,10 +474,11 @@ struct Visitor
                             auto v = boost::target(u_edge, G[i]);
                             if (vertices_in_cycle[v])
                                 continue;
-                            // uv is an edge of color i outside disjoint with the cycle
-                            for (const auto &v_edge : boost::make_iterator_range(boost::out_edges(v, G[i])))
+                            // uv is an edge of color j outside disjoint with the cycle
+			    size_t j = i == miss1 ? miss2 : miss1;
+                            for (const auto &v_edge : boost::make_iterator_range(boost::out_edges(v, G[j])))
                             {
-                                auto w = boost::target(v_edge, G[i]);
+                                auto w = boost::target(v_edge, G[j]);
                                 if (not vertices_in_cycle[w])
                                     continue;
                                 // "append" the path uvw to the cycle, generating a path of size l + 1
@@ -490,9 +492,9 @@ struct Visitor
                                 edges.pop_back();
                                 graph::Path path(cycle.G);
 				vertices.push_back(v);
-				edges.push_back(v_edge);
+				edges.push_back(graph::checkEdge(w, v, j, GG).second);
 				vertices.push_back(u);
-				edges.push_back(u_edge);
+				edges.push_back(graph::checkEdge(v, u, i, GG).second);
                                 return graph::Path(cycle.G, vertices, edges); // path of length l + 1
                             }
                         }
