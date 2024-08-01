@@ -41,12 +41,11 @@ namespace graph
     typedef boost::graph_traits<Graph2>::edge_descriptor Edge2;
 
     using graphPointer = std::shared_ptr<Graph>;
-    using Instance = std::pair<graphPointer, std::vector<Graph2>>;
 
     size_t color(const Graph &GG, Edge &edge);
 
     // TODO: otimizar usando referencia de edges de G[i] para GG
-    std::pair<bool, graph::Edge> checkEdge(int u, int v, size_t color, const Instance& I);
+    std::pair<bool, graph::Edge> checkEdge(int u, int v, size_t color, const Graph &GG);
 
     struct Path
     {
@@ -79,5 +78,7 @@ namespace graph
 
         size_t size() const;
     };
+
+    using Instance = std::pair<graphPointer, std::vector<Graph2>>;
 }
 #endif

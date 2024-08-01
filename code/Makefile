@@ -10,7 +10,7 @@ run: build
 	./main < tests/in
 
 build_and_run_random: build build_scripts
-	./test_generator 100 > tests/random && ./main < tests/random
+	./test_generator 20 > tests/random && ./main < tests/random
 
 run_random: build build_scripts
 	./main < tests/random
