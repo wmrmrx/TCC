@@ -63,7 +63,7 @@ graph::Cycle brute_force(const graph::Instance& instance)
     for (size_t i = 0; i < n; i++) {
       size_t u = vertices[i], v = vertices[(i + 1) % n];
       size_t color = colors[i];
-      auto [exists, edge] = graph::checkEdge(u, v, color, *GG);
+      auto [exists, edge] = graph::checkEdge(u, v, color, instance);
       if (!exists) break;
       edges.push_back(edge);
     }
@@ -117,11 +117,12 @@ int main()
     while (true) {
       if (std::holds_alternative<graph::Cycle>(object)) {
         auto cycle = std::get<graph::Cycle>(object);
-        if (cycle.size() == n - 1) break;
+        if (cycle.size() == n) break;
       }
       object = increment({GG, G}, object);
-      print_object(object);
+      // print_object(object);
     }
+    print_object(object);
   }
 
   return EXIT_SUCCESS;
