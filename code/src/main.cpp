@@ -117,11 +117,11 @@ int main()
     while (true) {
       if (std::holds_alternative<graph::Cycle>(object)) {
         auto cycle = std::get<graph::Cycle>(object);
-        if (cycle.size() == n - 1) break;
+        if (cycle.size() == n) break;
       }
       object = increment({GG, G}, object);
-      print_object(object);
     }
+    print_object(object);
   }
 
   return EXIT_SUCCESS;
