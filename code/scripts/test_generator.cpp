@@ -2,9 +2,10 @@
 #include <array>
 #include <random>
 #include <set>
-#include <iostream>
+#include <iostream>  
+#include <chrono>
 
-std::mt19937 rng(10);
+std::mt19937 rng((int) std::chrono::steady_clock::now().time_since_epoch().count());
 
 std::vector<std::pair<int, int>> generate_edges(int n)
 {

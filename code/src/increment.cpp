@@ -95,7 +95,6 @@ struct Visitor
                         return graph::Cycle(instance.first, vertices, edges);
                     }
                 }
-
             for (size_t i = 1; i < path.vertices.size() - 1; i++)
             {
                 int u = path.vertices[i], v = path.vertices[i + 1];
@@ -115,7 +114,7 @@ struct Visitor
                     }
                     vertices.push_back(y);
                     edges.push_back(edgeY);
-                    for (size_t j = path.vertices.size() - 1; j > i; j--)
+                    for (size_t j = path.vertices.size() - 1; j > i + 1; j--)
                     {
                         vertices.push_back(path.vertices[j - 1]);
                         edges.push_back(path.edges[j - 1]);
@@ -143,7 +142,7 @@ struct Visitor
         std::vector<bool> colors_in_cycle(n), vertices_in_cycle(n);
         for (auto &e : cycle.edges)
             colors_in_cycle[GG[e].color] = true;
-        int miss1 = 0, miss2 = n - 1;
+        size_t miss1 = 0, miss2 = n - 1;
         while (colors_in_cycle[miss1])
             miss1++;
         while (colors_in_cycle[miss2])
@@ -475,7 +474,7 @@ struct Visitor
                             if (vertices_in_cycle[v])
                                 continue;
                             // uv is an edge of color j outside disjoint with the cycle
-			    size_t j = i == miss1 ? miss2 : miss1;
+			                size_t j = i == miss1 ? miss2 : miss1;
                             for (const auto &v_edge : boost::make_iterator_range(boost::out_edges(v, G[j])))
                             {
                                 auto w = boost::target(v_edge, G[j]);

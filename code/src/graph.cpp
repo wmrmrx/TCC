@@ -35,13 +35,13 @@ namespace graph
     std::vector<int> usedVertex(G->m_vertices.size(), 0), usedColors(G->m_vertices.size(), 0);
     for (const auto &vertex : vertices) {
       if (usedVertex[vertex] > 0) {
-        throw std::runtime_error("Cycle has repeated vertices.");
+        throw std::runtime_error("Path has repeated vertices.");
       }
       usedVertex[vertex]++;
     }
     for (const auto &edge : edges) {
       if (usedColors[(*G)[edge].color] > 0) {
-        throw std::runtime_error("Cycle has repeated colors.");
+        throw std::runtime_error("Path has repeated colors.");
       }
       usedColors[(*G)[edge].color]++;
     }
