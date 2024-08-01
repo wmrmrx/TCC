@@ -15,11 +15,15 @@ build_and_run_random: build build_scripts
 run_random: build build_scripts
 	./main < tests/random
 
-build_scripts:
+test_generator:
 	$(COMPILE.cpp) -o test_generator scripts/test_generator.cpp
 
-build:
+build_scripts: test_generator
+
+main:
 	$(COMPILE.cpp) -o main src/*.cpp
+
+build: main
 
 clean: 
 	rm -f main
