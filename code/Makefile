@@ -20,7 +20,7 @@ test_generator:
 
 build_scripts: test_generator
 
-main:
+main: src/*.cpp src/*.hpp
 	$(COMPILE.cpp) -o main src/*.cpp
 
 build: main
