@@ -27,7 +27,7 @@ struct Visitor
         {
             verticesInPath[vertex] = true;
         }
-        if (path.size() < ceil_div((uint64_t)n, uint64_t(2)))
+        if (path.size() < ceil_div((uint64_t)n, uint64_t(2)) + 1)
         {
             // esse caso eh so adicionar uma cor que nao tem ainda
             auto vertices = path.vertices;
@@ -48,7 +48,7 @@ struct Visitor
                             }
                         }
                 }
-            std::runtime_error("Should not reach here. Small path should return a new path.");
+            throw std::runtime_error("Should not reach here. Small path should return a new path.");
         }
         else
         {
@@ -154,7 +154,7 @@ struct Visitor
 
         if (cycle_size < ceil_div((uint64_t)n, uint64_t(2)) + 1)
         {
-            std::runtime_error("Should not reach here. Should never get small cycle.");
+            throw std::runtime_error("Should not reach here. Should never get small cycle.");
         }
         else if (cycle_size == n - 1)
         {
@@ -381,7 +381,7 @@ struct Visitor
                         return graph::Cycle(cycle.G, finalVertices, finalEdges);
                     }
                 }
-                std::runtime_error("Should not reach here. Did not find answer :(");
+                throw std::runtime_error("Should not reach here. Did not find answer :(");
             }
             else
             {
@@ -457,13 +457,11 @@ struct Visitor
                     }
                     return graph::Cycle(instance.first, new_vertices, new_edges);
                 }
-                std::runtime_error("Not found");
+                throw std::runtime_error("Not found");
             }
         }
         else
         {
-            // TODO: Ajeitar bug dentro desses fors. Ele adicionar um ciclo em que as duas ultimas arestas
-            // tem a mesma cor
             for (size_t i : {miss1, miss2})
                 for (size_t u = 0; u < n; u++)
                     if (not vertices_in_cycle[u])
@@ -490,10 +488,10 @@ struct Visitor
                                 std::rotate(edges.begin(), edges.begin() + (w_id + 1), edges.end());
                                 edges.pop_back();
                                 graph::Path path(cycle.G);
-				vertices.push_back(v);
-				edges.push_back(graph::checkEdge(w, v, j, GG).second);
-				vertices.push_back(u);
-				edges.push_back(graph::checkEdge(v, u, i, GG).second);
+                                vertices.push_back(v);
+                                edges.push_back(graph::checkEdge(w, v, j, GG).second);
+                                vertices.push_back(u);
+                                edges.push_back(graph::checkEdge(v, u, i, GG).second);
                                 return graph::Path(cycle.G, vertices, edges); // path of length l + 1
                             }
                         }
@@ -526,7 +524,7 @@ struct Visitor
                 }
             throw std::runtime_error("Unreachable code!");
         }
-        throw std::runtime_error("Unreachable code!");
+        throw std::runtime_error("Unreachable code!!!");
     }
 };
 
