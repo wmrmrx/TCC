@@ -3,6 +3,7 @@
 #define BOOST_ALLOW_DEPRECATED_HEADERS // silence warnings
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/adjacency_matrix.hpp>
 
 namespace graph
 {
@@ -17,7 +18,7 @@ namespace graph
         BundledEdge(size_t _color);
     };
 
-    typedef boost::adjacency_list<boost::vecS,
+    typedef boost::adjacency_matrix<boost::vecS,
                                   boost::vecS,
                                   boost::undirectedS,
                                   BundledVertex,
