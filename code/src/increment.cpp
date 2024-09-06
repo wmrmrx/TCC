@@ -39,7 +39,7 @@ struct Visitor
                     for (size_t i = 0; i < n; i++)
                         if (verticesInPath[i] == 0)
                         {
-                            auto [b, edge] = graph::checkEdge(finalVertex, i, color, GG);
+                            auto [b, edge] = graph::checkEdge(finalVertex, i, color, instance);
                             if (b)
                             {
                                 vertices.push_back(i);
@@ -71,11 +71,12 @@ struct Visitor
             // embaixo de (1) no pdf
             for (auto c : {cx, cy})
             {
-                auto [b, edge] = graph::checkEdge(x, y, c, GG);
+                auto [b, edge] = graph::checkEdge(x, y, c, instance);
                 if (b)
                 {
                     auto vertices = path.vertices;
-                    auto edges = path.edges; edges.push_back(edge);
+                    auto edges = path.edges;
+                    edges.push_back(edge);
                     return graph::Cycle(instance.first, vertices, edges);
                 }
             }
@@ -83,13 +84,14 @@ struct Visitor
             for (size_t i = 0; i < n; i++)
                 if (!verticesInPath[i])
                 {
-                    auto [bX, edgeX] = graph::checkEdge(x, i, cx, GG);
-                    auto [bY, edgeY] = graph::checkEdge(y, i, cy, GG);
+                    auto [bX, edgeX] = graph::checkEdge(x, i, cx, instance);
+                    auto [bY, edgeY] = graph::checkEdge(y, i, cy, instance);
                     if (bX && bY)
                     {
-                        auto vertices = path.vertices; vertices.push_back(i);
-                        auto edges = path.edges; 
-                        
+                        auto vertices = path.vertices;
+                        vertices.push_back(i);
+                        auto edges = path.edges;
+
                         edges.push_back(edgeY);
                         edges.push_back(edgeX);
                         return graph::Cycle(instance.first, vertices, edges);
@@ -98,8 +100,8 @@ struct Visitor
             for (size_t i = 1; i < path.vertices.size() - 1; i++)
             {
                 int u = path.vertices[i], v = path.vertices[i + 1];
-                auto [bX, edgeX] = graph::checkEdge(x, v, cx, GG);
-                auto [bY, edgeY] = graph::checkEdge(u, y, cy, GG);
+                auto [bX, edgeX] = graph::checkEdge(x, v, cx, instance);
+                auto [bY, edgeY] = graph::checkEdge(u, y, cy, instance);
 
                 if (bX && bY)
                 {
@@ -110,7 +112,8 @@ struct Visitor
                     for (size_t j = 0; j <= i; j++)
                     {
                         vertices.push_back(path.vertices[j]);
-                        if (j) edges.push_back(path.edges[j - 1]);
+                        if (j)
+                            edges.push_back(path.edges[j - 1]);
                     }
                     vertices.push_back(y);
                     edges.push_back(edgeY);
@@ -234,8 +237,8 @@ struct Visitor
 
                 edges.pop_back();
 
-                auto [_, edge] = graph::checkEdge(vertices.back(), y, posColorCic[i], GG);
-                auto [__, edge2] = graph::checkEdge(y, vertices[0], cy, GG);
+                auto [_, edge] = graph::checkEdge(vertices.back(), y, posColorCic[i], instance);
+                auto [__, edge2] = graph::checkEdge(y, vertices[0], cy, instance);
 
                 assert(_ && __);
 
@@ -315,8 +318,8 @@ struct Visitor
                         for (size_t j = 1; j < i; j++)
                             newEdges.push_back(edges[j]);
                         {
-                            auto [_, edge] = graph::checkEdge(vertices[i], y, posColorCic[i], GG);
-                            auto [__, edge2] = graph::checkEdge(y, vertices[0], cy, GG);
+                            auto [_, edge] = graph::checkEdge(vertices[i], y, posColorCic[i], instance);
+                            auto [__, edge2] = graph::checkEdge(y, vertices[0], cy, instance);
                             assert(_ && __);
                             newEdges.push_back(edge);
                             newEdges.push_back(edge2);
@@ -329,7 +332,7 @@ struct Visitor
                 }
                 {
                     // esse eh o caso em que so fecha o ciclo bonitinho
-                    auto [found, edge] = graph::checkEdge(newVertices[0], newVertices.back(), posColorCic[J], GG);
+                    auto [found, edge] = graph::checkEdge(newVertices[0], newVertices.back(), posColorCic[J], instance);
                     if (found)
                     {
                         newEdges.push_back(edge);
@@ -367,14 +370,14 @@ struct Visitor
                         for (size_t j = 0; j < i; j++)
                             finalEdges.push_back(newEdges[j]);
                         {
-                            auto [_, edge] = graph::checkEdge(newVertices[i], newVertices.back(), graph::color(GG, newEdges[i]), GG);
+                            auto [_, edge] = graph::checkEdge(newVertices[i], newVertices.back(), graph::color(GG, newEdges[i]), instance);
                             assert(_);
                             finalEdges.push_back(edge);
                         }
                         for (size_t j = n - 2; j > i; j--)
                             finalEdges.push_back(newEdges[j]);
                         {
-                            auto [_, edge] = graph::checkEdge(newVertices[i + 1], newVertices[0], removedColor, GG);
+                            auto [_, edge] = graph::checkEdge(newVertices[i + 1], newVertices[0], removedColor, instance);
                             assert(_);
                             finalEdges.push_back(edge);
                         }
@@ -389,7 +392,7 @@ struct Visitor
                 {
                     for (size_t j = 0; j < n - 1; j++)
                     {
-                        auto [has_edge, edge] = graph::checkEdge(y, cycle.vertices[j], cy, GG);
+                        auto [has_edge, edge] = graph::checkEdge(y, cycle.vertices[j], cy, instance);
                         if (not has_edge or inDegree[cycle.vertices[j]] != n / 2 - 1)
                             continue;
                         auto new_vertices = cycle.vertices;
@@ -410,7 +413,7 @@ struct Visitor
                     assert(GG[edge].color != cj);
                 auto x = Q.vertices;
                 {
-                    auto [has_edge, edge] = checkEdge(x[n - 2], x[0], cj, GG);
+                    auto [has_edge, edge] = checkEdge(x[n - 2], x[0], cj, instance);
                     if (has_edge)
                     {
                         auto edges = Q.edges;
@@ -421,7 +424,7 @@ struct Visitor
                 std::vector<std::pair<graph::Vertex, graph::Edge>> J1(n);
                 for (size_t i = 0; i < n - 2; i++)
                 {
-                    auto [has_edge, edge] = checkEdge(x[0], x[i + 1], cj, GG);
+                    auto [has_edge, edge] = checkEdge(x[0], x[i + 1], cj, instance);
                     J1.emplace_back(i, edge);
                 }
                 std::vector<size_t> position(n);
@@ -435,7 +438,7 @@ struct Visitor
                 for (auto [k, edge_from_first] : J1)
                 {
                     size_t color = GG[Q.edges[k]].color;
-                    auto [has_edge, edge_from_last] = graph::checkEdge(x[n - 1], x[k], color, GG);
+                    auto [has_edge, edge_from_last] = graph::checkEdge(x[n - 1], x[k], color, instance);
                     if (not has_edge)
                         continue;
                     std::vector<graph::Vertex> new_vertices;
@@ -451,7 +454,7 @@ struct Visitor
                     new_edges.push_back(edge_from_last);
                     for (size_t i = k; i > 0; i--)
                     {
-                        auto [_has_edge, edge] = graph::checkEdge(x[i], x[i - 1], GG[Q.edges[i - 1]].color, GG);
+                        auto [_has_edge, edge] = graph::checkEdge(x[i], x[i - 1], GG[Q.edges[i - 1]].color, instance);
                         assert(_has_edge);
                         new_edges.push_back(edge);
                     }
@@ -472,7 +475,7 @@ struct Visitor
                             if (vertices_in_cycle[v])
                                 continue;
                             // uv is an edge of color j outside disjoint with the cycle
-			                size_t j = i == miss1 ? miss2 : miss1;
+                            size_t j = i == miss1 ? miss2 : miss1;
                             for (const auto &v_edge : boost::make_iterator_range(boost::out_edges(v, G[j])))
                             {
                                 auto w = boost::target(v_edge, G[j]);
@@ -489,9 +492,9 @@ struct Visitor
                                 edges.pop_back();
                                 graph::Path path(cycle.G);
                                 vertices.push_back(v);
-                                edges.push_back(graph::checkEdge(w, v, j, GG).second);
+                                edges.push_back(graph::checkEdge(w, v, j, instance).second);
                                 vertices.push_back(u);
-                                edges.push_back(graph::checkEdge(v, u, i, GG).second);
+                                edges.push_back(graph::checkEdge(v, u, i, instance).second);
                                 return graph::Path(cycle.G, vertices, edges); // path of length l + 1
                             }
                         }
@@ -507,8 +510,8 @@ struct Visitor
                         auto x1 = vertices[i], x2 = vertices[(i + 1) % n];
                         for (auto [c1, c2] : {std::pair(miss1, miss2), std::pair(miss2, miss1)})
                         {
-                            auto [exists1, edge1] = graph::checkEdge(u, x1, c1, GG);
-                            auto [exists2, edge2] = graph::checkEdge(u, x2, c2, GG);
+                            auto [exists1, edge1] = graph::checkEdge(u, x1, c1, instance);
+                            auto [exists2, edge2] = graph::checkEdge(u, x2, c2, instance);
                             if (exists1 and exists2)
                             {
                                 std::rotate(vertices.begin(), vertices.begin() + (i + 1), vertices.end());

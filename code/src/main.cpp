@@ -32,7 +32,7 @@ graph::Instance read_graph(std::istream& is)
     auto [a, _1] = boost::add_edge(u, v, GG);
     GG[a].color = color;
 
-    auto [b, _2] = boost::add_edge(u, v, GG);
+    auto [b, _2] = boost::add_edge(u, v, G[color]);
     G[color][b].id = a;
   }
 
@@ -55,19 +55,33 @@ graph::Cycle brute_force(const graph::Instance& instance)
   std::vector<graph::Vertex> vertices(n);
   std::iota(vertices.begin(), vertices.end(), 0);
   do {
-    std::vector<graph::Edge> edges;
+    std::cout << "TRYING: ";
+    for (size_t i = 0; i < n; i++) {
+      std::cout << vertices[i] + 1 << ' ';
+    }
+    std::cout << '\n';
+    
     std::vector<int> colors(n);
     std::iota(colors.begin(), colors.end(), 0);
-    for (size_t i = 0; i < n; i++) {
-      size_t u = vertices[i], v = vertices[(i + 1) % n];
-      size_t color = colors[i];
-      auto [exists, edge] = graph::checkEdge(u, v, color, *GG);
-      if (!exists) break;
-      edges.push_back(edge);
-    }
-    if (edges.size() == n) {
-      return graph::Cycle(GG, vertices, edges);
-    }
+    do {
+      std::cout << "COLORS: ";
+      for (size_t i = 0; i < n; i++) {
+        std::cout << colors[i] << ' ';
+      }
+      std::cout << '\n';
+
+      std::vector<graph::Edge> edges;
+      for (size_t i = 0; i < n; i++) {
+        size_t u = vertices[i], v = vertices[(i + 1) % n];
+        size_t color = colors[i];
+        auto [exists, edge] = graph::checkEdge(u, v, color, instance);
+        if (!exists) break;
+        edges.push_back(edge);
+      }
+      if (edges.size() == n) {
+        return graph::Cycle(GG, vertices, edges);
+      }
+    } while (std::next_permutation(colors.begin(), colors.end()));
   } while (std::next_permutation(vertices.begin(), vertices.end()));
   throw std::runtime_error("No cycle found. Small test case.");
 }
@@ -100,27 +114,30 @@ void print_object (std::variant<graph::Cycle, graph::Path> object) {
 
 int main()
 {
-  auto [GG, G] = read_graph(std::cin);
+  auto instance = read_graph(std::cin);
+  auto [GG, G] = instance;
 
   size_t n = num_vertices(*GG);
+  
+  auto [exists, edge] = graph::checkEdge(0, 2, 2, instance);
 
-  if (n <= 6) {
-    auto cycle = brute_force({GG, G});
-    print_cycle(cycle);
-  }
-  else {
-    graph::Path path(GG);
-    path.push_back(0, graph::Edge());
-    auto object = increment({GG, G}, path);
-    while (true) {
-      if (std::holds_alternative<graph::Cycle>(object)) {
-        auto cycle = std::get<graph::Cycle>(object);
-        if (cycle.size() == n) break;
-      }
-      object = increment({GG, G}, object);
-    }
-    print_object(object);
-  }
+  // if (n <= 6) {
+  //   auto cycle = brute_force({GG, G});
+  //   print_cycle(cycle);
+  // }
+  // else {
+  //   graph::Path path(GG);
+  //   path.push_back(0, graph::Edge());
+  //   auto object = increment({GG, G}, path);
+  //   while (true) {
+  //     if (std::holds_alternative<graph::Cycle>(object)) {
+  //       auto cycle = std::get<graph::Cycle>(object);
+  //       if (cycle.size() == n) break;
+  //     }
+  //     object = increment({GG, G}, object);
+  //   }
+  //   print_object(object);
+  // }
 
-  return EXIT_SUCCESS;
+  // return EXIT_SUCCESS;
 }

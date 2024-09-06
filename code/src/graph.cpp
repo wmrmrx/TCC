@@ -13,20 +13,14 @@ namespace graph
   }
 
   // TODO: otimizar usando referencia de edges de G[i] para GG
-  std::pair<bool, graph::Edge> checkEdge(int u, int v, size_t color, const Graph &GG)
+  std::pair<bool, graph::Edge> checkEdge(int u, int v, size_t color, const Instance &instance)
   {
-    for (const auto &edge : boost::make_iterator_range(boost::out_edges(u, GG)))
-    {
-      if (boost::source(edge, GG) == (size_t) u && boost::target(edge, GG) == (size_t) v && GG[edge].color == color)
-      {
-        return {true, edge};
-      }
-      if (boost::source(edge, GG) == (size_t) v && boost::target(edge, GG) == (size_t) u && GG[edge].color == color)
-      {
-        return {true, edge};
-      }
-    }
-    return {false, graph::Edge()};
+    auto &[GG, G] = instance;
+    auto ans = edge(u, v, G[color]);
+    if (!ans.second) return {false, Edge()};
+    auto EDGE = G[color][ans.first].id;
+    assert((*GG)[EDGE].color == color);
+    return {true, Edge()};
   };
 
   Path::Path(graphPointer _G) : G(_G) {}
