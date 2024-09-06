@@ -6,7 +6,7 @@ namespace graph
 	BundledEdge::BundledEdge(): color(std::numeric_limits<size_t>::max()) {}
   BundledEdge::BundledEdge(size_t _color) : color(_color) {}
 
-  BundledEdge2::BundledEdge2(Edge _id) : id(_id) {}
+  BundledEdge2::BundledEdge2(Edge *_id) : id(_id) {}
 
   size_t color (const Graph &GG, Edge &edge) {
     return GG[edge].color;
@@ -18,8 +18,11 @@ namespace graph
     auto &[GG, G] = instance;
     auto ans = edge(u, v, G[color]);
     if (!ans.second) return {false, Edge()};
-    auto EDGE = G[color][ans.first].id;
-    assert((*GG)[EDGE].color == color);
+    for (auto edge : boost::make_iterator_range(boost::out_edges(u, *GG))) {
+      if (target(edge, *GG) == v && (*GG)[edge].color == color) {
+        return {true, edge};
+      }
+    }
     return {true, Edge()};
   };
 

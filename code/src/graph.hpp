@@ -18,7 +18,9 @@ namespace graph
         BundledEdge(size_t _color);
     };
 
-    typedef boost::adjacency_matrix<boost::undirectedS,
+    typedef boost::adjacency_list<boost::vecS,
+                                  boost::vecS,
+                                  boost::undirectedS,
                                   BundledVertex,
                                   BundledEdge>
         Graph;
@@ -27,12 +29,10 @@ namespace graph
 
     struct BundledEdge2
     {
-        Edge id; // unique identifier
-        BundledEdge2(Edge _id = Edge());
+        Edge *id; // unique identifier
+        BundledEdge2(Edge *_id = nullptr);
     };
-    typedef boost::adjacency_list<boost::vecS,
-                                  boost::vecS,
-                                  boost::undirectedS,
+    typedef boost::adjacency_matrix<boost::undirectedS,
                                   BundledVertex,
                                   BundledEdge2>
         Graph2;
