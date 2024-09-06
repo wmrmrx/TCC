@@ -32,7 +32,7 @@ namespace graph
   Path::Path(graphPointer _G) : G(_G) {}
   Path::Path(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges) : G(_G), vertices(_vertices), edges(_edges) {
     assert(vertices.size() == edges.size() + 1);
-    std::vector<int> usedVertex(G->m_vertices.size(), 0), usedColors(G->m_vertices.size(), 0);
+    std::vector<int> usedVertex(boost::num_vertices(*G), 0), usedColors(boost::num_vertices(*G), 0);
     for (const auto &vertex : vertices) {
       if (usedVertex[vertex] > 0) {
         throw std::runtime_error("Path has repeated vertices.");
@@ -93,7 +93,7 @@ namespace graph
 
   Cycle::Cycle(graphPointer _G, const std::vector<Vertex> &_vertices, const std::vector<Edge> &_edges) : G(_G), vertices(_vertices), edges(_edges) {
     assert(vertices.size() == edges.size());
-    std::vector<int> usedVertex(G->m_vertices.size(), 0), usedColors(G->m_vertices.size(), 0);
+    std::vector<int> usedVertex(boost::num_vertices(*G), 0), usedColors(boost::num_vertices(*G), 0);
     for (const auto &vertex : vertices) {
       if (usedVertex[vertex] > 0) {
         throw std::runtime_error("Cycle has repeated vertices.");

@@ -18,9 +18,7 @@ namespace graph
         BundledEdge(size_t _color);
     };
 
-    typedef boost::adjacency_matrix<boost::vecS,
-                                  boost::vecS,
-                                  boost::undirectedS,
+    typedef boost::adjacency_matrix<boost::undirectedS,
                                   BundledVertex,
                                   BundledEdge>
         Graph;
