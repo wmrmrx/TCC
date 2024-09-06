@@ -147,7 +147,7 @@ struct Visitor
             miss1++;
         while (colors_in_cycle[miss2])
             miss2--;
-	    assert(miss1 < miss2 || cycle_size == n - 1);
+        assert(miss1 < miss2 || cycle_size == n - 1);
 
         for (auto &v : cycle.vertices)
             vertices_in_cycle[v] = true;

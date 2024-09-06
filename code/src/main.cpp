@@ -29,12 +29,10 @@ graph::Instance read_graph(std::istream& is)
   for (size_t i = 0; i < m; i++) {
     int u, v, color; is >> u >> v >> color;
     u--; v--; color--;
-    graph::Edge a;
-    std::tie(a, std::ignore) = boost::add_edge(u, v, GG);
+    auto [a, _1] = boost::add_edge(u, v, GG);
     GG[a].color = color;
 
-    graph::Edge b;
-    std::tie(b, std::ignore) = boost::add_edge(u, v, G[color]);
+    auto [b, _2] = boost::add_edge(u, v, GG);
     G[color][b].id = a;
   }
 
