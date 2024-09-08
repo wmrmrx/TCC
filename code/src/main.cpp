@@ -38,9 +38,10 @@ graph::Instance read_graph(std::istream &is)
         auto [a, _1] = boost::add_edge(u, v, GG);
         GG[a].color = color;
     }
-    auto [beg, end] =  boost::edges(GG);
+    auto GG_ptr = std::make_shared<graph::Graph>(move(GG));
+    auto [beg, end] =  boost::edges(*GG_ptr);
     for(auto it = beg; it != end; it++) {
-        size_t u = boost::source(*it, GG), v = boost::target(*it, GG), color = GG[*it].color;
+        size_t u = boost::source(*it, *GG_ptr), v = boost::target(*it, *GG_ptr), color = (*GG_ptr)[*it].color;
 
         auto [b, _] = boost::add_edge(u, v, G[color]);
         G[color][b].id = it;
@@ -57,7 +58,7 @@ graph::Instance read_graph(std::istream &is)
         }
     }
 
-    return {std::make_shared<graph::Graph>(GG), G};
+    return {GG_ptr, G};
 }
 
 graph::Cycle brute_force(const graph::Instance &instance)
