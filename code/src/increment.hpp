@@ -3,5 +3,5 @@
 #include "graph.hpp"
 
 // Given a Path
-std::variant<graph::Cycle, graph::Path> increment(const graph::Instance& instance, const std::variant<graph::Cycle, graph::Path>& state);
+std::variant<graph::Cycle, graph::Path> increment(const graph::Instance &instance, const std::variant<graph::Cycle, graph::Path> &state);
 #endif

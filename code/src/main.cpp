@@ -39,8 +39,9 @@ graph::Instance read_graph(std::istream &is)
         GG[a].color = color;
     }
     auto GG_ptr = std::make_shared<graph::Graph>(move(GG));
-    auto [beg, end] =  boost::edges(*GG_ptr);
-    for(auto it = beg; it != end; it++) {
+    auto [beg, end] = boost::edges(*GG_ptr);
+    for (auto it = beg; it != end; it++)
+    {
         size_t u = boost::source(*it, *GG_ptr), v = boost::target(*it, *GG_ptr), color = (*GG_ptr)[*it].color;
 
         auto [b, _] = boost::add_edge(u, v, G[color]);
@@ -132,25 +133,28 @@ int main()
 
     size_t n = num_vertices(*GG);
 
-    auto [edge, exists] = graph::checkEdge(0, 1, 1, instance);
-
-    // if (n <= 6) {
-    //   auto cycle = brute_force({GG, G});
-    //   print_cycle(cycle);
-    // }
-    // else {
-    //   graph::Path path(GG);
-    //   path.push_back(0, graph::Edge());
-    //   auto object = increment({GG, G}, path);
-    //   while (true) {
-    //     if (std::holds_alternative<graph::Cycle>(object)) {
-    //       auto cycle = std::get<graph::Cycle>(object);
-    //       if (cycle.size() == n) break;
-    //     }
-    //     object = increment({GG, G}, object);
-    //   }
-    //   print_object(object);
-    // }
+    if (n <= 6)
+    {
+        auto cycle = brute_force({GG, G});
+        print_cycle(cycle);
+    }
+    else
+    {
+        graph::Path path(GG);
+        path.push_back(0, graph::Edge());
+        auto object = increment({GG, G}, path);
+        while (true)
+        {
+            if (std::holds_alternative<graph::Cycle>(object))
+            {
+                auto cycle = std::get<graph::Cycle>(object);
+                if (cycle.size() == n)
+                    break;
+            }
+            object = increment({GG, G}, object);
+        }
+        print_object(object);
+    }
 
     return EXIT_SUCCESS;
 }

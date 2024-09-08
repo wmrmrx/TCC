@@ -14,7 +14,6 @@ namespace graph
         return GG[edge].color;
     }
 
-    // TODO: otimizar usando referencia de edges de G[i] para GG
     std::pair<bool, graph::Edge> checkEdge(int u, int v, size_t color, const Instance &instance)
     {
         auto &[GG, G] = instance;
@@ -22,18 +21,7 @@ namespace graph
         if (!ans.second)
             return {false, Edge()};
         auto EDGE = G[color][ans.first].id;
-        std::cout << "ANS: " << ans.first << std::endl;
-        std::cout << "EDGE: " << *EDGE << std::endl;
-        std::cout << "COLOR: " << (*GG)[*EDGE].color << std::endl;
         return {true, *EDGE};
-        for (auto edge : boost::make_iterator_range(boost::out_edges(u, *GG)))
-        {
-            if (target(edge, *GG) == v && (*GG)[edge].color == color)
-            {
-                return {true, edge};
-            }
-        }
-        throw std::runtime_error("Should not reach here. Edge not found on big graph.");
     };
 
     Path::Path(graphPointer _G) : G(_G) {}

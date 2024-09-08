@@ -14,7 +14,7 @@ namespace graph
     struct BundledEdge
     {
         size_t color; // color label
-	BundledEdge();
+        BundledEdge();
         BundledEdge(size_t _color);
     };
 
@@ -35,8 +35,8 @@ namespace graph
         BundledEdge2(EdgeIterator _id);
     };
     typedef boost::adjacency_matrix<boost::undirectedS,
-                                  BundledVertex,
-                                  BundledEdge2>
+                                    BundledVertex,
+                                    BundledEdge2>
         Graph2;
     typedef boost::graph_traits<Graph2>::vertex_descriptor Vertex2;
     typedef boost::graph_traits<Graph2>::edge_descriptor Edge2;
