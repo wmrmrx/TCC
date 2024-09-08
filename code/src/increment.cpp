@@ -30,8 +30,8 @@ struct Visitor
         if (path.size() < ceil_div((uint64_t)n, uint64_t(2)) + 1)
         {
             // esse caso eh so adicionar uma cor que nao tem ainda
-            auto vertices = path.vertices;
-            auto edges = path.edges;
+            auto &vertices = path.vertices;
+            auto &edges = path.edges;
             int finalVertex = path.back();
             for (size_t color = 0; color < n; color++)
                 if (colorsInPath[color] == 0)
