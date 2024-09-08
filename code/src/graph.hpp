@@ -29,8 +29,8 @@ namespace graph
 
     struct BundledEdge2
     {
-        Edge id; // unique identifier
-        BundledEdge2(Edge _id = Edge());
+        const Edge *id; // unique identifier
+        BundledEdge2(Edge *_id = nullptr);
     };
     typedef boost::adjacency_matrix<boost::undirectedS,
                                   BundledVertex,

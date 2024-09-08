@@ -1,7 +1,7 @@
-#include <cstdlib>              // for size_t, EXIT_SUCCESS, and EXIT_FAILURE
+#include <cstdlib> // for size_t, EXIT_SUCCESS, and EXIT_FAILURE
 
 #include <iostream>
-#include <tuple>                // for std::tie and std::ignore
+#include <tuple> // for std::tie and std::ignore
 #include <vector>
 #include <numeric>
 
@@ -17,31 +17,41 @@
 
 using boost::num_vertices;
 
-graph::Instance read_graph(std::istream& is)
+graph::Instance read_graph(std::istream &is)
 {
-  typename boost::graph_traits<graph::Graph>::vertices_size_type n; is >> n;
+  typename boost::graph_traits<graph::Graph>::vertices_size_type n;
+  is >> n;
 
-  graph::Graph GG (n);
-  std::vector<graph::Graph2> G (n, graph::Graph2(n));
+  graph::Graph GG(n);
+  std::vector<graph::Graph2> G(n, graph::Graph2(n));
 
-  size_t m; is >> m;
+  size_t m;
+  is >> m;
 
-  for (size_t i = 0; i < m; i++) {
-    int u, v, color; is >> u >> v >> color;
-    u--; v--; color--;
+  for (size_t i = 0; i < m; i++)
+  {
+    int u, v, color;
+    is >> u >> v >> color;
+    u--;
+    v--;
+    color--;
     auto [a, _1] = boost::add_edge(u, v, GG);
     GG[a].color = color;
   }
-  for (const auto& edge : boost::make_iterator_range(boost::edges(GG))) {
+  for (const auto &edge : boost::make_iterator_range(boost::edges(GG)))
+  {
     size_t u = boost::source(edge, GG), v = boost::target(edge, GG), color = GG[edge].color;
-    
+
     auto [b, _] = boost::add_edge(u, v, G[color]);
-    G[color][b].id = edge;
+    G[color][b].id = &edge;
   }
 
-  for (size_t i = 0; i < n; i++) {
-    for (const auto& vertex : boost::make_iterator_range(boost::vertices(G[i]))) {
-      if (boost::out_degree(vertex, G[i]) < ceil_div(num_vertices(G[i]), 2ull)) {
+  for (size_t i = 0; i < n; i++)
+  {
+    for (const auto &vertex : boost::make_iterator_range(boost::vertices(G[i])))
+    {
+      if (boost::out_degree(vertex, G[i]) < ceil_div(num_vertices(G[i]), 2ull))
+      {
         throw std::runtime_error("Input graph is not valid.");
       }
     }
@@ -50,26 +60,31 @@ graph::Instance read_graph(std::istream& is)
   return {std::make_shared<graph::Graph>(GG), G};
 }
 
-graph::Cycle brute_force(const graph::Instance& instance)
+graph::Cycle brute_force(const graph::Instance &instance)
 {
   auto [GG, G] = instance;
   size_t n = num_vertices(*GG);
 
   std::vector<graph::Vertex> vertices(n);
   std::iota(vertices.begin(), vertices.end(), 0);
-  do {
+  do
+  {
     std::vector<int> colors(n);
     std::iota(colors.begin(), colors.end(), 0);
-    do {
+    do
+    {
       std::vector<graph::Edge> edges;
-      for (size_t i = 0; i < n; i++) {
+      for (size_t i = 0; i < n; i++)
+      {
         size_t u = vertices[i], v = vertices[(i + 1) % n];
         size_t color = colors[i];
         auto [exists, edge] = graph::checkEdge(u, v, color, instance);
-        if (!exists) break;
+        if (!exists)
+          break;
         edges.push_back(edge);
       }
-      if (edges.size() == n) {
+      if (edges.size() == n)
+      {
         return graph::Cycle(GG, vertices, edges);
       }
     } while (std::next_permutation(colors.begin(), colors.end()));
@@ -77,27 +92,33 @@ graph::Cycle brute_force(const graph::Instance& instance)
   throw std::runtime_error("No cycle found. Small test case.");
 }
 
-void print_cycle(const graph::Cycle& cycle)
+void print_cycle(const graph::Cycle &cycle)
 {
   std::cout << "CYCLE SIZE: " << cycle.size() << '\n';
-  for (size_t i = 0; i < cycle.size(); i++) {
+  for (size_t i = 0; i < cycle.size(); i++)
+  {
     std::cout << cycle.vertices[i] + 1 << ' ' << cycle.vertices[(i + 1) % cycle.size()] + 1 << ' ' << cycle.edges[i] << ' ' << (*cycle.G)[cycle.edges[i]].color << std::endl;
   }
 }
 
-void print_path(const graph::Path& path) {
+void print_path(const graph::Path &path)
+{
   std::cout << "PATH SIZE: " << path.size() << '\n';
-  for (size_t i = 0; i < path.size(); i++) {
+  for (size_t i = 0; i < path.size(); i++)
+  {
     std::cout << path.vertices[i] + 1 << ' ' << path.vertices[i + 1] + 1 << ' ' << path.edges[i] << ' ' << (*path.G)[path.edges[i]].color << std::endl;
   }
 }
 
-void print_object (std::variant<graph::Cycle, graph::Path> object) {
-  if (std::holds_alternative<graph::Cycle>(object)) {
+void print_object(std::variant<graph::Cycle, graph::Path> object)
+{
+  if (std::holds_alternative<graph::Cycle>(object))
+  {
     auto cycle = std::get<graph::Cycle>(object);
     print_cycle(cycle);
   }
-  else {
+  else
+  {
     auto path = std::get<graph::Path>(object);
     print_path(path);
   }
