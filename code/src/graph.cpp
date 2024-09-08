@@ -6,7 +6,8 @@ namespace graph
     BundledEdge::BundledEdge() : color(std::numeric_limits<size_t>::max()) {}
     BundledEdge::BundledEdge(size_t _color) : color(_color) {}
 
-    BundledEdge2::BundledEdge2(Edge *_id) : id(_id) {}
+    BundledEdge2::BundledEdge2() : id() {}
+    BundledEdge2::BundledEdge2(EdgeIterator _id) : id(_id) {}
 
     size_t color(const Graph &GG, Edge &edge)
     {

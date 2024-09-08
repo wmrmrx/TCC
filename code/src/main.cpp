@@ -38,12 +38,12 @@ graph::Instance read_graph(std::istream &is)
         auto [a, _1] = boost::add_edge(u, v, GG);
         GG[a].color = color;
     }
-    for (const auto &edge : boost::make_iterator_range(boost::edges(GG)))
-    {
-        size_t u = boost::source(edge, GG), v = boost::target(edge, GG), color = GG[edge].color;
+    auto [beg, end] =  boost::edges(GG);
+    for(auto it = beg; it != end; it++) {
+        size_t u = boost::source(*it, GG), v = boost::target(*it, GG), color = GG[*it].color;
 
         auto [b, _] = boost::add_edge(u, v, G[color]);
-        G[color][b].id = &edge;
+        G[color][b].id = it;
     }
 
     for (size_t i = 0; i < n; i++)
