@@ -88,33 +88,8 @@
 
 \defesa{
   local={São Paulo},
-  data=2017-08-10, % YYYY-MM-DD
+  data=1999-11-11, % YYYY-MM-DD
 }
-
-% Se não houve bolsa, remova
-%
-% Norma sobre agradecimento por auxílios da FAPESP:
-% https://fapesp.br/11789/referencia-ao-apoio-da-fapesp-em-todas-as-formas-de-divulgacao
-%
-% Norma sobre agradecimento por auxílios da CAPES (Portaria 206,
-% de 4 de Setembro de 2018):
-% https://www.in.gov.br/materia/-/asset_publisher/Kujrw0TZC2Mb/content/id/39729251/do1-2018-09-05-portaria-n-206-de-4-de-setembro-de-2018-39729135
-%
-%\apoio{O presente trabalho foi realizado com apoio da Coordenação
-%      de Aperfeiçoamento\\ de Pessoal de Nível Superior -- Brasil
-%      (CAPES) -- Código de Financiamento 001} % o código é sempre 001
-%
-%\apoio{This study was financed in part by the Coordenação de
-%      Aperfeiçoamento\\ de Pessoal de Nível Superior -- Brasil
-%      (CAPES) -- Finance Code 001} % o código é sempre 001
-%
-%\apoio{Durante o desenvolvimento deste trabalho, o autor recebeu\\
-%      auxílio financeiro da FAPESP -- processo nº aaaa/nnnnn-d}
-%
-%\apoio{During the development if this work, the author received\\
-%      financial support from FAPESP -- grant \#aaaa/nnnnn-d}
-\apoio{Durante o desenvolvimento deste trabalho o autor
-       recebeu auxílio financeiro da XXXX}
 
 % A licença do seu trabalho. Use CC-BY, CC-BY-NC, CC-BY-ND, CC-BY-SA,
 % CC-BY-NC-SA ou CC-BY-NC-ND para escolher a licença Creative Commons
@@ -287,19 +262,13 @@ texto texto texto texto. Texto opcional.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CAPÍTULOS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Aqui vai o conteúdo principal do trabalho, ou seja, os capítulos que compõem
-% a dissertação/tese. O comando mainmatter reinicia a contagem de páginas,
-% modifica a numeração para números arábicos e ativa a contagem de capítulos.
 \mainmatter
-
 \pagestyle{mainmatter}
-
-% Espaçamento simples
 \singlespacing
 
-% A introdução não tem número de capítulo, então os cabeçalhos também não
 \pagestyle{unnumberedchapter}
-\input{conteudo/00-exemplo-introducao}
+\input{conteudo/introduction}
+
 \pagestyle{mainmatter}
 \input{conteudo/01-exemplo-normas-ime}
 \input{conteudo/02-exemplo-usando-o-modelo}
