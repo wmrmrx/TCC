@@ -346,7 +346,7 @@ struct Visitor
                 for (auto &u : J1)
                     u = (u - 1 + n) % n;
 
-                auto Jn = incomingNeighborhood[cycle.vertices[0]];
+                auto Jn = incomingNeighborhood[vertices[0]];
                 for (auto &u : Jn)
                     u = newPos[u];
 

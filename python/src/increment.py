@@ -221,7 +221,6 @@ def handle_cycle(G: Graph, cycle: Cycle):
 
                     assert len(new_vertices) == n and len(new_vertices) == len(new_edges) + 1
                     break
-
             # Caso em que fecha o ciclo bonitinho
             edge = G.check_edge(new_vertices[0], new_vertices[-1], removed_color)
             if edge is not None:
@@ -229,10 +228,10 @@ def handle_cycle(G: Graph, cycle: Cycle):
                 return Cycle(cycle.G, new_vertices, new_edges)
 
             # Vamos achar J1 e Jn
-            J1 = find_adjacency(new_vertices[0], pos_color_cic[J], new_pos)
+            J1 = find_adjacency(new_vertices[0], removed_color, new_pos)
             J1 = [(u - 1 + n) % n for u in J1]
 
-            Jn = incoming_neighborhood[cycle.vertices[0]]
+            Jn = incoming_neighborhood[vertices[0]]
             Jn = [new_pos[u] for u in Jn]
 
             for i in J1:
