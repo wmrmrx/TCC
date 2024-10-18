@@ -98,34 +98,34 @@ struct Visitor
                             return graph::Cycle(instance.first, vertices, edges);
                         }
                     }
-            }
-            for (size_t i = 1; i < path.vertices.size() - 1; i++)
-            {
-                int u = path.vertices[i], v = path.vertices[i + 1];
-                auto [bX, edgeX] = graph::checkEdge(x, v, cx, instance);
-                auto [bY, edgeY] = graph::checkEdge(u, y, cy, instance);
-
-                if (bX && bY)
+                for (size_t i = 1; i < path.vertices.size() - 1; i++)
                 {
-                    // achamos um crossing
-                    std::vector<graph::Vertex> vertices;
-                    std::vector<graph::Edge> edges;
+                    int u = path.vertices[i], v = path.vertices[i + 1];
+                    auto [bX, edgeX] = graph::checkEdge(x, v, k ? cx : cy, instance);
+                    auto [bY, edgeY] = graph::checkEdge(u, y, k ? cy : cx, instance);
 
-                    for (size_t j = 0; j <= i; j++)
+                    if (bX && bY)
                     {
-                        vertices.push_back(path.vertices[j]);
-                        if (j)
+                        // achamos um crossing
+                        std::vector<graph::Vertex> vertices;
+                        std::vector<graph::Edge> edges;
+
+                        for (size_t j = 0; j <= i; j++)
+                        {
+                            vertices.push_back(path.vertices[j]);
+                            if (j)
+                                edges.push_back(path.edges[j - 1]);
+                        }
+                        vertices.push_back(y);
+                        edges.push_back(edgeY);
+                        for (size_t j = path.vertices.size() - 1; j > i + 1; j--)
+                        {
+                            vertices.push_back(path.vertices[j - 1]);
                             edges.push_back(path.edges[j - 1]);
+                        }
+                        edges.push_back(edgeX);
+                        return graph::Cycle(instance.first, vertices, edges);
                     }
-                    vertices.push_back(y);
-                    edges.push_back(edgeY);
-                    for (size_t j = path.vertices.size() - 1; j > i + 1; j--)
-                    {
-                        vertices.push_back(path.vertices[j - 1]);
-                        edges.push_back(path.edges[j - 1]);
-                    }
-                    edges.push_back(edgeX);
-                    return graph::Cycle(instance.first, vertices, edges);
                 }
             }
         }
@@ -321,7 +321,7 @@ struct Visitor
                             newEdges.push_back(edges[j]);
                         {
                             auto [_, edge] = graph::checkEdge(vertices[i], y, posColorCic[0], instance);
-                            auto [__, edge2] = graph::checkEdge(y, vertices[i + 1], cy, instance);
+                            auto [__, edge2] = graph::checkEdge(y, vertices[(i + 1) % vertices.size()], cy, instance);
                             assert(_ && __);
                             newEdges.push_back(edge);
                             newEdges.push_back(edge2);

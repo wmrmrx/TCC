@@ -64,19 +64,19 @@ def handle_path(G: Graph, path: Path):
                         edges.append(edgeX)
                         return Cycle(G, vertices, edges)
 
-        for i in range(1, len(path.vertices) - 1):
-            u, v = path.vertices[i], path.vertices[i + 1]
-            edgeX = G.check_edge(x, v, cx)
-            edgeY = G.check_edge(u, y, cy)
+            for i in range(1, len(path.vertices) - 1):
+                u, v = path.vertices[i], path.vertices[i + 1]
+                edgeX = G.check_edge(x, v, c1)
+                edgeY = G.check_edge(u, y, c2)
 
-            if (edgeX is not None) and (edgeY is not None):
-                vertices = path.vertices[:i + 1] + [y]
-                edges = path.edges[:i] + [edgeY]
-                for j in range(len(path.vertices) - 1, i + 1, -1):
-                    vertices.append(path.vertices[j - 1])
-                    edges.append(path.edges[j - 1])
-                edges.append(edgeX)
-                return Cycle(G, vertices, edges)
+                if (edgeX is not None) and (edgeY is not None):
+                    vertices = path.vertices[:i + 1] + [y]
+                    edges = path.edges[:i] + [edgeY]
+                    for j in range(len(path.vertices) - 1, i + 1, -1):
+                        vertices.append(path.vertices[j - 1])
+                        edges.append(path.edges[j - 1])
+                    edges.append(edgeX)
+                    return Cycle(G, vertices, edges)
 
     raise RuntimeError("Should not reach here. Did not find crossing.")
 
@@ -216,7 +216,7 @@ def handle_cycle(G: Graph, cycle: Cycle):
 
                     new_edges = edges[1:i] + [
                         G.get_edge(vertices[i], y, pos_color_cic[0]),
-                        G.get_edge(y, vertices[i + 1], cy)
+                        G.get_edge(y, vertices[(i + 1) % len(vertices)], cy)
                     ] + edges[i+1:cycle_sz]
 
                     assert len(new_vertices) == n and len(new_vertices) == len(new_edges) + 1
@@ -250,6 +250,74 @@ def handle_cycle(G: Graph, cycle: Cycle):
                     ]
 
                     return Cycle(cycle.G, final_vertices, final_edges)
+        else:
+            def get_Q_and_cj():
+                for j in range(n - 1):
+                    edge = G.get_edge(y, cycle.vertices[j], cy)
+                    if edge is None or in_degree[cycle.vertices[j]] != n // 2 - 1:
+                        continue
+                    new_vertices = cycle.vertices[:]
+                    new_edges = cycle.edges[:]
+                    new_vertices = new_vertices[j + 1:] + new_vertices[:j + 1]
+                    new_edges = new_edges[j + 1:] + new_edges[:j + 1]
+                    cj = new_edges[-1].color
+                    new_edges.pop()
+                    new_vertices.insert(0, y)
+                    new_edges.insert(0, edge)
+                    return Path(G, new_vertices, new_edges), cj
+                raise RuntimeError("j not found!")
+
+            Q, cj = get_Q_and_cj()
+
+            # assert that Q misses cj
+            for edge in Q.edges:
+                assert edge.color != cj
+
+            x = Q.vertices
+
+            edge = G.get_edge(x[n - 2], x[0], cj)
+            if edge is not None:
+                edges = Q.edges[:]
+                edges.append(edge)
+                return Cycle(G, vertices, edges)
+
+            J1 = []
+            for i in range(n - 2):
+                edge = G.get_edge(x[0], x[i + 1], cj)
+                J1.append((i, edge))
+
+            position = [0] * n
+            for i in range(n):
+                position[x[i]] = i
+
+            inJn = [False] * n
+            for v in incoming_neighborhood[x[n - 1]]:
+                inJn[position[v]] = True
+
+            for k, edge_from_first in J1:
+                color = Q.edges[k].color
+                has_edge, edge_from_last = G.get_edge(x[n - 1], x[k], color)
+                if not has_edge:
+                    continue
+
+                new_vertices = [x[0], x[k + 1]]
+                new_edges = [edge_from_first]
+
+                for i in range(k + 1, n - 1):
+                    new_vertices.append(x[i + 1])
+                    new_edges.append(Q.edges[i])
+
+                new_edges.append(edge_from_last)
+
+                for i in range(k, 0, -1):
+                    _has_edge, edge = G.get_edge(x[i], x[i - 1], Q.edges[i - 1].color)
+                    assert _has_edge
+                    new_edges.append(edge)
+
+                return Cycle(G, new_vertices, new_edges)
+
+            raise RuntimeError("Not found")
+
 
         raise RuntimeError("Should not reach here. Did not find answer :(")
     else:
