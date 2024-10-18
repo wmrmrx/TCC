@@ -15,9 +15,6 @@ run_random: build
 build_and_run_random: build build_scripts
 	./test_generator 200 > tests/random && time ./main < tests/random
 
-run_random: build build_scripts
-	./main < tests/random
-
 test_generator:
 	$(COMPILE.cpp) -o test_generator scripts/test_generator.cpp
 

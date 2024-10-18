@@ -361,10 +361,8 @@ struct Visitor
 
                         std::vector<graph::Vertex> finalVertices;
                         std::vector<graph::Edge> finalEdges;
-
                         for (size_t j = 0; j <= i; j++)
                             finalVertices.push_back(newVertices[j]);
-                        finalVertices.push_back(newVertices.back());
                         for (size_t j = n - 1; j > i; j--)
                             finalVertices.push_back(newVertices[j]);
                         assert(finalVertices.size() == n);

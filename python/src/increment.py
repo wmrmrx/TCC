@@ -240,9 +240,7 @@ def handle_cycle(G: Graph, cycle: Cycle):
                     # Achamos a resposta
                     if new_vertices[i + 1] == y:
                         continue
-
-                    final_vertices = new_vertices[:i+1] + [new_vertices[-1]] + new_vertices[i+1:][::-1]
-
+                    final_vertices = new_vertices[:i+1] + new_vertices[i+1:][::-1]
                     assert len(final_vertices) == n
 
                     final_edges = new_edges[:i] + [
