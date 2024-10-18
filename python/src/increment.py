@@ -51,17 +51,18 @@ def handle_path(G: Graph, path: Path):
                 edges.append(edge)
                 return Cycle(G, vertices, edges)
 
-        for i in range(n):
-            if not vertices_in_path[i]:
-                edgeX = G.check_edge(x, i, cx)
-                edgeY = G.check_edge(y, i, cy)
-                if (edgeX is not None) and (edgeY is not None):
-                    vertices = path.vertices.copy()
-                    vertices.append(i)
-                    edges = path.edges.copy()
-                    edges.append(edgeY)
-                    edges.append(edgeX)
-                    return Cycle(G, vertices, edges)
+        for [c1, c2] in [[cx, cy], [cy, cx]]:
+            for i in range(n):
+                if not vertices_in_path[i]:
+                    edgeX = G.check_edge(x, i, c1)
+                    edgeY = G.check_edge(y, i, c2)
+                    if (edgeX is not None) and (edgeY is not None):
+                        vertices = path.vertices.copy()
+                        vertices.append(i)
+                        edges = path.edges.copy()
+                        edges.append(edgeY)
+                        edges.append(edgeX)
+                        return Cycle(G, vertices, edges)
 
         for i in range(1, len(path.vertices) - 1):
             u, v = path.vertices[i], path.vertices[i + 1]

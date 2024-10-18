@@ -81,22 +81,24 @@ struct Visitor
                 }
             }
             // verificamos se nao tem um vertice que seja adjacente a x e y nas cores cx e cy
-            for (size_t i = 0; i < n; i++)
-                if (!verticesInPath[i])
-                {
-                    auto [bX, edgeX] = graph::checkEdge(x, i, cx, instance);
-                    auto [bY, edgeY] = graph::checkEdge(y, i, cy, instance);
-                    if (bX && bY)
+            for (int k = 0; k < 2; k++) {
+                for (size_t i = 0; i < n; i++)
+                    if (!verticesInPath[i])
                     {
-                        auto vertices = path.vertices;
-                        vertices.push_back(i);
-                        auto edges = path.edges;
+                        auto [bX, edgeX] = graph::checkEdge(x, i, k ? cx : cy, instance);
+                        auto [bY, edgeY] = graph::checkEdge(y, i, k ? cy : cx, instance);
+                        if (bX && bY)
+                        {
+                            auto vertices = path.vertices;
+                            vertices.push_back(i);
+                            auto edges = path.edges;
 
-                        edges.push_back(edgeY);
-                        edges.push_back(edgeX);
-                        return graph::Cycle(instance.first, vertices, edges);
+                            edges.push_back(edgeY);
+                            edges.push_back(edgeX);
+                            return graph::Cycle(instance.first, vertices, edges);
+                        }
                     }
-                }
+            }
             for (size_t i = 1; i < path.vertices.size() - 1; i++)
             {
                 int u = path.vertices[i], v = path.vertices[i + 1];
