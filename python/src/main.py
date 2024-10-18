@@ -76,7 +76,6 @@ def main():
     G = instance
 
     n = G.n
-    # pprint(vars(G))
     if n <= 6:
         cycle = brute_force(G)
         print_cycle(cycle)
@@ -89,7 +88,6 @@ def main():
                 if obj.size() == n:
                     break
             obj = increment(G, obj)
-            print_object(obj)
         print_object(obj)
 
 

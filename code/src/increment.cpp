@@ -318,8 +318,8 @@ struct Visitor
                         for (size_t j = 1; j < i; j++)
                             newEdges.push_back(edges[j]);
                         {
-                            auto [_, edge] = graph::checkEdge(vertices[i], y, posColorCic[i], instance);
-                            auto [__, edge2] = graph::checkEdge(y, vertices[0], cy, instance);
+                            auto [_, edge] = graph::checkEdge(vertices[i], y, posColorCic[0], instance);
+                            auto [__, edge2] = graph::checkEdge(y, vertices[i + 1], cy, instance);
                             assert(_ && __);
                             newEdges.push_back(edge);
                             newEdges.push_back(edge2);

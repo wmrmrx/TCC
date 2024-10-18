@@ -1,6 +1,5 @@
 from graph import *
 from math import ceil
-from pprint import pprint
 from typing import Union
 
 def increment(G: Graph, path_or_cycle: Union[Path, Cycle]) -> Union[Path, Cycle]:
@@ -43,7 +42,6 @@ def handle_path(G: Graph, path: Path):
         cy = next(i for i in range(n) if not colors_in_path[i])
         path.pop_back()
         x, y = path.vertices[0], path.vertices[-1]
-        print("cx, cy, x, y", cx, cy, x, y)
 
         for c in [cx, cy]:
             edge = G.check_edge(x, y, c)
@@ -125,6 +123,7 @@ def handle_cycle(G: Graph, cycle: Cycle):
         in_degree = [0] * n
         incoming_neighborhood = [[] for _ in range(n)]
 
+
         for i in range(cycle_sz):
             u, v = cycle.vertices[i], cycle.vertices[(i + 1) % cycle_sz]
             color = pos_color_cic[i]
@@ -139,8 +138,8 @@ def handle_cycle(G: Graph, cycle: Cycle):
 
                 if tgt == y:
                     I.append(i)
-
-        def find_adjacency(src, color, pos):
+        
+        def find_adjacency(src: int, color: int, pos: List[int]) -> List[int]:
             ans = []
             for tgt in G.adjacency[color][src]:
                 assert pos[tgt] != -1
@@ -173,17 +172,18 @@ def handle_cycle(G: Graph, cycle: Cycle):
         found_vertex = False
         for i in range(cycle_sz):
             u = vertices[i]
-            if in_degree[u] > n // 2 - 1:
+            if in_degree[u] > n / 2 - 1:
                 found_vertex = True
                 vertices = vertices[i:] + vertices[:i]  # Rotaciona os vértices
                 edges = edges[i:] + edges[:i]  # Rotaciona as arestas
 
+
                 # Reconstrói o que precisa
-                for i in range(cycle_sz):
-                    color = edges[i].color
-                    new_color_id[color] = i
-                    pos_cic[vertices[i]] = i
-                    pos_color_cic[i] = edges[i].color
+                for j in range(cycle_sz):
+                    color = edges[j].color
+                    new_color_id[color] = j
+                    pos_cic[vertices[j]] = j
+                    pos_color_cic[j] = color
                 break
 
         if found_vertex:
@@ -199,8 +199,6 @@ def handle_cycle(G: Graph, cycle: Cycle):
             new_edges = []
             new_pos = [0] * n
 
-            print("I1", I1)
-            print("In", In)
 
             for i in I1:
                 if i in In:
@@ -209,33 +207,24 @@ def handle_cycle(G: Graph, cycle: Cycle):
 
                     J = i
                     removed_color = pos_color_cic[J]
-                    print("J", J)
-                    print("vertices", vertices)
                     # Constrói o novo caminho
                     new_vertices = vertices[1:i+1] + [y] + vertices[i+1:cycle_sz] + [vertices[0]]
-                    print("new_vertices", new_vertices)
 
                     for j in range(len(new_vertices)):
                         new_pos[new_vertices[j]] = j
 
                     new_edges = edges[1:i] + [
-                        G.get_edge(vertices[i], y, pos_color_cic[i]),
-                        G.get_edge(y, vertices[0], cy)
+                        G.get_edge(vertices[i], y, pos_color_cic[0]),
+                        G.get_edge(y, vertices[i + 1], cy)
                     ] + edges[i+1:cycle_sz]
 
-                    print("new_vertices", new_vertices)
-                    for edge in new_edges:
-                        pprint(vars(edge))
                     assert len(new_vertices) == n and len(new_vertices) == len(new_edges) + 1
                     break
 
             # Caso em que fecha o ciclo bonitinho
-            edge = G.check_edge(new_vertices[0], new_vertices[-1], pos_color_cic[J])
+            edge = G.check_edge(new_vertices[0], new_vertices[-1], removed_color)
             if edge is not None:
                 new_edges.append(edge)
-                print("DEU RUIM AQUI", new_vertices)
-                for edge in new_edges:
-                    pprint(vars(edge))
                 return Cycle(cycle.G, new_vertices, new_edges)
 
             # Vamos achar J1 e Jn

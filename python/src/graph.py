@@ -104,7 +104,6 @@ class Cycle:
         n = G.n
         self.vertices = vertices if vertices else []
         self.edges = edges if edges else []
-        print("CYCLE", vertices, edges) 
         if vertices and edges:
             assert len(vertices) == len(edges)
             used_vertex = [0] * n

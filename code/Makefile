@@ -9,6 +9,9 @@ COMPILE.cpp = $(CXX) $(CXXFLAGS)
 run: build
 	./main < tests/in
 
+run_random: build
+	./main < tests/random
+
 build_and_run_random: build build_scripts
 	./test_generator 200 > tests/random && time ./main < tests/random
 
