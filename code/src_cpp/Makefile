@@ -7,21 +7,21 @@ COMPILE.cpp = $(CXX) $(CXXFLAGS)
 	$(COMPILE.cpp) $<
 
 run: build
-	./main < tests/in
+	./main < ../tests/in
 
 run_random: build
-	./main < tests/random
+	./main < ../tests/random
 
 build_and_run_random: build build_scripts
-	./test_generator 200 > tests/random && time ./main < tests/random
+	./test_generator 200 > ../tests/random && time ./main < ../tests/random
 
 test_generator:
-	$(COMPILE.cpp) -o test_generator scripts/test_generator.cpp
+	$(COMPILE.cpp) -o test_generator ../scripts/test_generator.cpp
 
 build_scripts: test_generator
 
-main: src/*.cpp src/*.hpp
-	$(COMPILE.cpp) -o main src/*.cpp
+main: *.cpp *.hpp
+	$(COMPILE.cpp) -o main *.cpp
 
 build: main
 

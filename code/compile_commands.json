@@ -2,7 +2,7 @@
     {
         "directory": "/home/w/workspace/TCC/code",
         "command": "/usr/bin/g++ -Iinclude",
-        "file": "src/main.cpp"
+        "file": "src_cpp/main.cpp"
     },
 ]
 
