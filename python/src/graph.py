@@ -59,6 +59,8 @@ class Path:
         n = G.n
         self.vertices: List[Vertex] = vertices if vertices else []
         self.edges: List[Edge] = edges if edges else []
+        for e in self.edges:
+            assert(G.check_edge(e.source, e.target, e.color) is not None)
         if vertices and edges:
             assert len(vertices) == len(edges) + 1
             used_vertex = [0] * n
@@ -104,6 +106,8 @@ class Cycle:
         n = G.n
         self.vertices = vertices if vertices else []
         self.edges = edges if edges else []
+        for e in self.edges:
+            assert(G.check_edge(e.source, e.target, e.color) is not None)
         if vertices and edges:
             assert len(vertices) == len(edges)
             used_vertex = [0] * n
