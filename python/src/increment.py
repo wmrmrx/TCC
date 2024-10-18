@@ -1,6 +1,7 @@
 from graph import *
 from math import ceil
 from pprint import pprint
+from typing import Union
 
 def increment(G: Graph, path_or_cycle: Union[Path, Cycle]) -> Union[Path, Cycle]:
     if isinstance(path_or_cycle, Path):
@@ -31,8 +32,8 @@ def handle_path(G: Graph, path: Path):
             if not colors_in_path[color]:
                 for i in range(n):
                     if not vertices_in_path[i]:
-                        b, edge = G.check_edge(final_vertex, i, color)
-                        if b:
+                        edge = G.check_edge(final_vertex, i, color)
+                        if edge is not None:
                             vertices.append(i)
                             edges.append(edge)
                             return Path(G, vertices, edges)
@@ -45,8 +46,8 @@ def handle_path(G: Graph, path: Path):
         print("cx, cy, x, y", cx, cy, x, y)
 
         for c in [cx, cy]:
-            b, edge = G.check_edge(x, y, c)
-            if b:
+            edge = G.check_edge(x, y, c)
+            if edge is not None:
                 vertices = path.vertices.copy()
                 edges = path.edges.copy()
                 edges.append(edge)
@@ -54,9 +55,9 @@ def handle_path(G: Graph, path: Path):
 
         for i in range(n):
             if not vertices_in_path[i]:
-                bX, edgeX = G.check_edge(x, i, cx)
-                bY, edgeY = G.check_edge(y, i, cy)
-                if bX and bY:
+                edgeX = G.check_edge(x, i, cx)
+                edgeY = G.check_edge(y, i, cy)
+                if (edgeX is not None) and (edgeY is not None):
                     vertices = path.vertices.copy()
                     vertices.append(i)
                     edges = path.edges.copy()
@@ -66,10 +67,10 @@ def handle_path(G: Graph, path: Path):
 
         for i in range(1, len(path.vertices) - 1):
             u, v = path.vertices[i], path.vertices[i + 1]
-            bX, edgeX = G.check_edge(x, v, cx)
-            bY, edgeY = G.check_edge(u, y, cy)
+            edgeX = G.check_edge(x, v, cx)
+            edgeY = G.check_edge(u, y, cy)
 
-            if bX and bY:
+            if (edgeX is not None) and (edgeY is not None):
                 vertices = path.vertices[:i + 1] + [y]
                 edges = path.edges[:i] + [edgeY]
                 for j in range(len(path.vertices) - 1, i + 1, -1):
@@ -89,7 +90,6 @@ def handle_cycle(G: Graph, cycle: Cycle):
 
     colors_in_cycle = [False] * n
     vertices_in_cycle = [False] * n
-
 
     for edge in cycle.edges:
         colors_in_cycle[edge.color] = True
@@ -155,9 +155,8 @@ def handle_cycle(G: Graph, cycle: Cycle):
             edges = edges[i + 1:] + edges[:i + 1]
             edges.pop()
 
-            _, edge = G.check_edge(vertices[-1], y, pos_color_cic[i])
-            __, edge2 = G.check_edge(y, vertices[0], cy)
-            assert(_ and __)
+            edge = G.get_edge(vertices[-1], y, pos_color_cic[i])
+            edge2 = G.get_edge(y, vertices[0], cy)
             vertices.append(y)
             edges.append(edge)
             edges.append(edge2)
@@ -220,11 +219,9 @@ def handle_cycle(G: Graph, cycle: Cycle):
                         new_pos[new_vertices[j]] = j
 
                     new_edges = edges[1:i] + [
-                        G.check_edge(vertices[i], y, pos_color_cic[i])[1],
-                        G.check_edge(y, vertices[0], cy)[1]
+                        G.get_edge(vertices[i], y, pos_color_cic[i]),
+                        G.get_edge(y, vertices[0], cy)
                     ] + edges[i+1:cycle_sz]
-
-                    assert G.check_edge(vertices[i], y, pos_color_cic[i])[0] and G.check_edge(y, vertices[0], cy)[0]
 
                     print("new_vertices", new_vertices)
                     for edge in new_edges:
@@ -233,8 +230,8 @@ def handle_cycle(G: Graph, cycle: Cycle):
                     break
 
             # Caso em que fecha o ciclo bonitinho
-            found, edge = G.check_edge(new_vertices[0], new_vertices[-1], pos_color_cic[J])
-            if found:
+            edge = G.check_edge(new_vertices[0], new_vertices[-1], pos_color_cic[J])
+            if edge is not None:
                 new_edges.append(edge)
                 print("DEU RUIM AQUI", new_vertices)
                 for edge in new_edges:
@@ -259,9 +256,9 @@ def handle_cycle(G: Graph, cycle: Cycle):
                     assert len(final_vertices) == n
 
                     final_edges = new_edges[:i] + [
-                        G.check_edge(new_vertices[i], new_vertices[-1], new_edges[i].color)[1]
+                        G.get_edge(new_vertices[i], new_vertices[-1], new_edges[i].color)
                     ] + new_edges[i+1:][::-1] + [
-                        G.check_edge(new_vertices[i+1], new_vertices[0], removed_color)[1]
+                        G.get_edge(new_vertices[i+1], new_vertices[0], removed_color)
                     ]
 
                     return Cycle(cycle.G, final_vertices, final_edges)
@@ -297,9 +294,9 @@ def handle_cycle(G: Graph, cycle: Cycle):
 
                             # Cria um novo caminho com o vértice e arestas
                             vertices.append(v)
-                            edges.append(G.check_edge(w, v, j)[1])
+                            edges.append(G.get_edge(w, v, j))
                             vertices.append(u)
-                            edges.append(G.check_edge(v, u, i)[1])
+                            edges.append(G.get_edge(v, u, i))
                             return Path(G, vertices, edges)  # Caminho de tamanho l + 1
 
         # Agora, para cada vértice não-u no ciclo, todas as arestas das cores miss1 e miss2
@@ -313,10 +310,10 @@ def handle_cycle(G: Graph, cycle: Cycle):
                     x1, x2 = vertices[i], vertices[(i + 1) % len(vertices)]
                     
                     for c1, c2 in [(miss1, miss2), (miss2, miss1)]:
-                        exists1, edge1 = G.check_edge(u, x1, c1)
-                        exists2, edge2 = G.check_edge(u, x2, c2)
+                        edge1 = G.check_edge(u, x1, c1)
+                        edge2 = G.check_edge(u, x2, c2)
                         
-                        if exists1 and exists2:
+                        if (edge1 is not None) and (edge2 is not None):
                             vertices = vertices[i + 1:] + vertices[:i + 1]
                             edges = edges[i + 1:] + edges[:i + 1]
                             edges.pop()  # Remove a última aresta

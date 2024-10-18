@@ -1,8 +1,6 @@
 import sys
 import itertools
-from collections import defaultdict
 import math
-from pprint import pprint
 from increment import *
 
 def read_graph():
@@ -18,7 +16,7 @@ def read_graph():
 
     for i in range(n):
         for vertex in range(n):
-            if len(G.get_edges(i, vertex)) < math.ceil(n / 2):
+            if len(G.get_incident_edges(i, vertex)) < math.ceil(n / 2):
                 raise ValueError("Input graph is not valid.")
 
     return G
@@ -37,12 +35,12 @@ def brute_force(instance: Graph) -> Cycle:
                 u = perm_vertices[i]
                 v = perm_vertices[(i + 1) % n]
                 color = perm_colors[i]
-                exists, edge = G.check_edge(u, v, color)
-                if not exists:
+                edge = G.check_edge(u, v, color)
+                if edge is None:
                     break
                 edges.append(edge)
             if len(edges) == n:
-                return Cycle(G, perm_vertices, edges)
+                return Cycle(G, list(perm_vertices), edges)
     raise RuntimeError("No cycle found. Small test case.")
 
 

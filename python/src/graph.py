@@ -1,12 +1,15 @@
 import sys
-from collections import namedtuple
-from typing import List, Tuple, Union
+from typing import Dict, List, Optional
 
+type Color = int
 # Definindo Edge e Vertex como alias de int
-Vertex = int
+type Vertex = int
 
 class Edge:
-    def __init__(self, source: Vertex, target: Vertex, color: int):
+    source: Vertex
+    target: Vertex
+    color: Color
+    def __init__(self, source: Vertex, target: Vertex, color: Color):
         self.source = source
         self.target = target
         self.color = color
@@ -17,6 +20,10 @@ class BundledEdge:
         self.color = color
 
 class Graph:
+    n: int
+    edges: List[Edge]
+    G: List[Dict]
+    adjacency: List[List[List[Vertex]]]
     def __init__(self, n: int):
         self.n = n
         self.edges = []
@@ -30,22 +37,28 @@ class Graph:
         self.adjacency[color][u].append(v)
         self.adjacency[color][v].append(u)
 
-    def get_edges(self, color: int) -> List[Edge]:
+    def get_edges(self, color: Color) -> List[Edge]:
         return [edge for edge in self.edges if edge.color == color]
 
-    def get_edges(self, color: int, u: int) -> List[Edge]:
+    def get_incident_edges(self, color: Color, u: Vertex) -> List[Edge]:
         return [edge for edge in self.edges if edge.color == color and (edge.source == u or edge.target == u)]
     
-    def check_edge(self, u: int, v: int, color: int) -> tuple[bool, Edge]:
-        exists = (u, v) in self.G[color]
-        return exists, Edge(u, v, color)
+    def check_edge(self, u: Vertex, v: Vertex, color: Color) -> Optional[Edge]:
+        return Edge(u, v, color) if (u, v) in self.G[color] else None
+
+    def get_edge(self, u: int, v: int, color: int) -> Edge:
+        edge = self.check_edge(u, v, color)
+        assert edge is not None
+        return edge
 
 class Path:
-    def __init__(self, G: Graph, vertices: List[Vertex] = None, edges: List[Edge] = None):
+    vertices: List[Vertex]
+    edges: List[Edge]
+    def __init__(self, G: Graph, vertices: Optional[List[Vertex]] = None, edges: Optional[List[Edge]] = None):
         self.G = G
         n = G.n
-        self.vertices = vertices if vertices else []
-        self.edges = edges if edges else []
+        self.vertices: List[Vertex] = vertices if vertices else []
+        self.edges: List[Edge] = edges if edges else []
         if vertices and edges:
             assert len(vertices) == len(edges) + 1
             used_vertex = [0] * n
@@ -73,7 +86,7 @@ class Path:
     def back(self) -> Vertex:
         return self.vertices[-1]
 
-    def push_back(self, v: Vertex, e: Edge = None) -> bool:
+    def push_back(self, v: Vertex, e: Optional[Edge] = None) -> bool:
         if len(self.vertices) > 0:
             assert e is not None, "Edge must be provided."
             self.edges.append(e)
@@ -86,7 +99,7 @@ class Path:
         self.edges.pop()
 
 class Cycle:
-    def __init__(self, G: Graph, vertices: List[Vertex] = None, edges: List[Edge] = None):
+    def __init__(self, G: Graph, vertices: Optional[List[Vertex]] = None, edges: Optional[List[Edge]] = None):
         self.G = G
         n = G.n
         self.vertices = vertices if vertices else []
