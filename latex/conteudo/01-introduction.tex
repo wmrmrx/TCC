@@ -3,3 +3,40 @@
 % para saber mais: https://tex.stackexchange.com/q/78101
 
 \chapter{Introduction}
+
+O problema estudado neste artigo é relativamente recente, embora suas origens remontem a conceitos clássicos. 
+Em 1978, Caccetta e Häggkvist formularam a conjectura de que todo dígrafo de ordem $n$ com grau 
+mínimo $d$ possui um circuito direcionado de tamanho no máximo $\lceil n/d \rceil$. Essa 
+conjectura marcou o início de investigações sobre circuitos em grafos com restrições de grau.
+
+Quase quatro décadas depois, em 2017, Ron Aharoni, do Departamento de Matemática do Technion, 
+propôs uma versão mais forte dessa conjectura utilizando a versão Rainbow. Sua conjectura
+afirma que, dado um grafo $G$ de ordem $n$ com arestas coloridas em $n$ cores, onde cada cor 
+aparece em no máximo $r$ arestas, existe um circuito rainbow de tamanho no máximo $\lceil n/r \rceil$.
+
+Em 2019, Felix Joos, professor na Universidade de Heidelberg, e Jaehoon Kim, professor associado 
+no KAIST, conseguiram provar a existência de um circuito hamiltoniano rainbow em uma coleção de 
+grafos definidos sobre o mesmo conjunto de vértices, com arestas coloridas de forma distinta, 
+que satisfazem a condição de Dirac. Essa prova deu um forte suporte à conjectura de Aharoni.
+
+O trabalho de Joos e Kim utilizou técnicas simples e elegantes, mas não triviais, 
+que permitiram o desenvolvimento de um algoritmo cúbico no número de vértices. Além disso, eles 
+estenderam seus resultados para a existência de um matching perfeito rainbow.
+
+Mais recentemente, em 2023, Liqing Gao e Jian Wang, pesquisadores chineses, publicaram um artigo 
+que estende o problema ao provar a existência de um circuito hamiltoniano rainbow em grafos que 
+satisfazem a condição de Ore, utilizando a ferramenta do "shifting operator". Esta técnica, 
+desenvolvida por Erdös, Ko e Rado, é amplamente utilizada na teoria dos conjuntos extremais e 
+permitiu um avanço significativo na resolução deste problema. Porém, não iremos abordar este
+trabalho em detalhes neste artigo.
+
+Este trabalho está estruturado da seguinte forma: no Capítulo 2, explicaremos e provaremos a 
+condição de Dirac. No Capítulo 3, abordaremos a versão Rainbow dos algoritmos, essencial para a 
+compreensão do algoritmo final. No Capítulo 4, implementaremos o algoritmo baseado no trabalho 
+de Joos e Kim, apresentando pseudocódigos e provando a corretude do algoritmo. No Capítulo 5, 
+incluiremos uma animação gráfica para ilustrar o funcionamento do algoritmo. Finalmente, no 
+Capítulo 6, faremos as considerações finais sobre o trabalho desenvolvido.
+
+Todo o código-fonte utilizado neste projeto está disponível em $nosso-repo$ 
+O código foi escrito em C++, utilizando a biblioteca Boost, e em Python, no qual tem suporte para 
+uma animação que foi feita usando o framework Graph-Tool.
