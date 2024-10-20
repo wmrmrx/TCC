@@ -2,17 +2,22 @@
 %("dica" para o editor de texto: este arquivo é parte de um documento maior)
 % para saber mais: https://tex.stackexchange.com/q/78101
 
-\chapter{Preliminares}
+\chapter{Preliminary}
 
-\section{Teorema de Dirac}
-\subsection{Hamiltonian Cycles}
+In this chapter, we will present the concepts and theorems that are fundamental to understanding the 
+work developed in this thesis. We will start by presenting and proving Dirac's theorem on its original
+version and also formally present the Rainbow version of the theorem.
+
+\section{Hamiltonian Cycles}
 
 Given a graph $G = (V, E)$, a hamiltonian cycle of $G$ is a cycle that visits every vertex of $G$ exactly once.
 Finding whether a graph has a hamiltonian cycle is a well-known NP-complete problem. 
 However, there are conditions that guarantee the existence of a hamiltonian cycle in a graph, one of them being Dirac's theorem.
 
-\subsubsection{Dirac's Theorem}
+\section{Dirac's Theorem}
 
-\section{Versão Rainbow}
+\section{Rainbow Version}
 
-A versão Rainbow do Teorema de Dirac foi proposta por Ron Aharoni em 2017. 
+Given a collection of graphs  $G = \{G_1, G_2, \ldots, G_n\}$ defined on the same set of vertices
+The rainbow version of Dirac's theorem states that if each graph $G_i$ satisfies Dirac's condition, 
+then there is a hamiltonian cycle $C$ such that for all $i$, $C \cap G_i \neq \emptyset$.
