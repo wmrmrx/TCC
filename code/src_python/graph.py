@@ -6,17 +6,12 @@ type Color = int
 type Vertex = int
 
 class Edge:
-    source: Vertex
-    target: Vertex
+    u: Vertex
+    v: Vertex
     color: Color
-    def __init__(self, source: Vertex, target: Vertex, color: Color):
-        self.source = source
-        self.target = target
-        self.color = color
-
-# Estrutura auxiliar para Graph
-class BundledEdge:
-    def __init__(self, color: int = sys.maxsize):
+    def __init__(self, u: Vertex, v: Vertex, color: Color):
+        self.u = u
+        self.v = v
         self.color = color
 
 class Graph:
@@ -41,7 +36,7 @@ class Graph:
         return [edge for edge in self.edges if edge.color == color]
 
     def get_incident_edges(self, color: Color, u: Vertex) -> List[Edge]:
-        return [edge for edge in self.edges if edge.color == color and (edge.source == u or edge.target == u)]
+        return [edge for edge in self.edges if edge.color == color and (edge.u == u or edge.v == u)]
     
     def check_edge(self, u: Vertex, v: Vertex, color: Color) -> Optional[Edge]:
         return Edge(u, v, color) if (u, v) in self.G[color] else None
@@ -60,7 +55,7 @@ class Path:
         self.vertices: List[Vertex] = vertices if vertices else []
         self.edges: List[Edge] = edges if edges else []
         for e in self.edges:
-            assert(G.check_edge(e.source, e.target, e.color) is not None)
+            assert(G.check_edge(e.u, e.v, e.color) is not None)
         if vertices and edges:
             assert len(vertices) == len(edges) + 1
             used_vertex = [0] * n
@@ -75,9 +70,9 @@ class Path:
                 used_colors[edge.color] += 1
             for i in range(len(vertices) - 1):
                 valid = False
-                if edges[i].source != vertices[i] and edges[i].target != vertices[(i + 1) % len(vertices)]:
+                if edges[i].u != vertices[i] and edges[i].v != vertices[(i + 1) % len(vertices)]:
                     valid = True
-                if edges[i].source != vertices[(i + 1) % len(vertices)] and edges[i].target != vertices[i]:
+                if edges[i].u != vertices[(i + 1) % len(vertices)] and edges[i].v != vertices[i]:
                     valid = True
                 if not valid:
                     raise RuntimeError("Cycle has invalid edges.")
@@ -107,7 +102,7 @@ class Cycle:
         self.vertices = vertices if vertices else []
         self.edges = edges if edges else []
         for e in self.edges:
-            assert(G.check_edge(e.source, e.target, e.color) is not None)
+            assert(G.check_edge(e.u, e.v, e.color) is not None)
         if vertices and edges:
             assert len(vertices) == len(edges)
             used_vertex = [0] * n
@@ -121,9 +116,9 @@ class Cycle:
                     raise RuntimeError("Cycle has repeated colors.")
                 used_colors[edge.color] += 1
             for i in range(len(vertices)):
-                if edges[i].source != vertices[i]:
-                    edges[i].source, edges[i].target = edges[i].target, edges[i].source
-                if edges[i].source != vertices[i] or edges[i].target != vertices[(i + 1) % len(vertices)]:
+                if edges[i].u != vertices[i]:
+                    edges[i].u, edges[i].v = edges[i].v, edges[i].u
+                if edges[i].u != vertices[i] or edges[i].v != vertices[(i + 1) % len(vertices)]:
                     raise RuntimeError("Cycle has invalid edges.")
 
     def size(self) -> int:

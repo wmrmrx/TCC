@@ -50,7 +50,7 @@ def print_cycle(cycle: Cycle):
         u = cycle.vertices[i] + 1
         v = cycle.vertices[(i + 1) % cycle.size()] + 1
         edge = cycle.edges[i]
-        assert edge.source == u - 1 and edge.target == v - 1
+        assert edge.u == u - 1 and edge.v == v - 1
         print(f"{u} {v} {edge.color + 1}")
 
 
@@ -60,8 +60,8 @@ def print_path(path: Path):
         u = path.vertices[i] + 1
         v = path.vertices[i + 1] + 1
         edge = path.edges[i]
-        assert edge.source == u - 1 and edge.target == v - 1
-        print(f"{edge.source} {edge.target} {edge.color}")
+        assert edge.u == u - 1 and edge.v == v - 1
+        print(f"{edge.u} {edge.v} {edge.color}")
 
 
 def print_object(obj):
