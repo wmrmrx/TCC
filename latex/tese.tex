@@ -11,49 +11,26 @@
 % Licence, v4.0 (CC-BY 4.0) - https://creativecommons.org/licenses/by/4.0/
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PREÂMBULO LaTeX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \documentclass[a4paper,12pt,twoside,brazilian,english]{book}
 \usepackage{imegoodies}
 \usepackage[thesis]{imelooks}
-
-%\nocolorlinks % para impressão em P&B
-
 \graphicspath{{figuras/},{fig/},{logos/},{img/},{images/},{imagens/}}
 
 % Comandos rápidos para mudar de língua:
 % \en -> muda para o inglês
 % \br -> muda para o português
-% \texten{blah} -> o texto "blah" é em inglês
-% \textbr{blah} -> o texto "blah" é em português
 \babeltags{br = brazilian, en = english}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% METADADOS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% O arquivo com os dados bibliográficos para biblatex; você pode usar
-% este comando mais de uma vez para acrescentar múltiplos arquivos
 \addbibresource{bibliografia.bib}
 
-% Este comando permite acrescentar itens à lista de referências sem incluir
-% uma referência de fato no texto (pode ser usado em qualquer lugar do texto)
-%\nocite{bronevetsky02,schmidt03:MSc, FSF:GNU-GPL, CORBA:spec, MenaChalco08}
-% Com este comando, todos os itens do arquivo .bib são incluídos na lista
-% de referências
-%\nocite{*}
-
-% É possível definir como determinadas palavras podem (ou não) ser
-% hifenizadas; no entanto, a hifenização automática geralmente funciona bem
-\babelhyphenation{documentclass latexmk soft-ware clsguide} % todas as línguas
+\babelhyphenation{documentclass latexmk soft-ware clsguide}
 \babelhyphenation[brazilian]{Fu-la-no}
 \babelhyphenation[english]{what-ever}
 
-% Estes comandos definem o título e autoria do trabalho e devem sempre ser
-% definidos, pois além de serem utilizados para criar a capa, também são
-% armazenados nos metadados do PDF. O subtítulo é opcional.
 \title{Rainbow title}[Rainbow subtitle]
 \translatedtitle{Arco-iris titulo}[Arco-iris subtítulo]
 
@@ -62,7 +39,6 @@
 \def\profa{Prof\kern.02em.\kern-.07emª\kern.07em}
 \def\dra{Dr\kern-.04em.\kern-.11emª\kern.07em}
 
-% Para TCCs, este comando define o supervisor
 \orientador[fem]{\profa{} \dra{} Yoshiko Wakabayashi (TODO: em ingles)}
 
 \banca{
@@ -72,24 +48,16 @@
   Prof. Dr. Ciclano de Tal -- IME-USP [sem ponto final],
   \profa{} \dra{} Convidada de Tal -- IMPA [sem ponto final],
 }
-
 \tipotese{
   tcc,
   programa={Computer Science},
 }
-
 \defesa{
   local={São Paulo},
   data=1999-11-11, % YYYY-MM-DD
 }
-
 \direitos{CC-BY}
-
-% Para gerar a ficha catalográfica, acesse https://fc.ime.usp.br/,
-% preencha o formulário e escolha a opção "Gerar Código LaTeX".
-% Basta copiar e colar o resultado aqui.
 \fichacatalografica{}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%% AQUI COMEÇA O CONTEÚDO DE FATO %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,35 +67,28 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% CAPA E PÁGINAS INICIAIS %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Aqui começa o conteúdo inicial que aparece antes do capítulo 1, ou seja,
-% página de rosto, resumo, sumário etc. O comando frontmatter faz números
-% de página aparecem em algarismos romanos ao invés de arábicos e
-% desabilita a contagem de capítulos.
 \frontmatter
-
 \pagestyle{plain}
-
-\onehalfspacing % Espaçamento 1,5 na capa e páginas iniciais
-
-\maketitle % capa e folha de rosto
+\onehalfspacing
+\maketitle
 
 %%%%%%%%%%%%%%%% DEDICATÓRIA, AGRADECIMENTOS, RESUMO/ABSTRACT %%%%%%%%%%%%%%%%%%
 
 \begin{dedicatoria}
-Esta seção é opcional e fica numa página separada; ela pode ser usada para
-uma dedicatória ou epígrafe.
 \end{dedicatoria}
 
-% Reinicia o contador de páginas (a próxima página recebe o número "i") para
-% que a página da dedicatória não seja contada.
 \pagenumbering{roman}
 
-\input{conteudo/resumoabstract}
+\chapter*{Agradecimentos}
+\epigrafe{Do. Or do not. There is no try.}{Mestre Yoda}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% LISTAS DE FIGURAS ETC. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CAPÍTULOS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \mainmatter
-\pagestyle{mainmatter}
 \singlespacing
 
 \pagestyle{mainmatter}
@@ -140,43 +101,17 @@ uma dedicatória ou epígrafe.
 \input{conteudo/03-implementation}
 
 
-%%%% Anexos %%%%
-
-\cleardoublepage
-
-\pagestyle{appendix} % repete o anterior, caso você não use apêndices
-
-\annex
-
-% \addappheadtotoc acrescenta a palavra "Anexo" ao sumário; se
-% só há anexos, sem apêndices, provavelmente não é necessário.
-
-%\addappheadtotoc
-%
-%\input{conteudo/anexo-exemplo-imegoodies}
-%\par
-%\input{conteudo/anexo-exemplo-pseudocodigo}
-%\par
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% APÊNDICES E ANEXOS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%% SEÇÕES FINAIS (BIBLIOGRAFIA E ÍNDICE REMISSIVO) %%%%%%%%%%%%%%%%
 
-% O comando backmatter desabilita a numeração de capítulos.
 \backmatter
-
 \pagestyle{backmatter}
-
-% Espaço adicional no sumário antes das referências / índice remissivo
 \addtocontents{toc}{\vspace{2\baselineskip plus .5\baselineskip minus .5\baselineskip}}
-
-% A bibliografia é obrigatória
-
 \printbibliography[
   title=\refname\label{sec:bib}, % "Referências", recomendado pela ABNT
-  %title=\bibname\label{sec:bib}, % "Bibliografia"
+  title=\bibname\label{sec:bib}, % "Bibliografia"
   heading=bibintoc, % Inclui a bibliografia no sumário
 ]
-
-\printindex % imprime o índice remissivo no documento (opcional)
 
 \end{document}
