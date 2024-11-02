@@ -1,8 +1,8 @@
 % 2017/01/01 -> fontenc TU and mandatory e-TeX support
 \NeedsTeXFormat{LaTeX2e}[2017/01/01]
-\ProvidesPackage{imelooks}[2023/05/03 1.0 IME/USP-style theses, articles etc.]
+\ProvidesPackage{style/imelooks}[2023/05/03 1.0 IME/USP-style theses, articles etc.]
 
-\RequirePackage{imegoodies}
+\RequirePackage{style/imegoodies}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1134,8 +1134,8 @@
   \usepackage{listings}
   \usepackage{lstautogobble}
   % Carrega a "linguagem" pseudocode para listings
-  \appto{\lstaspectfiles}{,lstpseudocode.sty}
-  \appto{\lstlanguagefiles}{,lstpseudocode.sty}
+  \appto{\lstaspectfiles}{,style/lstpseudocode.sty}
+  \appto{\lstlanguagefiles}{,style/lstpseudocode.sty}
   \lstloadaspects{simulatex,invisibledelims,pseudocode}
   \lstloadlanguages{[base]pseudocode,[english]pseudocode,[brazilian]pseudocode}
 

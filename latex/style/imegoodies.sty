@@ -8,7 +8,7 @@
 %       which includes file hooks, and make the corresponding
 %       adjustments (in particular, the AtEndDvi fix further below).
 \NeedsTeXFormat{LaTeX2e}[2017/01/01]
-\ProvidesPackage{imegoodies}[2022/11/13 1.0 Load several common
+\ProvidesPackage{style/imegoodies}[2022/11/13 1.0 Load several common
                                             and useful packages]
 
 
@@ -251,7 +251,7 @@
 \gappto{\FlushRight}{\hbadness=\@M}
 \gappto{\Center}{\hbadness=\@M} % not \center
 
-\RequirePackage{evenragged}
+\RequirePackage{style/evenragged}
 
 % Espaçamento entre linhas configurável (\singlespacing, \onehalfspacing etc.)
 \RequirePackage{setspace}
@@ -1115,7 +1115,7 @@
 % Para inserir separações no texto que não correspondem a seções com um nome
 % definido, é comum usar um ornamento ou florão (em inglês e francês: fleuron).
 % Esta package define o comando \froufrou que insere um florão desse tipo.
-\RequirePackage{froufrou}
+\RequirePackage{style/froufrou}
 
 % Símbolos adicionais: \degree, \celsius, \ohm, \micro, \perthousand.
 % Provavelmente é melhor usar os recursos da package siunitx.
