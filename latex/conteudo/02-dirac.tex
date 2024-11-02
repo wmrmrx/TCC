@@ -10,13 +10,10 @@ statement and formally present the Rainbow version of the theorem.
 
 \section{Definitions}
 
-Given a graph $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges, we define $E(G)$ as
+Given a simple graph $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges, we define $E(G)$ as
 the set of edges of $G$, $V(G)$ as the set of vertices of $G$ and $\deg_G(v)$ as the degree of vertex $v$.
 
-For a colection $G_1, G_2, \ldots, G_n$ of graphs defined on the same set of vertices, we define
-$\deg_{G_i}(v)$ as the degree of vertex $v$ in graph $G_i$.
-
-A path $P$ of length $l$ is a sequence of vertices and edges $v_1, e_1, v_2, e_2, \ldots, v_{l}, e_{l}, v_{l + 1}$ such that
+A path $P$ of length $l$ is a sequence of vertices and edges $(v_1, e_1, v_2, e_2, \ldots, v_{l}, e_{l}, v_{l + 1})$ such that
 $v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_j$ for $i \neq j$.
 
 A cycle $C$ of length $l$ is a sequence of vertices and edges $(v_1, e_1, v_2, e_2, \ldots, v_{l}, e_{l}, v_{l + 1})$ such that
@@ -24,14 +21,23 @@ $v_{1} = v_{l + 1}$, $v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v
 
 \section{Hamiltonian Cycles}
 
-Given a graph $G = (V, E)$, a hamiltonian cycle of $G$ is a cycle that visits every vertex of $G$ exactly once.
+Given a simple graph $G = (V, E)$, a hamiltonian cycle of $G$ is a cycle that contains $V$.
 Finding whether a graph has a hamiltonian cycle is a well-known NP-complete problem. 
 However, there are conditions that guarantee the existence of a hamiltonian cycle in a graph, one of them being Dirac's theorem.
 
 \section{Dirac's Theorem}
 
-\cite{dirac1952theorem} proved that if a graph $G = (V, E)$ satisfies the condition $\deg(v) \geq \frac{|V|}{2}$ for all $v \in V$, then $G$ has a hamiltonian cycle.
-The proof of Dirac's theorem uses cross
+\cite{dirac1952theorem} states that if a simple graph $G = (V, E)$ with $n$ vertices satisfies the condition $\deg_G(v) \geq \frac{n}{2}$ for all $v \in V$, 
+then $G$ contains a hamiltonian cycle.
+
+\begin{proof}
+    Let $G = (V, E)$ with be a simple graph with n vertices that satisfies the condition $\deg_G(v) \geq \frac{n}{2}$ for all $v \in V$.
+
+    Suppose that $G$ is not hamiltonian. 
+    Let $G' \coloneqq (V, E')$ be a graph that maximizes $|E'|$ such that $G'$ is not hamiltonian and $E \subseteq E'$. 
+    $G'$ is not a complete graph, because otherwise it would be hamiltonian. Consider an edge $e = \{u, v\} \not\in E'$.
+    The graph $(V, E' + e)$ must contain a hamiltonian cycle $C = (v_1, e_1, v_2, e_2, \ldots, v_n, e_{n}, v_1)$.
+\end{proof}
 
 \section{Rainbow Version}
 
