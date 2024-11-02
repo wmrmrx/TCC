@@ -23,7 +23,7 @@ def handle_path(G: Graph, path: Path):
     for vertex in path.vertices:
         vertices_in_path[vertex] = True
 
-    if path.size() < ceil(n / 2) + 1:
+    if path.size() < ceil(n / 2):
         vertices = path.vertices
         edges = path.edges
         final_vertex = path.back()
