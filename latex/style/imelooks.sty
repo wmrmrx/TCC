@@ -754,7 +754,7 @@
   \ifdefvoid{\@IMEbibStyle}
     {
       \iftoggle{IMEreport}{
-        \gdef\@IMEbibStyle{plainnat-ime}
+        \gdef\@IMEbibStyle{style/plainnat-ime}
       }{
         \ifboolexpr{togl {IMEslides} or togl {IMEposter}}
           {\gdef\@IMEbibStyle{beamer-ime}}
@@ -766,7 +766,7 @@
   \iftoggle{IMEmanualRaggedbib}
     {}
     {
-        \ifdefstring{\@IMEbibStyle}{plainnat-ime}
+        \ifdefstring{\@IMEbibStyle}{style/plainnat-ime}
             {}
             {\toggletrue{IMEraggedbib}}
     }
