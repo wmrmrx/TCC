@@ -1,5 +1,5 @@
 %!TeX root=../tese.tex
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt    
 
 \chapter{Implementation}
 
@@ -43,11 +43,48 @@ of the algorithm.
 
 \section{Path of length $l$}
 
-Let $P = \{x_1, e_1, x_2, e_2, \dots, x_{l - 1}, e_{l - 1}, x_{l}\}$ be the path.
+Let $P = \{x_1, e_1, x_2, e_2, \dots, x_{l}, e_{l}, x_{l + 1}\}$ be a $l$ length path. Let's define some variables that will
+be used in the algorithm:
 
-\subsection{$l$ < $\left \lfloor \frac{n}{2} \right \rfloor$}
+\begin{itemize}
+    \item $G$ - Collection of graphs
+    \item $n$ - Size of $G$ and number of vertices in $G_i$
+    \item $colors\_in\_path$ - Array of size $n$ where $colors\_in\_path[i]$ is True if color $i$ is in the set of colors of the edges of the path
+    \item $vertices\_in\_path$ - Array of size $n$ where $vertices\_in\_path[i]$ is True if vertex $i$ is in the path
+\end{itemize}
 
-In this case, we can just choose a color that is not in the set of colors of the edges of the path. As $d_{x_l}$
+\subsection{$l \leq \left \lceil \frac{n}{2} \right \rceil$}
+
+Take a color $c$ that is not in the set of colors of the edges of the path. As $deg(x_{l + 1}, c) >= \left \lceil \frac{n}{2} \right \rceil$
+and there are at most $l < \left \lceil \frac{n}{2} \right \rceil$ other vertices on the path, then there exists a 
+vertex $y$ outside the path such that $y$ is adjacent to $x_{l + 1}$ and $\{y, x_{l + 1}\} \in E(G_c)$.
+
+\begin{algorithm}
+    \caption{Pseudocódigo para verificar caminho}
+    \begin{algorithmic}[1]
+        \Function{Increment\_Path\_Small\_Case}{$G, P$}
+        \State \textbf{Assert}($P.\text{size()} < \lceil \frac{n}{2} \rceil + 1$)
+        \State $vertices \gets P.\text{vertices}$
+        \State $edges \gets P.\text{edges}$
+        \State $final\_vertex \gets P.\text{back()}$
+        \For{$color \in \{0, \dots, n-1\}$}
+            \If{\textbf{not} $colors\_in\_path[color]$}
+                \For{$i \in \{0, \dots, n-1\}$}
+                    \If{\textbf{not} $vertices\_in\_path[i]$}
+                        \State $edge \gets G.\text{check\_edge}(final\_vertex, i, color)$
+                        \If{$edge \neq \text{None}$}
+                            \State $vertices.\text{append}(i)$
+                            \State $edges.\text{append}(edge)$
+                            \State \Return Path($G$, $vertices$, $edges$)
+                        \EndIf
+                    \EndIf
+                \EndFor
+            \EndIf
+        \EndFor
+        \State \textbf{Assert}(False, Should not reach here.)
+    \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 
 
 \section{Cycle of length $n - 1 \neq \ell \geq \left \lfloor \frac{n}{2} \right \rfloor$}
