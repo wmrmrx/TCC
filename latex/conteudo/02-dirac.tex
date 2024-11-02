@@ -10,12 +10,17 @@ version and also formally present the Rainbow version of the theorem.
 
 \section{Definitions}
 
-Given a graph $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges, we define the
-following concepts:
+Given a graph $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges, we define $E(G)$ as
+the set of edges of $G$, $V(G)$ as the set of vertices of $G$ and $deg(v)$ as the degree of vertex $v$.
 
-% E(G) = \{e = \{u, v\} : u, v \in V, u \neq v\} is the set of edges of G.
-% V(G) = \{v : v \in V\} is the set of vertices of G.
-% deg(v) = | \{e \in E(G) : v \in e\} | is the degree of vertex v.
+For a colection $G_1, G_2, \ldots, G_n$ of graphs defined on the same set of vertices, we define
+$deg(v, G_i)$ as the degree of vertex $v$ in graph $G_i$.
+
+A path $P$ of length $l$ is a sequence of vertices and edges $v_1, e_1, v_2, e_2, \ldots, v_{l}, e_{l}, v_{l + 1}$ such that
+$v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_j$ for $i \neq j$.
+
+A circuit $C$ of length $l$ is also a sequence of vertices and edges $v_1, e_1, v_2, e_2, \ldots, v_{l}, e_{l}, v_{1}$ such that
+$v_{1} = v{l + 1}$, $v_i \in V(G)$, $e_i = \{v_i, v_{i \cong l + 1}\} \in E(G)$, and $v_i \neq v_j$ for $i \neq j$.
 
 \section{Hamiltonian Cycles}
 
