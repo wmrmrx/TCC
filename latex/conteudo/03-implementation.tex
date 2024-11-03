@@ -18,6 +18,25 @@ Each edge in $G$ has three attributes:
     \item $c$: color of the edge, which also indicates that the edge belongs to graph $G_i$
 \end{itemize}
 
+\subsection{Structure of $Path$}
+
+Each path contains two dynamic arrays:
+
+\begin{itemize}
+    \item $vertices$: an array of $vertex$
+    \item $edges$: an array of $edge$
+\end{itemize}
+
+If the $Path$ is not empty, it is guaranteed that 
+$vertices\text{.size()} = edges\text{.size()} + 1$. We 
+also added the constraint that a $Path$ can't contain repeated 
+vertices.
+
+\subsection{Structure of $Cycle$}
+
+Same Structure as $Path$. The only difference is that a cycle contains
+at least two vertices and $vertices\text{.size()} = edges\text{.size()}$.
+
 \subsection{Function $check\_edge(G, u, v, c)$}
 
 This function takes four parameters:
@@ -66,7 +85,7 @@ a path of length $l+1$, as shown in the flowchart below.
 
 The algorithm considers two primary cases: when the object is a path and when it is a cycle.
 
-\section{Path of Length $l$}
+\subsection{Path of Length $l$}
 
 In this case, we start with a path \( P = \{x_1, e_1, \dots, x_{l}, e_{l}, x_{l + 1}\} \) of length \( l \). The goal is to find either a path of length \( l+1 \) or a cycle of length \( l \) or \( l+1 \). To assist in this process, we define the following variables:
 
@@ -77,17 +96,24 @@ In this case, we start with a path \( P = \{x_1, e_1, \dots, x_{l}, e_{l}, x_{l 
 
 Let's divide the proof into two cases: when \( l \geq \left \lceil \frac{n}{2} \right \rceil \) and when \( l < \left \lceil \frac{n}{2} \right \rceil \).
 
-\subsection{Case 1: \( l < \left \lceil \frac{n}{2} \right \rceil \)}
+\subsubsection{Case 1: \( l < \left \lceil \frac{n}{2} \right \rceil \)}
 
-In this case, we select a color \( c \) that is not present among the edges of the current path. Since \( \deg(x_{l + 1}, c) \geq \left \lceil \frac{n}{2} \right \rceil \), and there are at most \( l < \left \lceil \frac{n}{2} \right \rceil \) vertices in the path, there must be a vertex \( y \) outside the path that is adjacent to \( x_{l + 1} \) via an edge in \( E(G_c) \). This guarantees that we can extend the path or create a cycle.
+In this case, we select a color \( c \) that is not present among 
+the edges of the current path. Since 
+\( \deg(x_{l + 1}, c) \geq \left \lceil \frac{n}{2} \right \rceil \), 
+and there are at most 
+\( l < \left \lceil \frac{n}{2} \right \rceil \) 
+vertices in the path, there must be a vertex 
+\( y \) 
+outside the path that is adjacent to 
+\( x_{l + 1} \) via an edge in \( E(G_c) \). 
+This guarantees that we can extend the path to a bigger path.
 
 \begin{algorithm}
     \caption{Path Extension for \( l < \left \lceil \frac{n}{2} \right \rceil \)}
-    \begin{algorithmic}[1]
+    \begin{algorithmic}
         \Function{Extend\_Path\_Small}{$G, P$}
         \State \textbf{assert} \( P.\text{size()} < \lceil \frac{n}{2} \rceil \)
-        \State $vertices \gets P.\text{vertices}$
-        \State $edges \gets P.\text{edges}$
         \State $last\_vertex \gets P.\text{back()}$
         \For{$color \in \{0, \dots, n-1\}$}
             \If{\textbf{not} $colors\_in\_path[color]$} \Comment{Search for an unused color}
@@ -108,9 +134,143 @@ In this case, we select a color \( c \) that is not present among the edges of t
     \end{algorithmic}
 \end{algorithm}
 
-The time complexity of this function is \( O(n) \). Since we only need to find a color that is not in the path’s colors (which takes \( O(n) \)), and then locate a vertex outside the path that connects to the last vertex (also \( O(n) \)), the overall complexity remains linear in \( n \).
+The time complexity of this function is \( O(n) \). Since we 
+only need to find a color that is not in the path’s colors 
+,which takes \( O(n) \), and then locate a vertex outside 
+the path that connects to the last vertex (also \( O(n) \)), 
+the overall complexity remains linear in \( n \).
 
-\section{Cycle of length $n - 1 \neq \ell \geq \left \lfloor \frac{n}{2} \right \rfloor$}
+\subsubsection{Case 2: \( l > \left \lceil \frac{n}{2} \right \rceil \)}
+
+Let $cx$ be a color that is not on the path and 
+$cy$ be the color of edge $e_{l}$. Remove the last edge and
+vertex of the path and assign $x \leftarrow v_0$, $y \leftarrow v_{l}$.
+
+We can first check if the edge $\{x, y\}$ belongs to $G_{cx}$ or
+to $G_{cy}$. If it does, we just found a cycle of size $l$.
+
+\begin{algorithm}
+    \caption{Part 1: Path Extension for \( l > \left \lceil \frac{n}{2} \right \rceil \)}
+    \begin{algorithmic}
+        \Function{Extend\_Path\_Big}{$G, P$}
+            \State $cx \gets P.\text{edges}[-1].\text{color}$ \Comment{Color of the last edge in the path}
+            \State $cy \gets \text{any color not in } colors\_in\_path$ \Comment{Find a color not in the path}
+            \State $P.\text{pop\_back()}$ \Comment{Remove the last vertex from the path}
+            \State $x \gets P.\text{vertices}[0]$ \Comment{First vertex in the path}
+            \State $y \gets P.\text{vertices}[-1]$ \Comment{Last vertex in the updated path}
+
+            \If{$edge \gets G.\text{check\_edge}(x, y, c) \neq \text{None}$}
+                \State $vertices \gets P.\text{vertices.copy()}$
+                \State $edges \gets P.\text{edges.copy()}$
+                \State $edges.\text{append}(edge)$
+                \State \Return Cycle($G$, $vertices$, $edges$) \Comment{Return cycle if found}
+            \EndIf
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+All of this can be done in $O(n)$ time complexity, the time need
+to find a color outside the path and create the object Cycle. We can now check if there exists a vertex $i$ outside the Path
+such that $i$ is connects to the path on vertices $x$ and $y$
+and uses colors $cx$ and $cy$, such as in the image below:
+
+
+\begin{center}
+
+
+    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+    %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+    
+    %Shape: Circle [id:dp14076860311809425] 
+    \draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (100,135.88) .. controls (100,127.11) and (107.11,120) .. (115.88,120) .. controls (124.64,120) and (131.75,127.11) .. (131.75,135.88) .. controls (131.75,144.64) and (124.64,151.75) .. (115.88,151.75) .. controls (107.11,151.75) and (100,144.64) .. (100,135.88) -- cycle ;
+    %Shape: Circle [id:dp9718918515389369] 
+    \draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (340,135.88) .. controls (340,127.11) and (347.11,120) .. (355.88,120) .. controls (364.64,120) and (371.75,127.11) .. (371.75,135.88) .. controls (371.75,144.64) and (364.64,151.75) .. (355.88,151.75) .. controls (347.11,151.75) and (340,144.64) .. (340,135.88) -- cycle ;
+    %Shape: Circle [id:dp22152249244642985] 
+    \draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (170,135.88) .. controls (170,127.11) and (177.11,120) .. (185.88,120) .. controls (194.64,120) and (201.75,127.11) .. (201.75,135.88) .. controls (201.75,144.64) and (194.64,151.75) .. (185.88,151.75) .. controls (177.11,151.75) and (170,144.64) .. (170,135.88) -- cycle ;
+    %Straight Lines [id:da5129055940889523] 
+    \draw    (135,135) -- (165.5,135.25) ;
+    %Straight Lines [id:da581278780757175] 
+    \draw    (303.5,136) -- (334,136.25) ;
+    %Shape: Circle [id:dp2164326053488742] 
+    \draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (263,135.88) .. controls (263,127.11) and (270.11,120) .. (278.88,120) .. controls (287.64,120) and (294.75,127.11) .. (294.75,135.88) .. controls (294.75,144.64) and (287.64,151.75) .. (278.88,151.75) .. controls (270.11,151.75) and (263,144.64) .. (263,135.88) -- cycle ;
+    %Straight Lines [id:da9291156181154486] 
+    \draw    (248.5,135.25) -- (258.5,135.25) ;
+    %Straight Lines [id:da2577772310594443] 
+    \draw    (205,136) -- (212.5,136.25) ;
+    %Shape: Circle [id:dp2553341740528331] 
+    \draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (211.5,52.88) .. controls (211.5,44.11) and (218.61,37) .. (227.38,37) .. controls (236.14,37) and (243.25,44.11) .. (243.25,52.88) .. controls (243.25,61.64) and (236.14,68.75) .. (227.38,68.75) .. controls (218.61,68.75) and (211.5,61.64) .. (211.5,52.88) -- cycle ;
+    %Straight Lines [id:da500585581947927] 
+    \draw    (130.5,121.75) -- (211,65.75) ;
+    %Straight Lines [id:da13872883018767035] 
+    \draw    (338.5,120.25) -- (245,66.75) ;
+    
+    % Text Node
+    \draw (109,131.4) node [anchor=north west][inner sep=0.75pt]    {$v_{0}$};
+    % Text Node
+    \draw (349,131.4) node [anchor=north west][inner sep=0.75pt]    {$v_{l}$};
+    % Text Node
+    \draw (179,131.4) node [anchor=north west][inner sep=0.75pt]    {$v_{1}$};
+    % Text Node
+    \draw (272,131.4) node [anchor=north west][inner sep=0.75pt]    {$v_{1}$};
+    % Text Node
+    \draw (221.5,124) node [anchor=north west][inner sep=0.75pt]   [align=left] {...};
+    % Text Node
+    \draw (144,137.9) node [anchor=north west][inner sep=0.75pt]    {$e_{1}$};
+    % Text Node
+    \draw (305.5,139.4) node [anchor=north west][inner sep=0.75pt]    {$e_{l\ -\ 1}$};
+    % Text Node
+    \draw (223.5,48.4) node [anchor=north west][inner sep=0.75pt]    {$i$};
+    % Text Node
+    \draw (125.5,73.4) node [anchor=north west][inner sep=0.75pt]    {$\textcolor[rgb]{0.29,0.56,0.89}{c_{x}}$};
+    % Text Node
+    \draw (321.5,73.4) node [anchor=north west][inner sep=0.75pt]    {$\textcolor[rgb]{0.29,0.56,0.89}{c}\textcolor[rgb]{0.29,0.56,0.89}{_{x}}$};
+    % Text Node
+    \draw (148.5,73.4) node [anchor=north west][inner sep=0.75pt]    {$\textcolor[rgb]{0.99,0.01,0.01}{c_{\textcolor[rgb]{0.98,0.03,0}{y}}}$};
+    % Text Node
+    \draw (142,73) node [anchor=north west][inner sep=0.75pt]   [align=left] {/};
+    % Text Node
+    \draw (296.5,73.4) node [anchor=north west][inner sep=0.75pt]    {$\textcolor[rgb]{0.99,0.01,0.01}{c}\textcolor[rgb]{0.99,0.01,0.01}{_{\textcolor[rgb]{0.98,0.03,0}{y}}}$};
+    % Text Node
+    \draw (314.5,73) node [anchor=north west][inner sep=0.75pt]   [align=left] {/};
+    
+    
+    \end{tikzpicture}
+\end{center}
+
+This can also be done in $O(n)$ time complexity, 
+
+\begin{algorithm}
+    \caption{Part 3: Path Extension for \( l > \left \lceil \frac{n}{2} \right \rceil \)}
+    \begin{algorithmic}
+        \Function{Extend\_Path\_Big}{$G, P$}
+            \For{$[c1, c2] \in [[cx, cy], [cy, cx]]$} \Comment{Try both color pairs}
+                \For{$i \in \{0, \dots, n-1\}$}
+                    \If{\textbf{not} $vertices\_in\_path[i]$} \Comment{Check vertices outside the path}
+                        \State $edgeX \gets \text{check\_edge}(G, x, i, c1)$
+                        \State $edgeY \gets \text{check\_edge}(G, y, i, c2)$
+                        \If{$(edgeX \neq \text{None})$ and $(edgeY \neq \text{None})$}
+                            \State $vertices \gets P.\text{vertices.copy()}$
+                            \State $vertices.\text{append}(i)$
+                            \State $edges \gets P.\text{edges.copy()}$
+                            \State $edges.\text{append}(edgeY)$
+                            \State $edges.\text{append}(edgeX)$
+                            \State \Return Cycle($G$, $vertices$, $edges$) \Comment{Return cycle if found}
+                        \EndIf
+                    \EndIf
+                \EndFor
+            \EndFor
+
+            \State \textbf{assert False, "No valid extension found"}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+
+
+
+\subsection{Cycle of length $n - 1 \neq \ell \geq \left \lfloor \frac{n}{2} \right \rfloor$}
 
 \section{Cycle of length $n - 1$}
 
