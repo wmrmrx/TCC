@@ -35,7 +35,7 @@ then $G$ contains a hamiltonian cycle.
 \begin{proof}
     Let $G = (V, E)$ with be a simple graph with n vertices that satisfies the condition $\deg_G(v) \geq \frac{n}{2}$ for all $v \in V$.
 
-    Suppose that $G$ is not hamiltonian. 
+    Suppose, for the sake of contradiction, that $G$ is not hamiltonian. 
 
     Let $G' \coloneqq (V, E')$ be a graph that maximizes $|E'|$ such that $G'$ is not hamiltonian and $E \subseteq E'$. 
     $G'$ is not a complete graph, because otherwise it would be hamiltonian. Consider an edge $e' = \{x, y\} \not\in E'$.
@@ -43,12 +43,13 @@ then $G$ contains a hamiltonian cycle.
     $v_1 = x$, $v_n = y$ and $e_n = e$, because otherwise, it would contradict the maximality of $G'$.
     Since $G$ is a subgraph of $G'$, $\deg_G(v) \leq \deg_{G'}(v)$ for all $v \in V$.
 
-    Let $I_1 \coloneqq \{i \in \{2, 3, \dots, n-2\} : (x, v_{i+1}) \in E'\}, 
-    I_2 \coloneqq \{ i \in \{2, 3, \dots, n - 2\} : (y, v_{i}) \in E' \}$.
+    Let $I_1 \coloneqq \{i \in \{2, 3, \dots, n-2\} : \{x, v_{i+1}\} \in E'\}, 
+    I_2 \coloneqq \{ i \in \{2, 3, \dots, n - 2\} : \{y, v_{i}\} \in E' \}$.
     We have that $I_1 \geq deg_{G'}(x) - 1$ and $I_2 \geq deg_{G'}(y) - 1$,
     which implies $I_1 + I_2 > n - 3$. By the Pigeonhole Principle, there exists $i \in I_1 \cup I_2$.
 
-
+    That means that there exists a cycle 
+    $(v_1, e_1, v_2, \dots, v_i, \{v_i, v_n\}, v_n, e_{n - 1}, v_{n-1} \dots , v_{i+1}, \{v_{i+1}, v_1\}, v_1)$, which is hamiltonian and contained in $G'$, a contradiction.
 
 \end{proof}
 
