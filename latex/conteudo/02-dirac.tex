@@ -10,20 +10,20 @@ statement and formally present the Rainbow version of the theorem.
 
 \section{Definitions}
 
-Given a simple graph $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges, we define $E(G)$ as
-the set of edges of $G$, $V(G)$ as the set of vertices of $G$ and $\deg_G(v)$ as the degree of vertex $v$.
+Given a simple graph $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges, we denote by $E(G)$ as
+the set of edges of $G$, $V(G)$ as the set of vertices of $G$ and $\deg_G(v)$ as the degree of vertex $v$ in $G$.
 
 A path $P$ of length $l$ is a sequence of vertices and edges $(v_1, e_1, v_2, e_2, \ldots, v_{l}, e_{l}, v_{l + 1})$ such that
-$v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_j$ for $i \neq j$.
+$v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_j$ for $i \neq j$, and $v_i \neq v_{i+1}$ for $i \in [l]$.
 
 A cycle $C$ of length $l$ is a sequence of vertices and edges $(v_1, e_1, v_2, e_2, \ldots, v_{l}, e_{l}, v_{l + 1})$ such that
-$v_{1} = v_{l + 1}$, $v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_j$ for $i \neq j$.
+$v_{1} = v_{l + 1}$, $v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_{i+1}$ for $i \in [l]$.
 
-$N(G, i)$ is the adjacency list of vertex $i$ on graph $G$.
+$N_G(i)$ is the adjacency list of vertex $i$ on graph $G$.
 
 \section{Hamiltonian Cycles}
 
-Given a simple graph $G = (V, E)$, a hamiltonian cycle of $G$ is a cycle that contains $V$.
+Given a simple graph $G = (V, E)$, a hamiltonian cycle of $G$ is a cycle with length $|V|$.
 Finding whether a graph has a hamiltonian cycle is a well-known NP-complete problem. 
 However, there are conditions that guarantee the existence of a hamiltonian cycle in a graph, one of them being Dirac's theorem.
 
@@ -55,6 +55,6 @@ then $G$ contains a hamiltonian cycle.
 
 \section{Rainbow Version}
 
-Given a collection of graphs $G = \{G_1, G_2, \ldots, G_n\}$ defined on the same set of vertices $V$ with $|V| = n$,
-the rainbow version of Dirac's theorem states that if $\deg_{G_i}(v) \geq \frac{n}{2}$ for all $i \in [n], v \in V$,
-then there is a hamiltonian cycle $C$ such that for all $i$, $C \cap G_i \neq \emptyset$.
+Given a collection of simple graphs $G = \{G_1, G_2, \ldots, G_n\}$ defined on the same set of vertices $V$ with $|V| = n$,
+the rainbow version of Dirac's theorem states that if $\deg_{G_i}(v) \geq \frac{n}{2}$ for all $i \in [n], v \in V$, 
+then there exists a hamiltonian cycle on the graph defined by the union of all graphs in $G$
