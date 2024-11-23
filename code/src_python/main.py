@@ -80,6 +80,7 @@ class Draw(manim.Scene):
             edges: List = [(i, j) for i in range(n) for j in range(i+1, n)]
             edge_config: Dict = { edge: { "stroke_width": 0.0 } for edge in edges }
             for e in edges_list:
+                (u, v) = (e.u, e.v) if e.u < e.v else (e.v, e.u)
                 edge_config[ (e.u, e.v) ] = { "stroke_color": COLOR_ARRAY[e.color] } 
             return manim.Graph(
                     vertices = [i for i in range(n)], 
