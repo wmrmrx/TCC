@@ -108,13 +108,8 @@ class Draw(manim.Scene):
 
         def new_scene(text, edges, vertices, scene, wait: float = 1, add_edge: bool = False):
             new_scene = draw(text, edges, vertices)
-            if add_edge:
-                # Hack due to bugs
-                self.play(manim.FadeTransform(scene[0][1], new_scene[0][1]))
-                scene[0][1] = new_scene[0][1]
-            else:
-                self.play(manim.Transform(scene, new_scene))
-                scene = new_scene
+            self.play(manim.Transform(scene, new_scene))
+            scene = new_scene
             self.wait(wait)
 
         vertices = []
