@@ -114,10 +114,10 @@ def handle_cycle(G: Graph, cycle: Cycle):
             color = cycle.edges[i].color
             new_color_id[color] = i
 
-        pos_cic = [-1] * n
+        vertex_position_on_cycle = [-1] * n
         pos_color_cic = [-1] * n
         for i in range(cycle_sz):
-            pos_cic[cycle.vertices[i]] = i
+            vertex_position_on_cycle[cycle.vertices[i]] = i
             pos_color_cic[i] = cycle.edges[i].color
 
         I = []
@@ -147,7 +147,7 @@ def handle_cycle(G: Graph, cycle: Cycle):
                 ans.append(pos[tgt])
             return ans
 
-        _I = find_adjacency(y, cy, pos_cic)
+        _I = find_adjacency(y, cy, vertex_position_on_cycle)
         _I = [(u - 1 + cycle_sz) % cycle_sz for u in _I]
 
         def find_answer(vertices: List[Vertex], edges: List[Edge], i):
@@ -183,13 +183,13 @@ def handle_cycle(G: Graph, cycle: Cycle):
                 for j in range(cycle_sz):
                     color = edges[j].color
                     new_color_id[color] = j
-                    pos_cic[vertices[j]] = j
+                    vertex_position_on_cycle[vertices[j]] = j
                     pos_color_cic[j] = color
                 break
 
         if found_vertex:
-            I1 = find_adjacency(y, pos_color_cic[0], pos_cic)
-            In = find_adjacency(y, cy, pos_cic)
+            I1 = find_adjacency(y, pos_color_cic[0], vertex_position_on_cycle)
+            In = find_adjacency(y, cy, vertex_position_on_cycle)
             In = [(u - 1 + cycle_sz) % cycle_sz for u in In]
 
             assert len(I1) + len(In) >= n
@@ -344,8 +344,7 @@ def handle_cycle(G: Graph, cycle: Cycle):
                             
                             # Coloca w como o último vértice
                             vertices = vertices[w_id + 1:] + vertices[:w_id + 1]
-                            edges = edges[w_id + 1:] + edges[:w_id + 1]
-                            edges.pop()  # Remove a última aresta
+                            edges = edges[w_id + 1:] + edges[:w_id]
 
                             # Cria um novo caminho com o vértice e arestas
                             vertices.append(v)
