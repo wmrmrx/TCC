@@ -1,2 +1,2 @@
 run:
-	manim -pql main.py Draw < ./in
+	manim -pql main.py Draw < ./input
