@@ -2,6 +2,15 @@ import sys
 import itertools
 import math
 from increment import *
+from copy import deepcopy
+from graph import Vertex, Edge
+import manim
+
+manim.config["max_files_cached"] = 1000
+
+COLOR_ARRAY = [manim.PURE_RED, manim.PURE_GREEN, manim.PURE_BLUE, 
+               manim.RED, manim.GREEN, manim.BLUE,
+               manim.PINK, manim.ORANGE]
 
 def read_graph():
     n, m = map(int, sys.stdin.readline().split())
@@ -43,53 +52,109 @@ def brute_force(instance: Graph) -> Cycle:
                 return Cycle(G, list(perm_vertices), edges)
     raise RuntimeError("No cycle found. Small test case.")
 
+class Draw(manim.Scene):
+    def construct(self):
+        instance = read_graph()
+        G = instance
+        n = G.n
+        assert n == 8, f"Only n = 8 is supported, but n = {n}"
 
-def print_cycle(cycle: Cycle):
-    print(f"CYCLE SIZE: {cycle.size()}")
-    for i in range(cycle.size()):
-        u = cycle.vertices[i] + 1
-        v = cycle.vertices[(i + 1) % cycle.size()] + 1
-        edge = cycle.edges[i]
-        assert edge.u == u - 1 and edge.v == v - 1
-        print(f"{u} {v} {edge.color + 1}")
+        def draw_graph(color, edges_list: List[Edge]):
+            vertices: List = [i for i in range(n)]
+            edges: List = [(i, j) for i in range(n) for j in range(i+1, n) if G.check_edge(i, j, color) is not None]
+            edge_config = { edge: { "stroke_color": COLOR_ARRAY[color], "stroke_width": 1.2 } for edge in edges }
+            for e in edges_list:
+                (u, v) = (e.u, e.v) if e.u < e.v else (e.v, e.u)
+                if e.color == color:
+                    edge_config[(u, v)] = { "stroke_color": manim.GOLD, "stroke_width": 3 }
+            return manim.Graph(
+                    vertices = vertices, 
+                    edges = edges,
+                    layout = "circular",
+                    layout_scale = 0.5,
+                    vertex_config = { vertex: { "fill_color": COLOR_ARRAY[color], "radius": 0.07 } for vertex in vertices },
+                    edge_config = edge_config
+                )
 
+        def draw_main_graph(edges_list: List[Edge], vertices):
+            edges: List = []
+            edge_config = {}
+            for e in edges_list:
+                edges.append( (e.u, e.v) )
+                edge_config[ (e.u, e.v) ] = { "stroke_color": COLOR_ARRAY[e.color] } 
+            return manim.Graph(
+                    vertices = [i for i in range(n)], 
+                    edges = edges,
+                    layout = "circular",
+                    labels = True,
+                    vertex_config = { vertex: {"fill_color": manim.GOLD} for vertex in vertices },
+                    edge_config = edge_config
+                    )
 
-def print_path(path: Path):
-    print(f"PATH SIZE: {len(path.edges)}")
-    for i in range(len(path.vertices) - 1):
-        u = path.vertices[i] + 1
-        v = path.vertices[i + 1] + 1
-        edge = path.edges[i]
-        assert edge.u == u - 1 and edge.v == v - 1
-        print(f"{edge.u} {edge.v} {edge.color}")
+        def draw(text: str, edges: List[Edge], vertices: List[Vertex]):
+            """Draws edges and highlights vertices"""
+            graphs = manim.VGroup(*[
+                    manim.VGroup(*[draw_graph(color, edges) for color in range(4 * block, 4 * block + 4)]).arrange(direction=manim.DOWN) for block in range(0, 2)
+                ]).arrange()
+            main_graph = draw_main_graph(edges, vertices)
 
+            return manim.VGroup(
+                manim.VGroup(graphs, main_graph).arrange(),
+                manim.Tex(text)
+            ).arrange(direction=manim.DOWN)
 
-def print_object(obj):
-    if isinstance(obj, Cycle):
-        print_cycle(obj)
-    elif isinstance(obj, Path):
-        print_path(obj)
+        scene = draw("", [], [])
+        self.play(manim.Create(scene))
 
+        def new_scene(text, edges, vertices, scene, wait: float = 1, fade: bool = False):
+            new_scene = draw(text, edges, vertices)
+            if fade:
+                # doesnt works
+                # self.play(manim.FadeTransform(scene, new_scene))
+                self.play(manim.Transform(scene, new_scene))
+            else:
+                self.play(manim.Transform(scene, new_scene))
+            scene = new_scene
+            self.wait(wait)
 
-def main():
-    instance = read_graph()
-    G = instance
+        vertices = []
+        edges = []
 
-    n = G.n
-    if n <= 6:
-        cycle = brute_force(G)
-        print_cycle(cycle)
-    else:
-        path = Path(G)
-        path.push_back(0)
-        obj = increment(G, path)
-        while True:
-            if isinstance(obj, Cycle):
-                if obj.size() == n:
+        new_scene("Graphs have $n = 8$ vertices and degree greater or equal than $\\frac{n}{2}$", edges, vertices, scene, wait = 2, fade = True)
+        new_scene("Step 1: We can always find a rainbow path of size $\\frac{n}{2}$", edges, vertices, scene, wait = 2, fade = True)
+        new_scene("Greedily try to expand a rainbow path from vertex 0", edges, vertices, scene, fade = True)
+        
+        vertices = [0]
+        new_scene("", edges, vertices, scene)
+
+        for color in range(0, n // 2 + 1):
+            u = vertices[-1]
+            v = None
+            edge = None
+            for optv in range(n):
+                if optv not in vertices and G.check_edge(u, optv, color) is not None:
+                    v = optv
+                    edge = G.get_edge(u, v, color)
                     break
-            obj = increment(G, obj)
-        print_object(obj)
+            assert v is not None
+            vertices.append(v)
+            edges.append(edge)
+            new_scene("", edges, vertices, scene, fade = True)
 
+        new_scene("Now we increment", edges, vertices, scene)
+        new_scene("", edges, vertices, scene)
 
-if __name__ == "__main__":
-    main()
+        while len(edges) != n:
+            result = None
+            if len(edges) == len(vertices):
+                cycle = Cycle(G, vertices, edges)
+                result = increment(G, cycle)
+            else:
+                path = Path(G, vertices, edges)
+                result = increment(G, path)
+
+            new_scene("", result.edges, result.vertices, scene, fade = len(result.edges) > len(edges))
+            vertices = result.vertices
+            edges = result.edges
+
+        new_scene("", [], [], scene, fade = True)
