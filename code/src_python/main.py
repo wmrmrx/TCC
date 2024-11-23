@@ -156,5 +156,3 @@ class Draw(manim.Scene):
             new_scene("", result.edges, result.vertices, scene, add_edge = len(result.edges) > len(edges))
             vertices = result.vertices
             edges = result.edges
-
-        new_scene("", [], [], scene)
