@@ -27,15 +27,16 @@ def handle_path(G: Graph, path: Path):
         vertices = path.vertices
         edges = path.edges
         final_vertex = path.back()
-        for color in range(n):
-            if not colors_in_path[color]:
-                for i in range(n):
-                    if not vertices_in_path[i]:
-                        edge = G.check_edge(final_vertex, i, color)
-                        if edge is not None:
-                            vertices.append(i)
-                            edges.append(edge)
-                            return Path(G, vertices, edges)
+
+        color_outside_path = next(i for i in range(n) if not colors_in_path[i])
+
+        for i in range(n):
+            if not vertices_in_path[i]:
+                edge = G.check_edge(final_vertex, i, color_outside_path)
+                if edge is not None:
+                    vertices.append(i)
+                    edges.append(edge)
+                    return Path(G, vertices, edges)
         raise RuntimeError("Should not reach here. Small path should return a new path.")
     else:
         cx = path.edges[-1].color
@@ -47,8 +48,7 @@ def handle_path(G: Graph, path: Path):
             edge = G.check_edge(x, y, c)
             if edge is not None:
                 vertices = path.vertices.copy()
-                edges = path.edges.copy()
-                edges.append(edge)
+                edges = path.edges.copy() + [edge]
                 return Cycle(G, vertices, edges)
 
         for [c1, c2] in [[cx, cy], [cy, cx]]:
@@ -57,11 +57,8 @@ def handle_path(G: Graph, path: Path):
                     edgeX = G.check_edge(x, i, c1)
                     edgeY = G.check_edge(y, i, c2)
                     if (edgeX is not None) and (edgeY is not None):
-                        vertices = path.vertices.copy()
-                        vertices.append(i)
-                        edges = path.edges.copy()
-                        edges.append(edgeY)
-                        edges.append(edgeX)
+                        vertices = path.vertices.copy() + [i]
+                        edges = path.edges.copy() + [edgeY, edgeX]
                         return Cycle(G, vertices, edges)
 
             for i in range(1, len(path.vertices) - 1):
@@ -101,7 +98,7 @@ def handle_cycle(G: Graph, cycle: Cycle):
     for vertex in cycle.vertices:
         vertices_in_cycle[vertex] = True
 
-    if cycle_size < ceil(n / 2) + 1:
+    if cycle_size < ceil(n / 2):
         raise RuntimeError("Should not reach here. Should never get small cycle.")
     elif cycle_size == n - 1:
         new_color_id = [-1] * n
