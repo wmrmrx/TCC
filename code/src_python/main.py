@@ -106,23 +106,23 @@ class Draw(manim.Scene):
         scene = draw("", [], [])
         self.play(manim.Create(scene))
 
-        def new_scene(text, edges, vertices, scene, wait: float = 1, fade: bool = False):
+        def new_scene(text, edges, vertices, scene, wait: float = 1, add_edge: bool = False):
             new_scene = draw(text, edges, vertices)
-            if fade:
-                # doesnt works
-                # self.play(manim.FadeTransform(scene, new_scene))
-                self.play(manim.Transform(scene, new_scene))
+            if add_edge:
+                # Hack due to bugs
+                self.play(manim.FadeTransform(scene[0][1], new_scene[0][1]))
+                scene[0][1] = new_scene[0][1]
             else:
                 self.play(manim.Transform(scene, new_scene))
-            scene = new_scene
+                scene = new_scene
             self.wait(wait)
 
         vertices = []
         edges = []
 
-        new_scene("Graphs have $n = 8$ vertices and degree greater or equal than $\\frac{n}{2}$", edges, vertices, scene, wait = 2, fade = True)
-        new_scene("Step 1: We can always find a rainbow path of size $\\frac{n}{2}$", edges, vertices, scene, wait = 2, fade = True)
-        new_scene("Greedily try to expand a rainbow path from vertex 0", edges, vertices, scene, fade = True)
+        new_scene("Graphs have $n = 8$ vertices and degree greater or equal than $\\frac{n}{2}$", edges, vertices, scene, wait = 2)
+        new_scene("Step 1: We can always find a rainbow path of size $\\frac{n}{2}$", edges, vertices, scene, wait = 2)
+        new_scene("Greedily try to expand a rainbow path from vertex 0", edges, vertices, scene)
         
         vertices = [0]
         new_scene("", edges, vertices, scene)
@@ -139,7 +139,7 @@ class Draw(manim.Scene):
             assert v is not None
             vertices.append(v)
             edges.append(edge)
-            new_scene("", edges, vertices, scene, fade = True)
+            new_scene("", edges, vertices, scene, add_edge = True)
 
         new_scene("Now we increment", edges, vertices, scene)
         new_scene("", edges, vertices, scene)
@@ -153,8 +153,8 @@ class Draw(manim.Scene):
                 path = Path(G, vertices, edges)
                 result = increment(G, path)
 
-            new_scene("", result.edges, result.vertices, scene, fade = len(result.edges) > len(edges))
+            new_scene("", result.edges, result.vertices, scene, add_edge = len(result.edges) > len(edges))
             vertices = result.vertices
             edges = result.edges
 
-        new_scene("", [], [], scene, fade = True)
+        new_scene("", [], [], scene)
