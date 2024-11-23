@@ -147,10 +147,10 @@ class Draw(manim.Scene):
         while len(edges) != n:
             result = None
             if len(edges) == len(vertices):
-                cycle = Cycle(G, vertices, edges)
+                cycle = Cycle(G, deepcopy(vertices), deepcopy(edges))
                 result = increment(G, cycle)
             else:
-                path = Path(G, vertices, edges)
+                path = Path(G, deepcopy(vertices), deepcopy(edges))
                 result = increment(G, path)
 
             new_scene("", result.edges, result.vertices, scene, add_edge = len(result.edges) > len(edges))
