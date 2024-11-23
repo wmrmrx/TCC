@@ -77,10 +77,9 @@ class Draw(manim.Scene):
                 )
 
         def draw_main_graph(edges_list: List[Edge], vertices):
-            edges: List = []
-            edge_config = {}
+            edges: List = [(i, j) for i in range(n) for j in range(i+1, n)]
+            edge_config: Dict = { edge: { "stroke_width": 0.0 } for edge in edges }
             for e in edges_list:
-                edges.append( (e.u, e.v) )
                 edge_config[ (e.u, e.v) ] = { "stroke_color": COLOR_ARRAY[e.color] } 
             return manim.Graph(
                     vertices = [i for i in range(n)], 
