@@ -115,14 +115,14 @@ class Draw(manim.Scene):
         vertices = []
         edges = []
 
-        new_scene("Graphs have $n = 8$ vertices and degree greater or equal than $\\frac{n}{2}$", edges, vertices, scene, wait = 2)
-        new_scene("Step 1: We can always find a rainbow path of size $\\frac{n}{2}$", edges, vertices, scene, wait = 2)
-        new_scene("Greedily try to expand a rainbow path from vertex 0", edges, vertices, scene)
+        new_scene("Graphs have $n = 8$ vertices and degree greater or equal than $\\frac{n}{2}$", edges, vertices, scene)
+
+        new_scene("We start from a path of length $0$, starting at vertex $0$", edges, vertices, scene)
         
         vertices = [0]
         new_scene("", edges, vertices, scene)
 
-        for color in range(0, n // 2 + 1):
+        for color in range(0, (n + 1) // 2):
             u = vertices[-1]
             v = None
             edge = None

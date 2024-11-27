@@ -292,8 +292,8 @@ def handle_cycle(G: Graph, cycle: Cycle):
 
             for k, edge_from_first in J1:
                 color = Q.edges[k].color
-                has_edge, edge_from_last = G.get_edge(x[n - 1], x[k], color)
-                if not has_edge:
+                edge_from_last = G.check_edge(x[n - 1], x[k], color)
+                if edge_from_last is None:
                     continue
 
                 new_vertices = [x[0], x[k + 1]]
@@ -306,8 +306,7 @@ def handle_cycle(G: Graph, cycle: Cycle):
                 new_edges.append(edge_from_last)
 
                 for i in range(k, 0, -1):
-                    _has_edge, edge = G.get_edge(x[i], x[i - 1], Q.edges[i - 1].color)
-                    assert _has_edge
+                    edge = G.get_edge(x[i], x[i - 1], Q.edges[i - 1].color)
                     new_edges.append(edge)
 
                 return Cycle(G, new_vertices, new_edges)
