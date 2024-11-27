@@ -115,26 +115,36 @@
 
 % Em um poster não há \maketitle
 
+% TikZ styles for flowchart
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+
 \begin{tcbposter}[
   poster = {
-    %showframe, % muito útil durante a preparação do poster
-    rows = 6,
+    %showframe,
+    rows = 8,
     columns = 12,
     colspacing = 1.2cm,
     rowspacing = .8cm,
   },
 ]
 
+% Title (spans both columns)
 \posterbox[titlebox]{name=titlebox, below=top, column=1, span=12}{
     Rainbow Version of Dirac's Theorem: An Algorithmic Approach
 }
 
+%%%%%%%% Left Column (spans 6 of 12 columns) %%%%%%%%
+
 % Introduction & Background
 \posterbox[adjusted title = Dirac's Theorem and Basic Definitions]
-          {name=intro, below=titlebox, column=1, span=4}{
+          {name=intro, below=titlebox, column=1, span=6}{
     \begin{itemize}
         \item \textbf{Dirac's Theorem (1952):} If a graph $G$ with $n$ vertices has minimum degree $\delta(G) \geq \frac{n}{2}$, then $G$ contains a Hamiltonian cycle
-        
+       
         \item \textbf{Key Definitions:}
         \begin{itemize}
             \item A \textcolor{imered}{Hamiltonian cycle} visits every vertex exactly once
@@ -146,10 +156,10 @@
 
 % Rainbow Version
 \posterbox[adjusted title = Rainbow Version and Extensions]
-          {name=rainbow, below=titlebox, column=5, span=4}{
+          {name=rainbow, below=intro, column=1, span=6}{
     \begin{itemize}
         \item \textbf{Rainbow Dirac:} Given graphs $G_1,\ldots,G_n$ on $n$ vertices where each $G_i$ satisfies Dirac's condition, there exists a Rainbow Hamiltonian cycle
-        
+       
         \item \textbf{Other Rainbow Theorems:}
         \begin{itemize}
             \item Rainbow Perfect Matching
@@ -159,32 +169,59 @@
     \end{itemize}
 }
 
-% Algorithm Overview
+% Algorithm Flowchart
+\posterbox[adjusted title = Algorithm Flowchart]
+          {name=flowchart, below=rainbow, column=1, span=6}{
+    \centering
+    \begin{tikzpicture}[node distance=2cm]
+        % Start node
+        \node[startstop] (start) {Start};
+        % Process nodes
+        \node[process, below of=start] (init) {Initialize empty path};
+        \node[decision, below of=init] (check) {Path length < n?};
+        \node[process, below of=check, yshift=-1cm] (extend) {Extend path};
+        \node[process, right of=check, xshift=3cm] (convert) {Convert to cycle};
+        % End node
+        \node[startstop, below of=convert] (end) {End};
+        % Arrows
+        \draw[arrow] (start) -- (init);
+        \draw[arrow] (init) -- (check);
+        \draw[arrow] (check) -- node[anchor=east] {Yes} (extend);
+        \draw[arrow] (check) -- node[anchor=south] {No} (convert);
+        \draw[arrow] (convert) -- (end);
+        \draw[arrow] (extend) -- ++(-3,0) |- (check);
+    \end{tikzpicture}
+}
+
+%%%%%%%% Right Column (spans 6 of 12 columns) %%%%%%%%
+
+% Algorithm Implementation
 \posterbox[adjusted title = Algorithm Implementation]
-          {name=algo, below=titlebox, column=9, span=4}{
+          {name=algo, below=titlebox, column=7, span=6}{
     \begin{itemize}
         \item \textbf{Time Complexity:} $O(n^3)$
-        
-        \item \textbf{Key Features:}
+       
+        \item \textbf{Key Steps:}
         \begin{itemize}
-            \item Incremental path construction
-            \item Efficient color tracking
-            \item Path-to-cycle conversion
+            \item Start with empty path
+            \item Incrementally extend path using unused colors
+            \item Convert path to cycle when length reaches $n-1$
+            \item Complete cycle using remaining vertex and color
         \end{itemize}
-        
+       
         \item \textbf{Space Complexity:} $O(n^2)$
     \end{itemize}
 }
 
 % Visual Demo
 \posterbox[adjusted title = Algorithm Visualization]
-          {name=visual, below=intro, column=1, span=12, rowspan=2}{
+          {name=visual, below=algo, column=7, span=6}{
     \centering
     % \begin{figure}[H]
     %     \includegraphics[width=0.9\textwidth]{algorithm-steps}
     %     \caption{Key steps in finding a Rainbow Hamiltonian cycle}
     % \end{figure}
-    
+   
     \vspace{1em}
     \begin{minipage}{0.7\textwidth}
         \textbf{Animation Steps:}
@@ -202,9 +239,9 @@
     % \end{minipage}
 }
 
-% Results
-\posterbox[adjusted title = Results and Performance]
-          {name=results, below=visual, column=1, span=4}{
+% Results and Conclusion
+\posterbox[adjusted title = Results and Conclusion]
+          {name=conclusion, below=visual, column=7, span=6}{
     \begin{itemize}
         \item \textbf{Implementation Results:}
         \begin{itemize}
@@ -212,30 +249,19 @@
             \item Average runtime: $O(n^2.8)$ in practice
             \item 100\% success rate on valid inputs
         \end{itemize}
+       
+        \vspace{1em}
+       
+        \item \textbf{Conclusion:}
+        \begin{itemize}
+            \item First practical implementation of Rainbow Dirac's theorem
+            \item Efficient algorithm for finding Rainbow Hamiltonian cycles
+            \item Applications in network design and routing
+        \end{itemize}
     \end{itemize}
 }
 
-% Conclusion
-\posterbox[adjusted title = Conclusion]
-          {name=conclusion, below=visual, column=5, span=4}{
-    \begin{itemize}
-        \item First practical implementation of Rainbow Dirac's theorem
-        \item Efficient algorithm for finding Rainbow Hamiltonian cycles
-        \item Applications in network design and routing
-        \item Open-source implementation available
-    \end{itemize}
-}
-
-% References
-\posterbox[adjusted title = References]
-          {name=refs, below=visual, column=9, span=4}{
-    \begin{itemize}
-        \item Dirac (1952). Some theorems on abstract graphs
-        \item Joos \& Kim (2019). Rainbow Hamiltonian cycles
-        \item Our implementation: \url{github.com/your-repo}
-    \end{itemize}
-}
-
+% Footer (spans both columns)
 \posterbox[footerbox]{name=footerbox, above=bottom, column=1, span=12}{
     \large
     Department of Computer Science --- University of São Paulo\par
