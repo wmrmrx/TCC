@@ -15,7 +15,7 @@
 
 # Por default, compila o primeiro arquivo .tex encontrado
 #DEFAULT_TARGET: $(word 1, $(basename $(wildcard *.tex))).pdf
-DEFAULT_TARGET: tese.pdf
+DEFAULT_TARGET: poster.pdf
 
 #SHOW_PDF_AFTER_COMPILATION := true
 SHOW_PDF_AFTER_COMPILATION := false
