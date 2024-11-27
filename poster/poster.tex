@@ -143,14 +143,15 @@
 \posterbox[adjusted title = Dirac's Theorem and Basic Definitions]
           {name=intro, below=titlebox, column=1, span=6}{
     \begin{itemize}
-        \item \textbf{Dirac's Theorem (1952):} If a simple graph $G = (V, E)$ with $n$ vertices has minimum degree $\delta(G) \geq \frac{n}{2}$, then $G$ contains a Hamiltonian cycle.
+        \item \textbf{Dirac's Theorem (1952):} If a simple graph $G$ with $n$ vertices has minimum degree $\delta(G) \geq \frac{n}{2}$, then $G$ contains a Hamiltonian cycle.
 
-        \vspace{0.7em}
+        \vspace{0.5em}
 
         \item \textbf{Key Definitions:}
         \begin{itemize}
-	    \item A \textcolor{imered}{Hamiltonian cycle} of $G$ visits every vertex of $V$ exactly once.
-	    \item $\delta(G)$ is the minimum degree of a vertex in $V$
+	    \item A simple graph is a undirected graph without loops and multiple edges.
+	    \item A \textcolor{imered}{Hamiltonian cycle} of $G$ is a cycle which visits every vertex of $G$ exactly once.
+	    \item $\delta(G)$ is the minimum degree of a vertex in $G$.
         \end{itemize}
     \end{itemize}
 }
@@ -159,8 +160,10 @@
 \posterbox[adjusted title = Rainbow Version and Extensions]
           {name=rainbow, below=intro, column=1, span=6}{
     \begin{itemize}
-        \item \textbf{Rainbow Dirac:} Given graphs $G_1,\ldots,G_n$ on $n$ vertices where each $G_i$ satisfies Dirac's condition, there exists a Rainbow Hamiltonian cycle
+        \item \textbf{Rainbow version of Dirac's Theorem:} Given graphs $G_1,\ldots,G_n$ on the same $n$ vertices where each $G_i$ satisfies Dirac's condition, there exists a Rainbow Hamiltonian cycle --- that is, a Hamiltonian cycle where each edge belongs to a different $G_i$.
        
+        \vspace{0.5em}
+
         \item \textbf{Other Rainbow Theorems:}
         \begin{itemize}
             \item Rainbow Perfect Matching
