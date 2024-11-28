@@ -257,54 +257,11 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
     % ----------------------------------------------------------------------------------------
     \onethirdcol
 
-    \begin{block}{Floresta geradora mínima retroativa}
-
-      Como passo inicial temos que introduzir a \textbf{floresta geradora mínima incremental}, uma estrutura que utiliza as link-cut trees para fornecer uma maneira eficiente de consulta acerca da floresta geradora mínima de um grafo que está sempre crescendo, isto é, que está sofrendo a inserção de novas arestas.
-
-      \begin{figure}
-        \centering
-        \captionsetup{justification=centering}
-        \begin{equation*}
-          \overbracket{
-            \overbracket{
-              \overbracket{
-                \overbracket{
-                  \overbracket{
-                    \bolinha{\,0\,}
-                  }^{F_0}
-                  \bolinha{\,1\,}
-                  \bolinha{\,2\,}
-                }^{F_1}
-                \bolinha{\,3\,}
-                \bolinha{\,4\,}
-              }^{F_2}
-              \bolinha{\,5\,}
-              \bolinha{\,6\,}
-            }^{F_3}
-            \bolinha{\,7\,}
-            \bolinha{\,8\,}
-          }^{F_4}
-        \end{equation*}
-        \caption{Representação da lista de $8$ arestas inseridas. Neste caso, cada bloco tem tamanho $2$. Assim, por exemplo, a estrutura $F_3$ contém todas as arestas adicionadas desde o instante $1$ até o instante $6$.}
-        \label{fig:sqrt-decomp-blocks-m16}
-      \end{figure}
-
-      A \textbf{floresta geradora mínima retroativa} tem a seguinte interface:
-      \definecolor{shadecolor}{rgb}{0.93, 0.80, 0.82} % pale pink
-      \begin{shaded}
-        \begin{itemize}
-          \item[$\bullet$] \textbf{\texttt{add\_edge(u, v, w, t)}}: adiciona no grafo, no instante $t$, uma aresta com pontas $u$ e $v$ e peso $w$
-          \item[$\bullet$] \textbf{\texttt{get\_msf(t)}}: retorna a lista com todas as arestas que compõem uma floresta maximal de peso mínimo do grafo no instante $t$
-          \item[$\bullet$] \textbf{\texttt{get\_msf\_weight(t)}}: retorna o custo de uma floresta maximal de peso mínimo no instante $t$
-        \end{itemize}
-      \end{shaded}
-
-      \definecolor{shadecolor}{rgb}{0.74, 0.83, 0.9} % pale blue
-      \begin{shaded}
-        \textbf{Ideia:} Organizar cada operação retroativa de inserção numa lista ordenada pelo instante de tempo em que a aresta foi inserida. Em seguida, utilizar a técnica de \textbf{square-root decomposition} para dividir essa lista em $\sqrt{m}$ blocos, onde $m$ é o número total de operações na lista. Essa divisão --- ou como chamamos, reconstrução --- vai sendo refeita conforme novas operações de inserção vão sendo adicionadas, a fim de manter o tamanho dos blocos aproximadamente constante. Por último, é necessário distribuir as operações de cada bloco em diferentes florestas geradoras mínimas incrementais, fazendo com que uma consulta acerca do instante de tempo $t$ possa ser realizada de maneira eficiente por uma estrutura que contenha um grafo com um estado próximo ao instante $t$.
-      \end{shaded}
-
-      Por último, além da ideia inicial \citet{10.1093/comjnl/bxaa135} para a floresta geradora mínima retroativa, foi necessário adaptar a ideia apresentada por \citet{10.1145/1240233.1240236} para transformar estruturas parcialmente retroativas em estruturas totalmente retroativas. Em particular, realizamos uma melhoria na etapa de reconstrução da estrutura, permitindo que ela seja realizada em tempo $\Oh(m \log n)$, onde $n$ é o número de vértices na floresta. Adicionalmente, escrevemos um artigo descrevendo essa melhoria, visando a sua publicação em algum veículo da área teórica de ciência da computação.
+    \begin{block}{Animação}
+    
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{logos/qrcode.png} 
+    \end{center}
 
     \end{block}
 
