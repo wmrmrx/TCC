@@ -1,0 +1,174 @@
+%!TeX root=../monografia.tex
+
+%% ------------------------------------------------------------------------- %%
+\chapter{Union-Find Retroativo}
+\label{cap:union-find}
+
+Neste capítulo falaremos do union-find retroativo, introduzido por \citet{10.1145/1240233.1240236}. Ele será a primeira estrutura retroativa que vamos implementar usando as link-cut trees.
+
+%% ------------------------------------------------------------------------- %%
+\section{Ideia}
+\label{sec:uf-ideia}
+
+O union-find é uma estrutura de dados utilizada para manter uma coleção de conjuntos disjuntos, isto é, conjuntos que não se intersectam, sujeita a duas operações:
+
+\begin{itemize}
+    \item \texttt{same\_set(a, b)}: retorna \texttt{verdadeiro} caso $a$ e $b$ estejam no mesmo conjunto, \texttt{falso} caso contrário.
+    \item \texttt{union(a, b)}: se $a$ e $b$ estão em conjuntos distintos, realiza a união destes conjuntos.
+\end{itemize}
+
+A primeira versão do union-find foi apresentada por \citet{10.1145/364099.364331}. Posteriormente, \citet{10.1145/62.2160} utilizaram a técnica de compressão de caminhos para mostrar uma implementação com complexidade $\Oh( \alpha (n) )$ amortizada por operação, onde $n$ é o número total de elementos nos conjuntos que estamos representando e $\alpha$ é o inverso da função de Ackermann.
+
+Como já dissemos, na versão retroativa, estamos interessados em realizar as operações em uma linha de tempo, isto é, conseguirmos adicionar ou remover operações do tipo \texttt{union} em certos instantes de tempo. Ademais, queremos conseguir checar se dois elementos pertencem a um mesmo conjunto num instante arbitrário.
+
+Para isso, vamos trocar a operação \texttt{union(a, b)} da estrutura original por duas novas rotinas, \texttt{create\_union(a, b, t)} e \texttt{delete\_union(t)}. A primeira delas é responsável por adicionar uma união dos conjuntos que contém $a$ e $b$ no instante de tempo $t$, enquanto a segunda desfaz a união realizada em $t$. Além disso, colocamos um terceiro parâmetro $t$ na operação \texttt{same\_set}, para com isso conseguirmos consultar se dois elementos pertenciam ao mesmo conjunto neste dado instante $t$.
+
+Por exemplo, a Figura \ref{fig:uf-sets} mostra o estado de uma coleção de conjuntos disjuntos após quatro operações serem aplicadas. Antes da operação \texttt{delete\_union(3)}, as consultas \texttt{same\_set(a, b, 3)} e \texttt{same\_set(c, d, 3)} retornam \texttt{verdadeiro}. Por outro lado \texttt{same\_set(a, d, 3)} e \texttt{same\_set(c, d, 3)} retornam \texttt{falso} após a chamada da função \texttt{delete\_union(3)}.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{tikzpicture}[
+                no/.style={shape=circle, minimum size=1cm},
+            ]
+            \node[no] (a) at (4,0) {a};
+            \node[no] (x) at (5,0) {};
+            \node[no] (b) at (6,0) {b};
+            \node[no] (y) at (7,0) {};
+            \node[no] (c) at (8,0) {c};
+            \node[no] (z) at (9,0) {};
+            \node[no] (d) at (10,0) {d};
+
+            \draw ($(x)$) ellipse ({1.7cm} and {.7cm});
+            \draw ($(c)$) ellipse ({.7cm} and {.7cm});
+            \draw ($(d)$) ellipse ({.7cm} and {.7cm});
+        \end{tikzpicture}
+        \bigskip
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{tikzpicture}[
+                no/.style={shape=circle, minimum size=1cm},
+            ]
+            \node[no] (a) at (4,0) {a};
+            \node[no] (x) at (5,0) {};
+            \node[no] (b) at (6,0) {b};
+            \node[no] (y) at (7,0) {};
+            \node[no] (c) at (8,0) {c};
+            \node[no] (z) at (9,0) {};
+            \node[no] (d) at (10,0) {d};
+
+            \draw ($(x)$) ellipse ({1.7cm} and {.7cm});
+            \draw ($(z)$) ellipse ({1.7cm} and {.7cm});
+        \end{tikzpicture}
+        \bigskip
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{tikzpicture}[
+                no/.style={shape=circle, minimum size=1cm},
+            ]
+            \node[no] (a) at (4,0) {a};
+            \node[no] (x) at (5,0) {};
+            \node[no] (b) at (6,0) {b};
+            \node[no] (y) at (7,0) {};
+            \node[no] (c) at (8,0) {c};
+            \node[no] (z) at (9,0) {};
+            \node[no] (d) at (10,0) {d};
+
+            \draw ($(y)$) ellipse ({3.7cm} and {.7cm});
+        \end{tikzpicture}
+        \bigskip
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{tikzpicture}[
+                no/.style={shape=circle, minimum size=1cm},
+            ]
+            \node[no] (a) at (4,0) {a};
+            \node[no] (x) at (5,0) {};
+            \node[no] (b) at (6,0) {b};
+            \node[no] (y) at (7,0) {};
+            \node[no] (c) at (8,0) {c};
+            \node[no] (z) at (9,0) {};
+            \node[no] (d) at (10,0) {d};
+
+            \draw ($(b)$) ellipse ({2.8cm} and {.7cm});
+            \draw ($(d)$) ellipse ({.7cm} and {.7cm});
+        \end{tikzpicture}
+    \end{subfigure}
+    \caption{Representação dos conjuntos com os elementos $\{a,b,c,d\}$ após a seguinte sequência de operações: \texttt{create\_union(a, b, 2)}, \texttt{create\_union(c, d, 3)}, \texttt{create\_union(b, c, 4)} e\\\texttt{delete\_union(3)}. Cada linha mostra o estado atual da coleção imediatamente após uma operação.}
+    \label{fig:uf-sets}
+\end{figure}
+
+Assumiremos que em nenhum momento podemos fazer uma operação que seria inválida em algum instante de tempo. Em outras palavras, não podemos remover uma união que não aconteceu, assim como não podemos criar uma união em dois elementos que já pertencem ao mesmo conjunto, sempre visando que a sequência de uniões possa ser traduzida em uma floresta.
+
+Por exemplo, a sequência de operações \texttt{create\_union(a, b, 1)}, \texttt{create\_union(b, c, 2)}, \texttt{create\_union(d, c, 3)} e \texttt{create\_union(a, d, 5)} seria inválida, pois a última operação tenta criar uma união entre elementos que já pertencem ao mesmo conjunto. Entretanto, caso a operação \texttt{delete\_union(1)} fosse adicionada imediatamente antes de \texttt{create\_union(a, d, 5)}, a sequência se tornaria válida.
+
+%% ------------------------------------------------------------------------- %%
+\section{Estrutura interna}
+\label{sec:uf-estrutura}
+
+Para implementarmos o union-find retroativo, vamos utilizar as link-cut trees como estrutura interna. Para isso, fazemos com que os elementos dos conjuntos sejam vértices na floresta mantida pelas link-cut trees e que cada aresta das link-cut trees represente uma operação de \texttt{union}. Com isso, cada conjunto de nossa coleção será uma árvore na floresta. Note que, essa simples ideia já pode ser utilizada para implementar uma versão não retroativa do union-find, visto que a operação de \texttt{union} pode ser traduzida para uma chamada de \texttt{link}, assim como \texttt{same\_set} para \texttt{is\_connected}.
+
+Para introduzirmos o caráter retroativo da estrutura, vamos utilizar o atributo \texttt{value} nas arestas das link-cut trees. Este campo será usado para guardar o tempo em que uma operação de \texttt{union} aconteceu, isto é, uma chamada \texttt{create\_union(a, b, 3)} cria uma aresta de valor $3$ entre os vértices $a$ e $b$ da link-cut tree. Este valor poderá então ser utilizado para checar se dois elementos já pertenciam a um certo conjunto em um dado instante de tempo.
+
+Ademais, como estamos simplesmente usando métodos já implementados pelas link-cut trees, basicamente sem nenhuma computação adicional, podemos perceber que o union-find retroativo tem uma complexidade amortizada de $\Oh(\log n)$ por operação, tanto em consultas quanto em atualizações, onde $n$ é o número total de elementos nos conjuntos da coleção.
+
+A seguir, mostramos mais detalhadamente como essas operações são realizadas.
+
+%% ------------------------------------------------------------------------- %%
+\section{Consultas Same Set}
+\label{sec:uf-same-set}
+
+Primeiramente, para checarmos se dois elementos $a$ e $b$, no instante de tempo $t$, estão em um mesmo conjunto de nossa coleção, temos que conferir se eles estão na mesma árvore da floresta representada pelas link-cut trees. Para essa verificação inicial, podemos usar a consulta \texttt{is\_connected}. Caso esta consulta retorne \texttt{verdadeiro}, prosseguimos para checar se eles já pertenciam ao mesmo conjunto no instante $t$.
+
+Para isso, devemos lembrar que: cada aresta das link-cut trees representa uma operação de \texttt{union}; e que existe apenas um único caminho entre dois vértices quaisquer de uma árvore. Logo, todas as arestas que compõem o caminho entre os vértices que representam os elementos $a$ e $b$ se traduzem na sequência de uniões que resultaram no conjunto que contém estes vértices. Portanto, caso alguma dessas uniões tenha acontecido em um instante maior que $t$, os elementos $a$ e $b$ ainda não fariam parte do mesmo conjunto no tempo $t$. Finalmente, para realizar esta checagem, basta usarmos o método \texttt{maximum\_edge} para obter o valor da maior aresta entre $a$ e $b$, e com isso checar se a união mais recente aconteceu em um instante menor ou igual a $t$.
+
+\begin{algorithm}[h!]
+    \caption{Consulta Same Set}\label{uf:same-set}
+    \begin{algorithmic}[1]
+        \Function{same\_set}{{a, b, t}}
+        \IfNot {{linkCutTree.is\_connected(a, b)}}
+        \State \Return {false}
+        \EndIf
+        \State \Return {linkCutTree.maximum\_edge(a, b) $\leq$ t}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+A partir do custo da chamada \texttt{linkCutTree.is\_connected}, podemos perceber que o consumo de tempo desta consulta é $\Oh(\log n)$ amortizado, onde $n$ é o número de conjuntos em nossa coleção.
+
+%% ------------------------------------------------------------------------- %%
+\section{Rotinas Create Union e Delete Union}
+\label{sec:uf-union}
+
+Por último, temos as rotinas de inserção e deleção de uniões. Aqui, as implementações são bem diretas, uma vez que essas operações se traduzem na inserção e deleção de uma aresta nas link-cut trees, respectivamente. Com isso, temos apenas que nos preocupar com dois detalhes extras.
+
+O primeiro deles é a transformação de elementos dos conjuntos em nossa coleção para vértices da link-cut tree. No pseudo-código abaixo, a função \texttt{create\_node(x)} cria um vértice para o elemento $x$ se e somente se ele ainda não possui um vértice correspondente na árvore. Essa rotina corresponde à rotina \texttt{make\_set} da implementação tradicional do union-find. Ademais, para dar suporte à deleção de uma união criada em um instante~$t$, precisamos criar um mapeamento que guarda o par de elementos unidos tendo como chave o instante em que a união ocorreu. No pseudo-código esse mapeamento é realizado pela estrutura \texttt{edges\_by\_time}, que, caso seja uma \emph{hash table}, não muda a complexidade da rotina.
+
+\begin{algorithm}[h!]
+    \caption{Rotina Create Union}\label{uf:create-union}
+    \begin{algorithmic}[1]
+        \Function{create\_union}{{a, b, t}}
+        \State {linkCutTree.create\_node(a)}
+        \State {linkCutTree.create\_node(b)}
+        \State {linkCutTree.link(a,b,t)}
+        \State {edges\_by\_time[t] $\gets$ (a, b)}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[h!]
+    \caption{Rotina Delete Union}\label{uf:delete-union}
+    \begin{algorithmic}[1]
+        \Function{delete\_union}{{t}}
+        \State {(u,v) $\gets$ edges\_by\_time[t]}
+        \State {linkCutTree.cut(u,v)}
+        \State {edges\_by\_time.erase(t)}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+Utilizando o custo das chamadas \texttt{linkCutTree.link} e \texttt{linkCutTree.cut}, percebemos que o custo amortizado destas rotinas é $\Oh(\log n)$.

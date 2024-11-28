@@ -1,0 +1,390 @@
+%!TeX root=../monografia.tex
+
+%% ------------------------------------------------------------------------- %%
+\chapter{Floresta Geradora Mínima Semi-Retroativa}
+\label{cap:retroactive-msf}
+
+Neste capítulo, descreveremos uma versão aprimorada da solução apresentada por \citet{10.1093/comjnl/bxaa135} para o problema da floresta geradora mínima retroativa --- \emph{retroactive minimum spanning forest}, em inglês. Esta versão utiliza a técnica de \emph{square-root decomposition} junto com a estrutura do Capítulo \ref{cap:incremental-msf} para solucionar o problema.
+
+Ademais, tendo em vista as definições acerca de estruturas de dados parcialmente e totalmente retroativas, mostradas no Capítulo \ref{cap:introducao}, decidimos nos referir tanto à solução de \citet{10.1093/comjnl/bxaa135} quanto à versão aqui apresentada como \emph{semi-retroativas}. Isto se dá pelo fato de ambas suportarem inserções e consultas em qualquer instante de tempo, porém nenhuma delas suporta a remoção de uma operação, o que as exclui de qualquer uma das duas definições.
+
+%% ------------------------------------------------------------------------- %%
+\section{Square-root decomposition}
+\label{sec:sqrt-decomp}
+
+\nocite{sqrt-decomp}
+
+Inicialmente, vamos conhecer a técnica de \emph{square-root decomposition}, utilizada para transformar soluções que consomem tempo $\Oh(n)$ por operação --- onde $n$ é o número de elementos no problema em questão --- em soluções com custo $\Oh(\sqrt{n})$ por operação. Para nossa explicação, vamos utilizar o seguinte problema como exemplo: dada uma lista de inteiros $ [ a_1, a_2, a_3, \dots, a_n ] $, queremos efetuar as duas operações a seguir:
+
+\begin{itemize}
+    \item \texttt{find\_sum(l, r)}: determina a soma de todos os valores da lista no intervalo $[l,r]$;
+    \item \texttt{update\_value(i, x)}: atualiza para $x$ o valor do elemento na posição $i$ da lista.
+\end{itemize}
+
+Este problema possui duas soluções \emph{ingênuas}, cada uma favorecendo uma das operações. A primeira, e mais simples, consiste em utilizar um laço para responder consultas \texttt{find\_sum}, o que acaba custando $\Oh(n)$, e apenas atualizando a respectiva posição para a operação \texttt{update\_value}, o que consome tempo $\Oh(1)$.
+
+Já a segunda solução se resume a utilizarmos um vetor de soma de prefixos --- isto é, um vetor tal que \texttt{prefix\_sum[i]} equivale a $\Sigma_{j=1}^{i} a_j$ --- para respondermos às consultas \texttt{find\_sum} em tempo constante, porém, acarretando na reconstrução de \texttt{prefix\_sum} em toda chamada de \texttt{update\_value}, o que consome $\Oh(n)$.
+
+Todavia, utilizando a \emph{square-root decomposition}, podemos responder consultas do primeiro tipo em tempo $\Oh(\sqrt{n})$ e executar rotinas do segundo tipo em tempo constante, um bom meio termo. O cerne desta técnica consiste em duas etapas. Primeiramente, dividimos a estrutura de interesse --- neste caso, a lista de inteiros --- em $d$ blocos de tamanho $b$. Sem perda de generalidade, assumimos que $n$, o tamanho da lista, é um múltiplo de $b$, com $n = db$. Em seguida, para cada um dos blocos, pré-calculamos alguma informação auxiliar. No problema utilizado como exemplo, isso se traduz em pré-calcular a soma de todos os elementos dentro do bloco.
+
+Com isso, podemos explicar como adaptamos as operações para funcionarem utilizando esta divisão em blocos. Apesar de estarmos focados em resolver o problema da soma em um intervalo, a \emph{receita} por trás dessa adaptação pode ser facilmente utilizada em outros contextos, como veremos na próxima seção.
+
+Para respondermos consultas do tipo \texttt{find\_sum(l, r)}, utilizaremos o pré-cálculo realizado nos blocos para eliminar a necessidade de percorrer todos os elementos no intervalo entre $l$ e $r$. Primeiramente, iteramos sob todos os blocos completamente contidos no intervalo e acumulamos a respectiva soma em uma variável $y$. Com isso em mãos, podemos nos concentrar para calcular a soma $x$ e $z$ das \emph{pontas} do intervalo, isto é, os pedaços que fazem parte de um bloco não totalmente contido no intervalo, utilizando um simples laço. Esta tarefa está representada na Figura \ref{fig:sqrt-decomp-blocks} e podemos perceber que a resposta para a consulta é simplesmente a soma $x + y + z$.
+
+\begin{figure}
+    \centering
+    \begin{equation*}
+        \underbracket{a_1, a_2, \overbrace{a_3, a_4}^x}_{block_1} \quad
+        \overbrace{
+            \underbracket{a_5, a_6, a_7, a_8}_{block_2} \quad
+            \dots \quad
+            \underbracket{a_{n-7}, a_{n-6}, a_{n-5}, a_{n-4}}_{block_{d-1}}
+        }^y \quad
+        \underbracket{\overbrace{a_{n-3}, a_{n-2}, a_{n-1}}^z, a_n}_{block_d}
+    \end{equation*}
+    \caption{Divisão de uma lista de tamanho $n$ em $d$ blocos de tamanho $b = 4$, mostrando que a soma de $x$, $y$ e $z$ responde à consulta feita por \texttt{find\_sum(3, n-1)}.}
+    \label{fig:sqrt-decomp-blocks}
+\end{figure}
+
+Já a rotina \texttt{update\_value(i, x)} é um pouco mais simples. Ao atualizarmos o valor da posição $i$, temos simplesmente que atualizar o valor pré-calculado do bloco que a contém, e isso é o suficiente.
+
+Note que a segunda operação tem um custo constante, dado que apenas atualizamos um único valor, porém a primeira operação requer uma análise mais cuidadosa. Para encontrar os valores das \emph{pontas}, $x$ e $z$, somos obrigados a realizar um laço sobre estes elementos, e como no pior caso podemos acabar percorrendo $b-1$ elementos, esta etapa tem custo $\Oh(b)$. Já para encontrar $y$, iteramos sobre os blocos em si, portanto, gastamos $\Oh(d)$ para o seu cálculo. Com isso, temos que a consulta \texttt{find\_sum} tem um custo final $\Oh(\max(b, d))$.
+
+Com o intuito de maximizarmos a eficiência desta função, queremos encontrar um tamanho de bloco $b$ ótimo que minimize o valor de $\max(b, d)$, isto é, que torne $b$ e $d$ tão próximos quanto possível. Para isso, podemos fazer:
+
+\begin{equation}
+    b = d \Rightarrow
+    b = \frac{n}{b} \Rightarrow
+    b^2 = n \Rightarrow
+    b = \pm \sqrt{n}
+\end{equation}
+
+Portanto, $\sqrt{n}$ é o tamanho ótimo para um bloco, o que implica que a nossa lista será dividida em $\sqrt{n}$ blocos, cada um com $\sqrt{n}$ elementos, daí o nome da técnica. Finalmente, temos agora que a consulta \texttt{find\_sum} consome tempo $\Oh(\sqrt{n})$, com \texttt{update\_value} consumindo $\Oh(1)$.
+
+%% ------------------------------------------------------------------------- %%
+\section{Rotinas extras para a versão incremental}
+\label{sec:rmsf-extras}
+
+Antes de seguirmos adiante com a explicação, temos que apresentar duas funções extras adicionadas à nossa solução para a versão incremental do problema. Em particular, ambas possuem o mesmo objetivo: possibilitar consultas acerca da floresta maximal de peso mínimo após a adição de um conjunto de arestas sem que tais modificações persistam na estrutura original. Em outras palavras, elas simulam o que poderia ser consultado caso fizéssemos estas adições de arestas em uma cópia da estrutura, porém, sem o custo adicional que tal cópia implica. Para isso, elas realizam o que chamamos de \emph{rollback}, isto é, após a realização de todas as adições e da respectiva consulta, desfazemos estas operações, com a ideia de trazer a estrutura de volta ao seu estado inicial.
+
+Essas rotinas são as \texttt{get\_msf\_after\_operations(edges[])} e \texttt{get\_msf\_weight\_after\_operations(edges[])}, que recebem uma lista de arestas e retornam, respectivamente, as arestas que fazem parte de uma floresta maximal de peso mínimo e seu peso caso as arestas da lista fornecida fossem adicionadas ao grafo. Desta forma, a execução destes métodos consiste em três etapas: adição das arestas na estrutura; realização da consulta que estamos interessados; reversão da estrutura para o seu estado inicial.
+
+Para a realização da primeira etapa, criamos o método \texttt{apply\_add\_edge\_operations}, que recebe uma lista de arestas, e realiza a adição delas na estrutura, de maneira muito similar ao que acontece na rotina \texttt{add\_edge}. Entretanto, este método retorna uma lista de pares \texttt{\{operação, aresta\}}, indicando quais operações foram realizadas nas link-cut trees --- \texttt{link} ou \texttt{cut} --- assim como as arestas envolvidas em cada uma delas. Como este método é muito semelhante à rotina \texttt{add\_edge}, não mostraremos seu pseudo-código.
+
+Logo, após realizarmos as consultas em que estamos interessados, precisamos reverter as operações realizadas na link-cut tree. Para isso, criamos o método \texttt{apply\_rollback}, que recebe a lista criada pela rotina acima e desfaz as operações. Note que, para mantermos a consistência das link-cut trees durante este processo, precisamos percorrer esta lista de trás para frente, revertendo uma operação de cada vez.
+
+\begin{algorithm}[h!]
+    \caption{Rotina Apply Rollback}\label{imsf-apply-rollback}
+    \begin{algorithmic}[1]
+        \Function{apply\_rollback}{{operations\_list[]}}
+        \State {revert(operations\_list)}
+        \ForEach{{[operation, edge] in operations\_list}}
+        \If{{operation = link}}
+        \State {linkCutTree.cut(edge.u, edge.v)}
+        \State {current\_msf.erase(edge.id)}
+        \State {current\_msf\_weight $\gets$ current\_msf\_weight - edge.w}
+        \Else
+        \State {linkCutTree.link(edge.u, edge.v, edge.w, edge.id)}
+        \State {current\_msf.append(edge.id)}
+        \State {current\_msf\_weight $\gets$ current\_msf\_weight + edge.w}
+        \EndIf
+        \EndFor
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+Finalmente, com estes métodos em mãos, podemos implementar as rotinas extras em que estávamos interessados. Vamos mostrar a seguir somente o pseudo-código da rotina \texttt{get\_msf\_after\_operations}, dado que a única diferença entre ela e a outra consulta seria a chamada na terceira linha do Programa \ref{imsf-msf-after}.
+
+\begin{algorithm}[h!]
+    \caption{Rotina Get MSF After Operations}\label{imsf-msf-after}
+    \begin{algorithmic}[1]
+        \Function{get\_msf\_after\_operations}{{edges[]}}
+        \State {rollback\_operations $\gets$ apply\_add\_edge\_operations(edges)}
+        \State {msf $\gets$ get\_msf()}
+        \State {apply\_rollback(rollback\_operations)}
+        \State \Return {msf}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+Além disso, podemos perceber que a complexidade destes métodos é $\Oh(q \log n)$ amortizado, onde $q$ é o número de arestas na lista \texttt{edges[]} e $n$ é o número de vértices do grafo.
+
+%% ------------------------------------------------------------------------- %%
+\section{Ideia}
+\label{sec:rmsf-ideia}
+
+Assim como no Capítulo \ref{cap:incremental-msf}, estamos interessados em resolver o \emph{problema da floresta geradora maximal de peso mínimo}, porém agora em sua versão semi-retroativa. Agora, com todas as peças necessárias em mãos, podemos partir para a explicação da solução.
+
+Em particular, queremos ser capazes de adicionar uma aresta ao grafo em um certo instante de tempo, assim como realizar consultas acerca de uma floresta geradora maximal de peso mínimo em algum momento do presente ou do passado. Para isso, a estrutura deve conseguir dar suporte a seguinte interface:
+
+\begin{itemize}
+    \item \texttt{add\_edge(u, v, w, t)}: adiciona no grafo, no instante $t$, uma aresta com pontas $u$ e $v$ e peso $w$;
+    \item \texttt{get\_msf(t)}: retorna a lista com todas as arestas que compõem uma floresta maximal de peso mínimo do grafo no instante $t$;
+    \item \texttt{get\_msf\_weight(t)}: retorna o custo de uma floresta maximal de peso mínimo do grafo no instante $t$.
+\end{itemize}
+
+A seguir, vamos apresentar duas soluções para este problema. A primeira delas é a versão original de \citet{10.1093/comjnl/bxaa135}, que fornece os métodos acima com um custo amortizado $\Oh(\sqrt{m} \log n)$ por operação --- onde $m$ é o número de operações realizadas até o instante atual e $n$ é o número de vértices do grafo. Porém essa abordagem apresenta uma restrição em relação à quantidade de operações que podem ser realizadas na estrutura, assim como o intervalo de tempo em que estas operações podem acontecer. Já a segunda solução corresponde a uma melhoria nossa da versão original, onde eliminamos as restrições e oferecemos um custo amortizado de $\Oh(\sqrt{m} \log n)$ por operação.
+
+%% ------------------------------------------------------------------------- %%
+\subsection{Versão original}
+\label{sec:rmsf-versao-ori}
+
+Inicialmente, vamos pensar em como resolver este problema de uma maneira ingênua, isto é, sem usar as técnicas mais sofisticadas que vimos até agora. Para isso, podemos manter uma lista ordenada \texttt{edges\_by\_time}, que pode ser implementada, por exemplo, utilizando uma árvore binária de busca balanceada. Nessa lista, cada posição corresponde a uma operação \texttt{add\_edge(u,v,w,t)}, com a aresta \texttt{(u,v,w)} sendo armazenada como valor e \texttt{t} sendo usado como chave de ordenação para a lista. Assim, podemos responder às consultas da seguinte maneira: separamos todas as arestas inseridas até o instante de tempo $t$ fornecido para a consulta e executamos, por exemplo, o algoritmo de Kruskal para determinar a floresta geradora maximal de custo mínimo. Dessa maneira, o consumo de tempo da rotina \texttt{add\_edge} se dá pelo custo de inserção na estrutura que armazena a lista ordenada, ou seja, $\Oh (\log m)$ --- sendo $m$ o número de inserções realizadas, e o consumo de tempo das consultas \texttt{get\_msf} e \texttt{get\_msf\_weight} é de $\Oh(m \log n)$, pois no pior caso executamos o algoritmo de Kruskal para todas as arestas na lista --- sendo $n$ o número de vértices do grafo.
+
+Como podemos perceber, a solução acima gasta muito tempo construindo a resposta do zero para cada uma das consultas. Para melhorar isso, \citet{10.1093/comjnl/bxaa135} sugerem uma maneira de acelerar esta etapa de construção de resposta, mas comprometendo um pouco o custo da rotina de inserção de novas arestas, através do uso da técnica de \emph{square root decomposition}.
+
+Para procedermos com a explicação, precisamos assumir duas coisas: que $m$ é um inteiro conhecido de antemão, representando o número total de arestas a serem inseridas no grafo; e que os instantes de tempo das operações sejam inteiros distintos no intervalo $[1,m]$. Esses dois detalhes representam uma grande restrição para a versão original, e buscamos eliminá-los na nossa versão melhorada da solução. Além disso, para simplificar a explicação, vamos assumir que $m$ é um quadrado perfeito.
+
+Primeiramente, utilizando a ideia de \emph{square root decomposition}, vamos dividir a lista \texttt{edges\_by\_time} em $\sqrt{m}$ blocos. Além disso, definimos os \emph{checkpoints} $c_1, c_2, \dots, c_{\sqrt{m}}$, que correspondem aos instantes de tempo no fim de cada bloco. Devido às restrições, $c_i = i \sqrt{m}$. Em seguida, atribuímos uma floresta geradora mínima incremental $F_i$ a cada \emph{checkpoint}, onde $F_i$ é incrementada com todas as arestas inseridas em um instante de tempo menor ou igual a $c_i$.
+
+Em outras palavras, podemos descrever esta construção da seguinte maneira: dividimos a lista de inserções em $\sqrt{m}$ blocos de tamanho $\sqrt{m}$, onde cada bloco possui uma estrutura para resolver o problema da floresta geradora mínima incremental. Fazemos com que a estrutura de cada bloco possua todas as arestas inseridas desde o instante de tempo inicial até o instante de tempo máximo contido naquele bloco, ou seja, até o $c_i$ correspondente ao bloco.
+
+A partir dessa construção, podemos responder uma consulta acerca do estado de uma floresta geradora maximal de peso mínimo no instante de tempo $t$ utilizando a seguinte abordagem:
+
+\begin{itemize}
+    \item para começar, encontramos o maior $i$ tal que $c_i \leq t$, o que determina a $F_i$ anterior e mais próxima do instante de tempo da consulta;
+    \item em seguida, aplicamos a $F_i$ todas as operações de inserção que faltam até o instante $t$, isto é, incrementamos $F_i$ com todas as arestas adicionadas entre os instantes $c_i + 1$ e $t$;
+    \item finalmente, retornamos a consulta de interesse, isto é, as arestas que compõem a floresta ou o seu peso.
+\end{itemize}
+
+Vale notar que, para atender as consulta no primeiro bloco, vamos definir o \emph{checkpoint} $c_0 = 0$ e sua respectiva estrutura $F_0$, que é uma floresta geradora mínima incremental de um grafo vazio.
+
+Agora, para a rotina \texttt{add\_edge(u,v,w,t)}, fazemos o seguinte:
+
+\begin{itemize}
+    \item inicialmente, encontramos o primeiro bloco em que a aresta adicionada no instante $t$ deve ser considerada para a estrutura incremental, ou seja, o menor $i$ tal que $t < c_i$ é verdade;
+    \item por último, basta adicionarmos esta aresta nas estruturas de cada bloco daqui para frente, o que se traduz em realizarmos uma operação de \texttt{add\_edge(u,v,w)} em todas as $F_j$, com $j \in [i, \sqrt{m}]$.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \begin{equation*}
+        \overbracket{
+            \overbracket{
+                \overbracket{
+                    \overbracket{
+                        \overbracket{
+                            \bolinha{\,0\,}
+                        }^{F_0}
+                        \bolinha{\,1\,}
+                        \bolinha{\,2\,}
+                        \bolinha{\,3\,}
+                        \bolinha{\,4\,}
+                    }^{F_1}
+                    \bolinha{\,5\,}
+                    \bolinha{\,6\,}
+                    \bolinha{\,7\,}
+                    \bolinha{\,8\,}
+                }^{F_2}
+                \bolinha{\,9\,}
+                \bolinha{10}
+                \bolinha{11}
+                \bolinha{12}
+            }^{F_3}
+            \bolinha{13}
+            \bolinha{14}
+            \bolinha{15}
+            \bolinha{16}
+        }^{F_4}
+    \end{equation*}
+    \caption{Representação da lista \texttt{edges\_by\_time} com $m$ igual a $16$. Neste caso, cada bloco tem tamanho $4$ e os instantes $0,4,8,12$ e $16$ são $c_0, c_1, c_2, c_3$ e $c_4$, respectivamente. Assim, por exemplo, a estrutura $F_3$ contém todas as arestas adicionadas desde o instante $1$ até o instante $12$.}
+    \label{fig:sqrt-decomp-blocks-m16}
+\end{figure}
+
+Finalmente, podemos analisar a complexidade desta solução, onde $m$ é o número de inserções e $n$ é o número de vértices do grafo.
+
+Para as consultas, podemos perceber que o primeiro passo tem custo $\Oh(1)$, dado que podemos calcular $i = \lfloor \frac{t}{\sqrt{m}} \rfloor$. Já o segundo passo implica um custo amortizado de $\Oh(\sqrt{m} \log n)$, dado que, no pior caso, teremos que adicionar da ordem de $\sqrt{m}$ arestas de um bloco na estrutura incremental. Assim, a consulta \texttt{get\_msf} fica com um custo amortizado de $\Oh(m + \sqrt{m} \log n) = \Oh(m)$ e a consulta \texttt{get\_msf\_weight} fica com custo amortizado de $\Oh(1 + \sqrt{m} \log n) = \Oh(\sqrt{m} \log n)$.
+
+Além disso, na rotina \texttt{add\_edge}, podemos ter que adicionar a aresta na estrutura incremental de quase todos os blocos da decomposição, com isso, seu custo amortizado também será de $\Oh(\sqrt{m} \log n)$.
+
+%% ------------------------------------------------------------------------- %%
+\subsection{Versão melhorada}
+\label{sec:rmsf-versao-mel}
+
+Como podemos ver, a versão original de \citet{10.1093/comjnl/bxaa135} oferece uma solução para o problema em que estamos interessados, porém, as restrições que a acompanham acabam se tornando um grande inconveniente. Logo, ao refletirmos sobre maneiras de melhorar a ideia apresentada, rapidamente notamos que a construção inicial da decomposição acaba se tornando um limitante para a estrutura.
+
+Em particular, a construção realizada na versão original se baseia no artigo proponente da ideia de estruturas de dados retroativas, de \citet{10.1145/1240233.1240236}, que mostra uma receita para transformar estruturas parcialmente retroativas em estruturas totalmente retroativas --- traduzindo para o nosso caso, uma maneira para transformar a floresta geradora mínima incremental em uma retroativa. Entretanto, na abordagem sugerida pelo artigo, são realizadas diversas reconstruções da decomposição, conforme novas arestas vão sendo adicionadas. Mais especificamente, os autores sugerem uma reconstrução a cada $\frac{\sqrt{m}}{2}$ inserções, de modo a garantir que nenhum bloco tenha tamanho maior que $\frac{3\sqrt{m}}{2}$.
+
+Além disso, assumindo que a reconstrução possui um custo amortizado $\Oh(m \log n)$, podemos distribuir este gasto pelas $\frac{\sqrt{m}}{2}$ inserções que levaram à reconstrução, fazendo com que o custo amortizado de cada operação continue sendo $\Oh(\sqrt{m} \log n)$. Todavia, para que a reconstrução tenha este custo, os autores sugerem que a estrutura parcialmente retroativa tenha uma versão persistente, de modo a  podermos utilizar uma única cópia para representar $F_0, F_1, \dots, F_{\sqrt{m}}$. Por sua vez, uma versão persistente da floresta geradora mínima incremental requer a implementação de uma link-cut tree persistente, como a apresentada por \citet{10.1007/978-3-540-69903-3_16}. Porém, essa implementação é bastante sofisticada, e seu estudo fugiria do escopo deste trabalho.
+
+Logo, estamos interessados em resolver este problema utilizando uma versão não persistente da floresta geradora mínima incremental, criando uma cópia da estrutura para cada $F_i$. Desse modo, durante uma reconstrução, as inserções do último bloco serão inseridas em $F_{\sqrt{m}}$, as inserções do penúltimo bloco serão inseridas em $F_{\sqrt{m} - 1}$ e $F_{\sqrt{m}}$, e assim por diante. Portanto, podemos calcular o custo dessa reconstrução da seguinte maneira:
+
+\begin{equation}
+    \sum_{i=1}^{\sqrt{m}} (i \sqrt{m} \log n) =
+    \frac{m \log n \: (\sqrt{m} + 1)}{2} \Rightarrow
+    \Oh(m \log n \sqrt{m}).
+\end{equation}
+
+Ou seja, com o custo da reconstrução apresentado acima, cada inserção teria agora um custo amortizado de $\Oh(m \log n)$, o que está longe do ideal. Neste ponto, nossa abordagem para solucionar o problema fica bastante criativa, com a apresentação de uma maneira totalmente nova de realizar tal tarefa.
+
+O principal ponto a ser notado é que, entre uma reconstrução e outra, gastamos muito tempo para reconstruir cada $F_i$ a partir do zero, e que talvez exista uma maneira de reaproveitar as estruturas da decomposição anterior durante a reconstrução da nova. Para facilitar a exposição, vamos diferenciar a notação relativa à nova decomposição em relação à antiga. Deste modo, definimos $m^*$ e $\sqrt{m^*}$ como o número de inserções e o tamanho dos blocos na nova versão, além de $c_0^*, c_1^*, \dots, c_{\sqrt{m^*}}^*$ e $F_0^*, F_1^*, \dots, F_{\sqrt{m^*}}^*$ como as novas listas de \emph{checkpoints} e florestas geradoras mínimas incrementais.
+
+Assim, nossa versão melhorada funciona da seguinte maneira:
+
+\begin{itemize}
+    \item primeiramente, uma reconstrução vai ser realizada toda vez que $m$ for um quadrado perfeito, fazendo com que $\sqrt{m^*} $ seja igual a $\sqrt{m} + 1$;
+    \item em cada reconstrução, faremos com que $F_0^*$ e $F_1^*$ sejam florestas geradoras incrementais de um grafo vazio. Além disso, iniciamos com $F_i^* = F_{i-2}$, para $i \in [2, \sqrt{m^*}]$;
+    \item por último, considerando $c_{-2} = c_{-1} = 0$, incluímos em $F_i^*$ todas as arestas adicionadas do instante $c_{i-2}$ até o instante $c_i^*$.
+\end{itemize}
+
+Na próxima seção, provaremos que $c_{i-2} \leq c^*_i$, de modo que o último passo resulte numa versão correta de $F_i^*$, e analisaremos o custo dessa reconstrução.
+
+A partir dessa versão, veremos que a reconstrução consome o mesmo tempo da reconstrução sugerida por Demaine, Iacono et al., porém agora sem a necessidade de uma estrutura persistente. Além disso, o funcionamento das outras rotinas continuam iguais ao da versão original.
+
+%% ------------------------------------------------------------------------- %%
+\subsection{Correção e complexidade}
+\label{sec:rmsf-complexidade}
+
+Antes de adentrarmos nos detalhes de como são as implementações dos métodos da nossa estrutura, vamos analisar a correção e a complexidade da versão aqui proposta. Primeiramente, precisamos obter um resultado relativamente simples, porém muito útil para nossa análise: o número de inserções realizadas entre duas reconstruções.
+
+\begin{lemma}
+    \label{coro:amt-op}
+    Seja $m$, a quantidade atual de inserções realizadas, um quadrado perfeito. Então o número de inserções a serem realizadas até a próxima reconstrução é de $2 \sqrt{m} + 1$.
+\end{lemma}
+\begin{proof}
+    Na nossa proposta, uma nova reconstrução acontece quando o número de inserções chegar ao próximo quadrado perfeito. Desse modo, na próxima reconstrução teremos um novo $m^*$ igual a $(\sqrt{m} + 1)^2$. Logo, podemos calcular a diferença entre estes dois valores:
+    \begin{align*}
+        m^* - m & = (\sqrt{m} + 1)^2 - m    \\
+                & = (m + 2\sqrt{m} + 1) - m \\
+                & = 2\sqrt{m} + 1.
+    \end{align*}
+    Portanto, temos que $2\sqrt{m} + 1$ inserções serão realizadas até a próxima reconstrução.
+\end{proof}
+
+Em seguida, vamos constatar que o deslocamento de $F_i^*$ até $c_i^*$ sempre consiste na adição de zero ou mais arestas, isto é, que $c_{i-2} \leq c_i^*$.
+
+\begin{theorem}
+    \label{teo:adicao-arestas}
+    Durante uma reconstrução, para $i \geq 2$, todas as arestas de $F_{i-2}$ estão em $F_i^*$.
+\end{theorem}
+\begin{proof}
+
+    Vamos definir $p_i = i \sqrt{m}$, que é a posição da inserção que define $c_i$ na lista \texttt{edges\_by\_time} durante a última reconstrução, e $p_i^*$ como a posição dessa inserção na lista \texttt{edges\_by\_time} após a reconstrução.
+
+    Estamos interessados em mostrar que $p_{i-2}^* < i\sqrt{m^*}$, ou seja, que a nova posição que $c_i$ ocupa, após a reconstrução, faz parte de $F_i^*$. Para isso, podemos observar que, para $i \in [2, \sqrt{m}]$, temos:
+    \begin{align*}
+        p_{i-2}^* & \leq p_{i-2} + 2\sqrt{m} + 1     \\
+                  & = (i-2) \sqrt{m} + 2\sqrt{m} + 1 \\
+                  & = i \sqrt{m} + 1                 \\
+                  & < i \sqrt{m^*}
+    \end{align*}
+
+    Logo, mesmo se todas as novas inserções fossem adicionadas num instante de tempo anterior a $c_{i-2}$, ou seja, que a nova posição $p_{i-2}^*$ de $c_{i-2}$ fosse $2\sqrt{m} + 2$ a mais que a original $p_{i-2}$, ainda temos $p_{i-2}^* < i \sqrt{m^*}$.
+\end{proof}
+
+Ademais, podemos complementar o resultado acima cuidando de $F_0^*$ e $F_1^*$, criadas durante a fase inicial da reconstrução. Neste caso, ambas as estruturas começam representando um grafo vazio, e apenas $F_1^*$ recebe novas arestas, o que satisfaz o resultado apresentado.
+
+Agora, precisamos descobrir qual o número máximo de inserções feitas em $F_i^*$, ou seja, o número máximo de arestas que podem existir entre o instante $c_{i-2}$ e $c_i^*$.
+
+\begin{theorem}
+    \label{teo:deslocamento}
+    Durante uma reconstrução, menos que $3 \sqrt{m^*}$ arestas são adicionadas a cada~$F_i^*$, para $i \geq 0$.
+\end{theorem}
+\begin{proof}
+    Começamos analisando a criação de $F_0^*$ e $F_1^*$. Como $c_0^* = 0$, nenhuma aresta é adicionada em $F_0^*$. Já para $F_1^*$, é necessário que todas as $\sqrt{m^*}$ arestas até $c_1^*$ sejam adicionadas a $F_1^*$, o que satisfaz o teorema.
+
+    Em seguida, vamos determinar qual o número máximo de arestas a serem adicionadas a cada $F_i^*$, para $i \geq 2$. Para cada $F_i^*$, isso acontece quando todas as novas arestas são inseridas antes de $c_{i-2}$, em outras palavras, quando $p_i^*$ é mais próximo de $i \sqrt{m^*}$.
+
+    Neste caso, para $2 \leq i \leq \sqrt{m^*}$, sejam $p_i$ e $p_i^*$ as posições definidas no Teorema \ref{teo:adicao-arestas}. O número de inserções para transformarmos $F_{i-2}$ em $F_i^*$ seria:
+    \begin{align*}
+        p_i^* - p_{i-2} & = i\sqrt{m^*} - (i-2)\sqrt{m}           \\
+                        & = i(\sqrt{m}+1) - (i-2)\sqrt{m}         \\
+                        & = i\sqrt{m} + i - i\sqrt{m} + 2\sqrt{m} \\
+                        & = i + 2\sqrt{m}                         \\
+                        & \leq \sqrt{m^*} + 2\sqrt{m}             \\
+                        & < 3\sqrt{m^*}.
+    \end{align*}
+
+    Desta forma, podemos conferir que menos que $3 \sqrt{m^*}$ arestas são adicionadas a cada~$F_i^*$ durante a reconstrução.
+\end{proof}
+
+Finalmente, utilizando os resultados acima, podemos ver que o custo total amortizado de uma reconstrução é de $\Oh(m^* \log{n})$, onde $n$ é o número de vértices do grafo. Além disso, podemos amortizar este custo pelas $2\sqrt{m} + 1$ inserções que levaram a essa reconstrução, concluindo que o custo amortizado por cada inserção de aresta é de $\Oh(\sqrt{m^*} \log{n})$.
+
+%% ------------------------------------------------------------------------- %%
+\section{Consultas Get MSF e Get MST Weight}
+\label{sec:rmsf-get-msf}
+
+Primeiramente, para falarmos sobre as consultas, precisamos lembrar a ideia por trás delas. Dado um instante de tempo $t$, precisamos encontrar o maior \emph{checkpoint} $c_i$ tal que $c_i \leq t$. Depois disso, aumentamos a estrutura $F_i$ do respectivo bloco, adicionando todas as arestas no intervalo de tempo $(c_i, t]$. Por último, podemos retornar a consulta propriamente dita, isto é, uma árvore geradora mínima ou o seu peso.
+
+Entretanto, não podemos simplesmente realizar uma cópia de $F_i$ para então aumentá-la, pois isso teria um custo $\Oh(m)$ no pior caso. Para contornar este problema, usamos os métodos apresentados na Seção \ref{sec:rmsf-extras}, que nos permitem adicionar as arestas no intervalo e depois desfazer essas alterações.
+
+Ademais, criamos mais duas rotinas auxiliares para ajudar na implementação das consultas. A primeira delas é a \texttt{find\_left\_checkpoint\_index(t)}, que percorre a lista de \emph{checkpoints} e retorna o maior inteiro $i$ tal que $c_i \leq t$. Em seguida, temos a rotina \texttt{get\_delta\_edge\_operations(i, t)}, que retorna uma lista com todas as arestas no intervalo $(c_i, t]$, para isso, essa função faz uma iteração sobre a lista ordenada \texttt{edges\_by\_time}. Os custos destas rotinas são $\Oh(\sqrt{m})$ e $\Oh(\sqrt{m}\log{m})$, respectivamente, .
+
+\begin{algorithm}[h!]
+    \caption{Consulta Get MSF Weight}\label{rmsf-get-msf-weight}
+    \begin{algorithmic}[1]
+        \Function{get\_msf\_weight}{{t}}
+        \State {checkpoint\_index $\gets$ find\_left\_checkpoint\_index(t)}
+        \State {delta\_operations $\gets$ get\_delta\_edge\_operations(last\_checkpoint\_index, t)}
+        \State \Return {t[checkpoint\_index].get\_msf\_weight\_after\_operations(delta\_operations)}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+Deste modo, como a lista \texttt{delta\_operations} tem $\Oh(\sqrt{m})$ arestas, e como o custo amortizado para adicionar cada uma destas arestas e depois desfazer essa adição é de $\Oh(\log{n})$, temos que a rotina \texttt{get\_msf\_weight} possui um custo amortizado de $\Oh(\sqrt{m} \log{n})$. Além disso, a rotina \texttt{get\_msf}, que teve seu pseudo-código omitido devido à similaridade com o Programa~\ref{rmsf-get-msf-weight}, possui um custo amortizado de $\Oh(m)$.
+
+%% ------------------------------------------------------------------------- %%
+\section{Rotina Add Edge}
+\label{sec:rmsf-add-edge}
+
+Agora, chegamos à rotina responsável por adicionar novas arestas à estrutura. Sua responsabilidade consiste em adicionar a aresta $(u,v,w)$ na lista \texttt{edges\_by\_time}, além de inserir a aresta na $F_i$ de todos os blocos tal que $t < c_i$. Ademais, também atribuímos a esta rotina a função de acionar a reconstrução da estrutura, caso necessário.
+
+\begin{algorithm}[h!]
+    \caption{Rotina Add Edge}\label{rmsf-add-edge}
+    \begin{algorithmic}[1]
+        \Function{get\_msf}{{u, v, w, t}}
+        \State {edges\_by\_time[t] $\gets$ Edge(u,v,w)}
+        \For{{i $\in$ (find\_left\_checkpoint\_index(t), n\_blocks)}}
+        \State {F[i].add\_edge(u, v, w)}
+        \EndFor
+        \If{{$($block\_size + 1$)^2$ = edges\_by\_time.size()}}
+        \State {rebuild\_decomposition()}
+        \EndIf
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+Com isso, temos que o custo amortizado dessa rotina é de $\Oh(\sqrt{m} \log{n})$, resultado do custo de inserção em cada uma das $F_i$, além do custo amortizado da reconstrução.
+
+%% ------------------------------------------------------------------------- %%
+\section{Rotina Build Decomposition}
+\label{sec:rmsf-build-decomposition}
+
+Por último, vamos falar da rotina responsável por reconstruir a decomposição, a \texttt{build\_decomposition}. Este método é acionado pela rotina \texttt{add\_edge} toda vez que $m$ for um quadrado perfeito.
+
+\begin{algorithm}[h!]
+    \caption{Rotina Build Decomposition}\label{rmsf-build-decomp}
+    \begin{algorithmic}[1]
+        \Function{build\_decomposition}{{}}
+        \State {block\_size $\gets$ block\_size + 1}
+        \State {n\_blocks $\gets$ block\_size + 1}
+
+        \State {position $\gets$ 0}
+        \State {$c^*$ $\gets$ [0] \quad} \Comment{lista de novos \emph{checkpoints}}
+        \ForEach{{[edge, time] in edges\_by\_time}}
+        \State {position $\gets$ position + 1}
+        \If{position \% block\_size = 0}
+        \State {$c^*$.append(time)}
+        \EndIf
+        \EndFor
+
+        \State {$F^*$ $\gets$ [new IncrementalMSF(), new IncrementalMSF()]}
+        \State \Comment{adicionando as arestas inseridas entre os instantes 0 e $c^*[1]$}
+        \State {move\_imsf\_checkpoint($t^*$[1], 0, $c^*$[1])}
+
+        \For{{i $\in [2, n\_blocks]$}}
+        \State {$F^*$.append($F$[i-2])}
+        \State {move\_imsf\_checkpoint($F^*$[i], $c$[i-2], $c^*$[i])}
+        \EndFor
+        \State {$c$ $\gets$ $c^*$}
+        \State {$F$ $\gets$ $F^*$}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+Para deixarmos o código mais claro, criamos uma rotina auxiliar \texttt{move\_imsf\_checkpoint(F, a, b)}, que recebe uma floresta geradora mínima incremental $F$ e a desloca, adicionando todas arestas que foram inseridas no intervalo de tempo $(a, b]$, com custo amortizado $\Oh((b-a) \log n)$, onde $n$ é o número de vértices no grafo.
+
+Com isso, a implementação segue diretamente da explicação na Seção \ref{sec:rmsf-complexidade}, com a criação de novas listas $c^*$ e $F^*$, para armazenar os \emph{checkpoints} e as florestas geradoras mínimas incrementais, respectivamente. Além disso, utilizamos um laço para preencher $F^*$ e fazer com que cada uma das $F^*_i$ seja deslocada para o seu respectivo $c_i^*$.
+
+Finalmente, o custo do laço na linha 6 é de $\Oh(m \log m)$ --- porque estamos percorrendo uma lista ordenada, que possui um custo logarítmico para consultas e modificações --- e o custo amortizado de cada chamada \texttt{move\_imsf\_checkpoint} é de $\Oh(\sqrt{m} \log n)$ --- pois, como demonstrado no Teorema \ref{teo:deslocamento}, são adicionadas no máximo $3\sqrt{m}$ arestas, com cada adição tendo um custo amortizado de $\Oh(\log n)$. Portanto, podemos conferir que a rotina gasta tempo amortizado $\Oh(m \log n)$, onde $m$ é o número de arestas na estrutura e $n$ a quantidade de vértices no grafo.
+

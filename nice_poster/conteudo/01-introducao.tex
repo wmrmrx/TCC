@@ -1,0 +1,23 @@
+%!TeX root=../monografia.tex
+
+%% ------------------------------------------------------------------------- %%
+\chapter{Introdução}
+\label{cap:introducao}
+
+De acordo com \citet{10.5555/1614191}, \emph{estruturas de dados} são uma maneira de guardar e organizar dados de forma a facilitar o acesso e modificação destes. Além disso, cada estrutura de dados serve a um proposito, ou seja, um contexto em que sua aplicação faz mais sentido.
+
+Em geral, estamos preocupados em fazer com que a estrutura represente e modifique os dados sempre em um único estado, o presente. Porém, em muitos casos, essa premissa faz com que modificações e consultas sejam difíceis de serem aplicados quando queremos realizá-las no passado.
+
+Por exemplo, uma das estruturas de dados mais simples, a \emph{pilha}, é capaz de realizar duas rotinas básicas: \texttt{empilha} e \texttt{desempilha}, junto com a consulta \texttt{topo}. Caso tenhamos uma sequência de operações: \texttt{empilha(1)}, \texttt{empilha(2)}, \texttt{empilha(3)} e \texttt{desempilha()}, a consulta \texttt{topo()} deve retornar $2$. Entretanto, caso esqueçamos de realizar a operação \texttt{empilha(2)}, nossa consulta agora retornaria $1$, e a única maneira de corrigir o nosso erro seria desfazer todas as operações feitas após \texttt{empilha(1)}, e então refazê-las corretamente.
+
+Visando solucionar este tipo de problema, \citet{10.1145/1240233.1240236} apresentaram a ideia de \emph{estruturas de dados retroativas}. Com elas, cada operação possui um instante de tempo associado, o que permite que elas sejam realizadas em qualquer momento. Em outras palavras, podemos agora realizar operações em qualquer estado passado da estrutura. Além disso, é possível remover uma operação que aconteceu em um certo instante de tempo, fazendo com que seus efeitos desapareçam da estrutura.
+
+Em particular, temos duas categorias de retroatividade: a \emph{retroatividade parcial}, que permite apenas que modificações ou remoções sejam realizadas no passado, enquanto todas as consultas devem ser realizadas no estado presente da estrutura; e a \emph{retroatividade total}, que, além das modificações e remoções, permite também a realização de consultas em qualquer instante de tempo.
+
+Neste trabalho, realizaremos um estudo das versões retroativas de dois problemas bastante famosos em ciência da computação: o \emph{union-find} e a \emph{floresta geradora mínima}. Para isso, será necessária a apresentação de uma estrutura de dados chamada \emph{link-cut tree}, que servirá como base para as soluções de ambos os problemas citados acima.
+
+% citar usos da retroatividade (tem alguns exemplos no paper)
+
+% Vale notar que \citet{DBLP:journals/corr/abs-1910-03332} apresentam ainda outra definição: a de \emph{estrutura de dados incremental totalmente retroativa}. Neste caso, uma operação retroativa pode criar ou cancelar uma inserção, fazendo com que, no segundo caso, a operação cancelada seja totalmente removida da estrutura de dados. Entretanto, não se pode criar uma remoção, isto é, não existe suporte para que uma operação seja cancelada somente após um certo instante de tempo. Portanto, apesar de um nome sugestivo, essa definição também não contempla a solução que vamos estudar neste capítulo.
+
+Vale notar que a retroatividade não é a única alternativa para permitir que estruturas de dados lidem com o tempo de maneira diferente. Apresentada por \citet{sarnak1986persistent}, as \emph{estruturas de dados persistentes} criam uma nova versão da estrutura toda vez que uma modificação é realizada, fazendo com que seja possível realizar consultas em qualquer uma das versões da estrutura. Ademais, assim como na retroatividade, temos duas categorias de persistência: a \emph{persistência parcial}, que permite modificações apenas na versão atual da estrutura; e a \emph{persistência total}, onde qualquer versão, tanto no passado quanto no presente, possa ser modificada.

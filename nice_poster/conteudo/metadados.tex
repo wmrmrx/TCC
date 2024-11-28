@@ -1,0 +1,104 @@
+%!TeX root=../monografia.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% METADADOS DA TESE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Estes comandos definem o título e autoria do trabalho e devem sempre ser
+% definidos, pois além de serem utilizados para criar a capa, também são
+% armazenados nos metadados do PDF.
+\title{
+    % Obrigatório nas duas línguas
+    titlept={Link-cut trees e aplicações em\\estruturas de dados retroativas},
+    titleen={Link-cut trees and applications on retroactive data structures},
+    % Opcional, mas se houver deve existir nas duas línguas
+    % subtitlept={Um estudo sobre Union-Find e ...},
+    % subtitleen={A study about Union-Find and},
+    % Opcional, para o cabeçalho das páginas
+    shorttitle={Título curto},
+}
+
+\author[mas]{Felipe Castro de Noronha}
+
+% Para TCCs, este comando define o supervisor
+\orientador[fem]{Profª. Drª. Cristina Gomes Fernandes}
+
+% A página de rosto da versão para depósito (ou seja, a versão final
+% antes da defesa) deve ser diferente da página de rosto da versão
+% definitiva (ou seja, a versão final após a incorporação das sugestões
+% da banca).
+\defesa{
+nivel=tcc, % mestrado, doutorado ou tcc
+% É a versão para defesa ou a versão definitiva?
+%definitiva,
+% É qualificação?
+%quali,
+programa={Ciência da Computação},
+membrobanca={Profª. Drª. Fulana de Tal (orientadora) -- IME-USP [sem ponto final]},
+% Em inglês, não há o "ª"
+%membrobanca{Prof. Dr. Fulana de Tal (advisor) -- IME-USP [sem ponto final]},
+% membrobanca={Prof. Dr. Ciclano de Tal -- IME-USP [sem ponto final]},
+% membrobanca={Profª. Drª. Convidada de Tal -- IMPA [sem ponto final]},
+% Se não houve bolsa, remova
+%
+% Norma sobre agradecimento por auxílios da FAPESP:
+% https://fapesp.br/11789/referencia-ao-apoio-da-fapesp-em-todas-as-formas-de-divulgacao
+%
+% Norma sobre agradecimento por auxílios da CAPES (Portaria 206,
+% de 4 de Setembro de 2018):
+% https://www.in.gov.br/materia/-/asset_publisher/Kujrw0TZC2Mb/content/id/39729251/do1-2018-09-05-portaria-n-206-de-4-de-setembro-de-2018-39729135
+%
+%apoio={O presente trabalho foi realizado com apoio da Coordenação
+%       de Aperfeiçoamento\\ de Pessoal de Nível Superior -- Brasil
+%       (CAPES) -- Código de Financiamento 001}, % o código é sempre 001
+%
+%apoio={This study was financed in part by the Coordenação de
+%       Aperfeiçoamento\\ de Pessoal de Nível Superior -- Brasil
+%       (CAPES) -- Finance Code 001}, % o código é sempre 001
+%
+%apoio={Durante o desenvolvimento deste trabalho, o autor recebeu\\
+%       auxílio financeiro da FAPESP -- processo nº aaaa/nnnnn-d},
+%
+%apoio={During the development if this work, the author received\\
+%       financial support from FAPESP -- grant \#aaaa/nnnnn-d},
+%
+% apoio={Durante o desenvolvimento deste trabalho o autor
+%         recebeu auxílio financeiro da XXXX},
+local={São Paulo},
+data=2022-10-10, % YYYY-MM-DD
+% A licença do seu trabalho. Use CC-BY, CC-BY-NC, CC-BY-ND, CC-BY-SA,
+% CC-BY-NC-SA ou CC-BY-NC-ND para escolher a licença Creative Commons
+% correspondente (o sistema insere automaticamente o texto da licença).
+% Se quiser estabelecer regras diferentes para o uso de seu trabalho,
+% converse com seu orientador e coloque o texto da licença aqui, mas
+% observe que apenas TCCs sob alguma licença Creative Commons serão
+% acrescentados ao BDTA.
+direitos={CC-BY}, % Creative Commons Attribution 4.0 International License
+%direitos={Autorizo a reprodução e divulgação total ou parcial
+%          deste trabalho, por qualquer meio convencional ou
+%          eletrônico, para fins de estudo e pesquisa, desde que
+%          citada a fonte.},
+% Isto deve ser preparado em conjunto com o bibliotecário
+%fichacatalografica={nome do autor, título, etc.},
+}
+
+% As palavras-chave são obrigatórias, em português e
+% em inglês. Acrescente quantas forem necessárias.
+\palavrachave{link-cut tree}
+\palavrachave{estrutura de dados retroativa}
+\palavrachave{union-find}
+\palavrachave{floresta geradora mínima}
+
+\keyword{link-cut tree}
+\keyword{retroactive data structure}
+\keyword{union-find}
+\keyword{minimum spanning forest}
+
+% O resumo é obrigatório, em português e inglês.
+\resumo{
+    Estruturas de dados retroativas permitem a realização de operações que afetam não somente o estado atual da estrutura, mas também qualquer um de seus estados passados. Além disso, uma link-cut tree é uma estrutura de dados que permite a manutenção de uma floresta de árvores enraizadas com peso nas arestas, e onde os nós de cada árvore possuem um número arbitrário de filhos. Tal estrutura é muito utilizada como base para o desenvolvimento de estruturas de dados retroativas, e neste trabalho estudaremos as versões retroativas dos problemas de union-find e floresta geradora mínima.  Para isso, implementamos essas estruturas em \texttt{C++} e descrevemos as ideias por trás de seus funcionamentos. Ademais, apresentamos uma melhoria da solução originalmente apresentada para a floresta geradora mínima retroativa, que retira limitações sem piorar sua performance.
+}
+
+\abstract{
+    Retroactive data structures allow operations to be performed not only in the current state of the structure, but also in any of its past states. Moreover, a link-cut tree is a data structure that allows the maintenance of a forest of rooted trees with weighted edges, and where the nodes of each tree have an arbitrary number of children. Such structure is widely used as a basis for the development of retroactive data structures, and in this work we will study the retroactive versions of the union-find and minimum spanning forest problems. To do so, we implement these structures in \texttt{C++} and describe the ideas on how they work. Furthermore, we present an improvement of a solution originally presented for the retroactive minimum spanning forest, which removes limitations without worsening its performance.
+}

@@ -1,0 +1,55 @@
+%!TeX root=../monografia.tex
+
+%% ------------------------------------------------------------------------- %%
+\chapter{Implementação}
+\label{cap:implementacao}
+
+Todas as estruturas apresentadas nesse trabalho foram implementadas e testadas. Neste capítulo, discutiremos acerca dos detalhes de implementação, tais como aspectos de linguagem, testagem e organização dos códigos.
+
+\section{Organização}
+
+Todas as implementações foram feitas utilizando \texttt{C++17} como linguagem de programação. Além disso, criamos um repositório no GitHub\footnote{\url{www.github.com}} para versionar o desenvolvimento dos programas assim como a escrita da monografia. Este repositório pode ser acessado em \url{www.github.com/fcnoronha/mac0499}.
+
+\begin{figure}[h!]
+    \centering
+    \framebox[\textwidth]{%
+        \begin{minipage}{0.9\textwidth}
+            \dirtree{%
+                .1 \textbf{implementations}.
+                .2 BUILD.
+                .2 splayTree.cpp.
+                .2 splayTree.hpp.
+                .2 linkCutTree.cpp.
+                .2 linkCutTree.hpp.
+                .2 linkCutTreeTest.cpp.
+                .2 \textbf{retroactiveUnionFind}.
+                .3 retroactiveUnionFind.cpp.
+                .3 retroactiveUnionFind.hpp.
+                .3 retroactiveUnionFindTest.cpp.
+                .2 \textbf{incrementalMSF}.
+                .3 incrementalMSF.cpp.
+                .3 incrementalMSF.hpp.
+                .3 incrementalMSFTest.cpp.
+                .2 \textbf{retroactiveMSF}.
+                .3 retroactiveMSF.cpp.
+                .3 retroactiveMSF.hpp.
+                .3 retroactiveMSFTest.cpp.
+            }
+        \end{minipage}
+    }
+    \caption{Árvore do diretório que contém as implementações das estruturas apresentadas no trabalho.}
+    \label{fig:rep-tree}
+\end{figure}
+
+
+Dentro do repositório, o diretório \texttt{implementations} contém todos os códigos e arquivos necessários para a execução das estruturas. A Figura \ref{fig:rep-tree} mostra detalhadamente a estrutura deste diretório.
+
+Em particular, a implementação de cada estrutura contem três arquivos principais: um arquivo \emph{header} \texttt{.hpp}, contendo o protótipo para todos os métodos e uma breve documentação acerca do funcionamento de cada um; um arquivo de código fonte \texttt{.cpp}, que contém a implementação dos métodos e a lógica por trás de cada estrutura; um arquivo de teste, com o sufixo \texttt{Test.cpp}, que contém as rotinas utilizadas para testar cada uma das estruturas. Discutiremos mais sobre estes testes na próxima seção.
+
+\section{Construção e testes}
+
+Durante a etapa de desenvolvimento, foi necessário encontrar uma maneira fácil e eficiente de compilar as estruturas e testes. Com isso em mente, utilizamos a ferramenta de construção e testes Bazel\footnote{\url{www.bazel.build}}. A partir dessa ferramenta, concentramos toda a lógica necessária para construir executáveis e executar testes no arquivo \texttt{BUILD}.
+
+Além disso, a execução de testes automatizados é uma parte fundamental para o desenvolvimento de programas. Por causa disso, decidimos utilizar a biblioteca Google Test\footnote{\url{https://google.github.io/googletest}}, que permite a realização de testes unitários em \texttt{C++}. Para cada uma das estruturas, escrevemos uma suíte de testes com o intuito de simular os casos de borda e verificar a correção da implementação.
+
+Em especial, tivemos um pouco mais de cuidado para testar a implementação da floresta geradora mínima semi-retroativa, realizando um teste de estresse. Para isso, criamos um grafo com mil vértices e utilizamos um gerador de números aleatórios para criar suas duas mil arestas. Em seguida, associando um instante de tempo distinto para cada uma das arestas, comparamos a floresta geradora maximal de peso mínimo gerada pela nossa implementação com a floresta geradora maximal de peso mínimo encontrada pela execução do algoritmo de Kruskal. Esta checagem foi realizada diversas vezes durante a inserção de arestas na estrutura, a fim de garantir que a resposta gerada estava correta.

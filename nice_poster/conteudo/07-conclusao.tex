@@ -1,0 +1,17 @@
+%!TeX root=../monografia.tex
+
+%% ------------------------------------------------------------------------- %%
+\chapter{Conclusão}
+\label{cap:conclusao}
+
+Inicialmente, o objetivo deste trabalho era estudar a implementação retroativa de uma árvore binária de busca e de uma tabela \emph{hash}, citadas no artigo de \citet{agarwalimplementation}. Entretanto, como não conseguimos encontrar material acerca de tais estruturas, decidimos considerar outras opções dentro do tópico de retroatividade.
+
+Após realizarmos uma busca na literatura por outros temas, decidimos focar o trabalho em um estudo sobre as versões retroativas do union-find e da floresta geradora mínima. Este estudo se resumiria em compreender o funcionamento de cada uma das estruturas, assim como implementá-las. Em particular, a parte de implementação se mostrou tão difícil quanto a escrita dessa dissertação. Porém, esta tarefa foi fundamental para consolidar o entendimento sobre as estruturas, e somente depois dela estivemos confortáveis para explicar o funcionamento das soluções.
+
+Ademais, ficamos bastante contentes com a melhoria realizada no trabalho de \citet{10.1093/comjnl/bxaa135}. Desde o início, ficamos incomodados com as limitações que tal solução apresentava, e buscamos diversas formas para contorná-las, até que chegamos à ideia aqui apresentada.
+
+Adicionalmente, escrevemos um artigo descrevendo a melhoria aqui apresentada, visando a publicação em algum veículo da área teórica de ciência da computação. Além disso, deixamos em aberto dois problemas para serem abordados em trabalhos futuros.
+
+O primeiro deles diz respeito a uma outra maneira de reconstruir a decomposição utilizada pela floresta geradora maximal de peso mínimo semi-retroativa. Talvez, ao dividirmos em dois, os maiores dois blocos da decomposição, consigamos garantir que o número de blocos e seus respetivos tamanhos serão proporcionais a $\sqrt{m}$. Especificamente, esta divisão consiste em adicionar uma nova floresta geradora maximal de peso mínimo incremental no meio de cada bloco, ou seja, entre dois \emph{checkpoints}. Essa ideia foi considerada no lugar da versão apresentada neste trabalho, porém, não conseguimos elaborar uma prova acerca de seu consumo de tempo.
+
+Já o segundo problema consiste em buscar uma forma de adaptar a solução do problema da floresta geradora maximal de peso mínimo para suportar a remoção de inserções de arestas, o que tornaria a estrutura, de fato, totalmente retroativa.
