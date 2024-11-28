@@ -149,8 +149,6 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
         \item \textbf{Floresta Geradora Mínima Rainbow:} Dado um grafo $G$ e uma coleção de cores, encontre uma floresta geradora mínima que utilize exatamente uma aresta de cada cor.
         \item \textbf{Emparelhamento Perfeito Rainbow:} Dado um grafo bipartido $G$ e uma coleção de cores, encontre um emparelhamento perfeito que utilize exatamente uma aresta de cada cor.
       \end{itemize}
-
-
     \end{block}
 
     % ----------------------------------------------------------------------------------------
@@ -158,114 +156,18 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
     % ----------------------------------------------------------------------------------------
     \onethirdcol
 
-    \begin{exampleblock}
+    \begin{block}{Fluxograma do algoritmo}
 
+      A Figura \ref{fig:flowchart} mostra o fluxograma do algoritmo desenvolvido.
+      A ideia principal é, dado um objeto, que pode ser um caminho ou um ciclo,
+      incrementar esse objeto para um objeto maior.
 
-      As link-cut trees fornecem a seguinte interface:
-
-      \definecolor{shadecolor}{rgb}{0.93, 0.80, 0.82} % pale pink
-      \begin{shaded}
-        \begin{itemize}
-          \item[$\bullet$] \textbf{\texttt{make\_root(u)}}: enraíza no vértice $u$ a árvore que o contém
-          \item[$\bullet$] \textbf{\texttt{link(u, v, w)}}: dado que os vértices $u$ e $v$ estão em árvores separadas, transforma $v$ em raiz de sua árvore e o liga como filho de $u$, colocando peso $w$ na nova aresta criada
-          \item[$\bullet$] \textbf{\texttt{cut(u, v)}}: retira da floresta a aresta com pontas em $u$ e $v$, quebrando a árvore que continha estes vértices em duas novas árvores
-          \item[$\bullet$] \textbf{\texttt{is\_connected(u, v)}}: retorna \texttt{verdadeiro} caso $u$ e $v$ pertençam à mesma árvore, \texttt{falso} caso contrário
-          \item[$\bullet$] \textbf{\texttt{maximum\_edge(u, v)}}: retorna o peso máximo de uma aresta no caminho entre os vértices $u$ e $v$
-        \end{itemize}
-      \end{shaded}
-
-      Todas essas operações consomem tempo $\Oh(\log n)$ amortizado, onde $n$ é o número de vértices na floresta.
-
-    \end{exampleblock}
-
-    \begin{block}{Union-Find retroativo}
-
-      O union-find é uma estrutura de dados utilizada para manter uma \textbf{coleção de conjuntos disjuntos}, isto é, conjuntos que não se intersectam.
-
-      \bigskip
-      \begin{figure}[h!]
-        \captionsetup{justification=centering}
-        \centering
-        \begin{subfigure}{\textwidth}
-          \centering
-          \begin{tikzpicture}[
-              no/.style={shape=circle, minimum size=1cm},
-              scale=1.5, transform shape
-            ]
-            \node[no] (a) at (4,0) {a};
-            \node[no] (x) at (5,0) {};
-            \node[no] (b) at (6,0) {b};
-            \node[no] (y) at (7,0) {};
-            \node[no] (c) at (8,0) {c};
-            \node[no] (z) at (9,0) {};
-            \node[no] (d) at (10,0) {d};
-
-            \draw ($(x)$) ellipse ({1.7cm} and {.7cm});
-            \draw ($(c)$) ellipse ({.7cm} and {.7cm});
-            \draw ($(d)$) ellipse ({.7cm} and {.7cm});
-          \end{tikzpicture}
-          \bigskip
-        \end{subfigure}
-        \begin{subfigure}{\textwidth}
-          \centering
-          \begin{tikzpicture}[
-              no/.style={shape=circle, minimum size=1cm},
-              scale=1.5, transform shape
-            ]
-            \node[no] (a) at (4,0) {a};
-            \node[no] (x) at (5,0) {};
-            \node[no] (b) at (6,0) {b};
-            \node[no] (y) at (7,0) {};
-            \node[no] (c) at (8,0) {c};
-            \node[no] (z) at (9,0) {};
-            \node[no] (d) at (10,0) {d};
-
-            \draw ($(x)$) ellipse ({1.7cm} and {.7cm});
-            \draw ($(z)$) ellipse ({1.7cm} and {.7cm});
-          \end{tikzpicture}
-          \bigskip
-        \end{subfigure}
-        \begin{subfigure}{\textwidth}
-          \centering
-          \begin{tikzpicture}[
-              no/.style={shape=circle, minimum size=1cm},
-              scale=1.5, transform shape
-            ]
-            \node[no] (a) at (4,0) {a};
-            \node[no] (x) at (5,0) {};
-            \node[no] (b) at (6,0) {b};
-            \node[no] (y) at (7,0) {};
-            \node[no] (c) at (8,0) {c};
-            \node[no] (z) at (9,0) {};
-            \node[no] (d) at (10,0) {d};
-
-            \draw ($(y)$) ellipse ({3.7cm} and {.7cm});
-          \end{tikzpicture}
-          \bigskip
-        \end{subfigure}
-        \begin{subfigure}{\textwidth}
-          \centering
-          \begin{tikzpicture}[
-              no/.style={shape=circle, minimum size=1cm},
-              scale=1.5, transform shape
-            ]
-            \node[no] (a) at (4,0) {a};
-            \node[no] (x) at (5,0) {};
-            \node[no] (b) at (6,0) {b};
-            \node[no] (y) at (7,0) {};
-            \node[no] (c) at (8,0) {c};
-            \node[no] (z) at (9,0) {};
-            \node[no] (d) at (10,0) {d};
-
-            \draw ($(b)$) ellipse ({2.8cm} and {.7cm});
-            \draw ($(d)$) ellipse ({.7cm} and {.7cm});
-          \end{tikzpicture}
-        \end{subfigure}
-        \caption{Representação dos conjuntos com os elementos $\{a,b,c,d\}$ após a seguinte sequência de operações: \texttt{create\_union(a, b, 2)}, \texttt{create\_union(c, d, 3)}, \texttt{create\_union(b, c, 4)} e \texttt{delete\_union(3)}. Cada linha mostra o estado atual da coleção imediatamente após uma operação.}
-        \label{fig:uf-sets}
-      \end{figure}
-
-      Na sua versão retroativa, implementamos as seguintes operações:
+      \begin{center}
+        \label{fig:flowchart}
+        \includegraphics[width=0.8\textwidth]{logos/flowchart.png}
+        \captionof{figure}{Fluxograma do algoritmo.}
+      \end{center}
+      \vspace{1em}
 
       \definecolor{shadecolor}{rgb}{0.93, 0.80, 0.82} % pale pink
       \begin{shaded}
@@ -275,18 +177,36 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
           \item[$\bullet$] \textbf{\texttt{delete\_union(t)}}: desfaz a união realizada em $t$
         \end{itemize}
       \end{shaded}
-
-
-      Por exemplo, a Figura \ref{fig:uf-sets} mostra o estado de uma coleção de conjuntos disjuntos após quatro operações serem aplicadas. Antes da operação \texttt{delete\_union(3)}, as consultas \texttt{same\_set(a, b, 3)} e \texttt{same\_set(c, d, 3)} retornam \texttt{verdadeiro}. Por outro lado \texttt{same\_set(a, d, 3)} e \texttt{same\_set(c, d, 3)} retornam \texttt{falso} após a chamada da função \texttt{delete\_union(3)}.
-
-      \definecolor{shadecolor}{rgb}{0.74, 0.83, 0.9} % pale blue
-      \begin{shaded}
-        \textbf{Ideia:} Fazer com que os elementos dos conjuntos sejam vértices na floresta mantida por uma link-cut tree, onde cada aresta representa uma operação de \texttt{union}. Assim, uma chamada \texttt{create\_union(a, b, 3)} cria uma aresta de valor $3$ entre os vértices $a$ e $b$. Da mesma forma, uma chamada \texttt{delete\_union(t)} simplesmente exclui a aresta criada no instante $t$. Para conferir se dois elementos $a$ e $b$, no instante de tempo $t$, estão em um mesmo conjunto, basta conferir se eles estão em uma mesma árvore e se o valor da maior aresta no caminho entre eles é menor ou igual a $t$, o que significa que todas as uniões já foram realizadas no instante consultado.
-      \end{shaded}
-
     \end{block}
 
+    \begin{block}{Técnicas utilizadas}
+      
+      Todas as técnicas utilizam fortemente a condição de Dirac para cada grafo.
+      \vspace{1em}
 
+      \textbf{Técnica do cruzamento:}
+      
+      Seja $P=\{x_1, e_1, x_2, \dots, e_{sz}, x_{sz + 1}\}$, sem repetição de cor e nem de vértice. 
+      Suponha que existam duas cores $c_1$ e $c_2$ que não pertencem ao caminho e não existem arestas
+      entre $x_1$ e $V \backslash P$ com cor $c_1$ e entre $x_{sz + 1}$ e $V \backslash P$ com cor $c_2$.
+      Suponha também que não existe uma aresta de cor $c_1$ ou $c_2$ entre $x_1$ e $x_{sz + 1}$.
+      
+      Olhando para as arestas de cor $c_1$ que saem de $x_1$, e para as arestas de cor $c_2$ que saem de $x_{sz + 1}$,
+      temos que:
+      
+      $$
+        |N_{G_{c_1}}(x_1)| + |N_{G_{c_2}}(x_{sz + 1})| \geq \frac{n}{2} + \frac{n}{2} > sz - 2.
+      $$
+
+      Pelo princípio de Dirichlet, existe um índice $i$ tal que as arestas $(x_1, x_{i+1})$ e $(x_{sz + 1}, x_i)$ são de cores $c_1$ e $c_2$, respectivamente.
+      
+      Portanto, podemos formar um circuito de tamanho maior como na imagem abaixo:
+
+      \begin{center}
+        \includegraphics[width=\textwidth]{logos/cruzamento.png}
+      \end{center}
+
+    \end{block}
 
 
     % ----------------------------------------------------------------------------------------
@@ -294,28 +214,25 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
     % ----------------------------------------------------------------------------------------
     \onethirdcol
 
-    \begin{block}{Implementação}
-
-        A prova feita por \cite{Joos_2020} pode ser adaptada para um algoritmo construtivo, em que o estado é um caminho ou ciclo \textit{rainbow}, e incrementalmente aumentamos o tamanho desse caminho ou ciclo.
-
-        A complexidade do algoritmo é da ordem de $\text{O}(n^3)$, em que $n$ é a ordem de $G$. Essa é complexidade é ótima, pois existem $\text{O}(n^3)$ arestas que devem ser consideradas no input.
-
-        Para validar a corretude da implementação, foram gerados grafos que respeitavam a condição de Dirac com $n$ até $300$, e o código implementado devolvia o ciclo hamiltoniano \textit{rainbow}.
+    \begin{block}{Animação}
+    
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{logos/qrcode.png} 
+    \end{center}
 
     \end{block}
 
-    \begin{block}{Animação}
+    \begin{block}{Informações e contato}
+      Para mais informações, acesse a página do trabalho: \textcolor{jblue}{{\url{https://linux.ime.usp.br/~felipen/mac0499}}}
 
-        Animação demonstrando o algoritmo foram feitas com a biblioteca \texttt{manim} (do canal de Youtube \texttt{3Blue1Brown}) em Python. Um exemplo está disponível no QR Code abaixo
-
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{logos/qrcode.png} 
-        \end{center}
+      \medskip
+      Endereço para contato: \\ \textcolor{jblue}{{\url{felipe.castro.noronha@usp.br}}}
     \end{block}
 
     \begin{block}{Referências}
       \bibliography{bibliografia.bib}
     \end{block}
+
 
   \end{columns}
 \end{frame}
