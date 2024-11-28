@@ -8,6 +8,9 @@
 \usepackage[T1]{fontenc}
 \usepackage{framed,graphicx,xcolor} % for shaded box
 \usepackage{mathtools}%
+\usepackage{tcolorbox} % Para criar bordas elegantes
+\usepackage{graphicx}  % Para incluir imagens
+\usepackage{caption}   % Para legendas personalizadas
 \usepackage{tikz}
 \usetikzlibrary{matrix,shapes,positioning,shadows,trees,patterns}
 
@@ -108,10 +111,45 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
     \end{block}
 
     \begin{block}{Versões Rainbow de problemas clássicos}
-      % \textbf{Definição}
+      \textbf{Definição:}
 
-      % A versão rainbow de um problema na teoria dos grafos é uma variação que adiciona a restrição de "diversidade" ou "colorido" à solução desejada. Nesse contexto, o termo rainbow (arco-íris) refere-se a estruturas em um grafo que utilizam elementos provenientes de diferentes subconjuntos, ou arestas com diferentes rótulos ou cores, garantindo que não haja repetições.
-      aaaa
+      A versão rainbow de um problema na teoria dos grafos é uma variação 
+      que adiciona a restrição de cores à solução desejada. Nesse contexto, o termo rainbow (arco-íris) refere-se a estruturas em um grafo que utilizam 
+      elementos provenientes de diferentes subconjuntos, ou arestas com diferentes rótulos ou cores, 
+      garantindo que não haja repetições.
+      \vspace{1em}
+
+      \textbf{Teorema de Dirac (\textit{Versão Rainbow}):}
+
+      Dada uma coleção $G = {G_1, G_2, \ldots, G_n}$ de grafos de ordem $n$, definidos
+      sobre o mesmo conjunto de vértices e que satisfazem a condição de Dirac para cada
+      $G_i$, existe um $G$-transversal que forma um circuito hamiltoniano, também conhecido
+      como Circuito Hamiltoniano Rainbow.
+      Cada grafo $G_i$ pode ser enxergado como se suas arestas fossem coloridas com a cor $i$.
+      
+      \begin{center}
+        \begin{tcolorbox}[
+            colframe=black,        % Border color
+            colback=white,         % Background color
+            coltitle=black,        % Title color (used for caption)
+            width=0.6\textwidth,   % Box width, 60% of the text width
+            boxrule=0.5mm,         % Border thickness
+            arc=4mm,               % Rounded corners
+            outer arc=1mm,         % Outer corner rounding
+            drop shadow=black!50   % Shadow effect for depth
+        ]
+            \centering
+            \includegraphics[width=\textwidth]{logos/dirac_rainbow.png}
+            \captionof{figure}{Exemplo de um Circuito Hamiltoniano Rainbow para uma coleção de grafos com 8 vértices.}
+        \end{tcolorbox}
+      \end{center}
+
+      \vspace{1em}
+      \textbf{Mais exemplos clássicos:}
+      \begin{itemize}
+        \item \textbf{Floresta Geradora Mínima Rainbow:} Dado um grafo $G$ e uma coleção de cores, encontre uma floresta geradora mínima que utilize exatamente uma aresta de cada cor.
+        \item \textbf{Emparelhamento Perfeito Rainbow:} Dado um grafo bipartido $G$ e uma coleção de cores, encontre um emparelhamento perfeito que utilize exatamente uma aresta de cada cor.
+      \end{itemize}
 
 
     \end{block}
