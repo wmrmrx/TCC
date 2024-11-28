@@ -169,14 +169,14 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
       \end{center}
       \vspace{1em}
 
-      \definecolor{shadecolor}{rgb}{0.93, 0.80, 0.82} % pale pink
-      \begin{shaded}
-        \begin{itemize}
-          \item[$\bullet$] \textbf{\texttt{create\_union(a, b, t)}}: adiciona a união dos conjuntos que contém $a$ e $b$ no instante de tempo $t$
-          \item[$\bullet$] \textbf{\texttt{same\_set(a, b, t)}}: consulta se dois elementos pertenciam ao mesmo conjunto no instante $t$
-          \item[$\bullet$] \textbf{\texttt{delete\_union(t)}}: desfaz a união realizada em $t$
-        \end{itemize}
-      \end{shaded}
+      % \definecolor{shadecolor}{rgb}{0.93, 0.80, 0.82} % pale pink
+      % \begin{shaded}
+      %   \begin{itemize}
+      %     \item[$\bullet$] \textbf{\texttt{create\_union(a, b, t)}}: adiciona a união dos conjuntos que contém $a$ e $b$ no instante de tempo $t$
+      %     \item[$\bullet$] \textbf{\texttt{same\_set(a, b, t)}}: consulta se dois elementos pertenciam ao mesmo conjunto no instante $t$
+      %     \item[$\bullet$] \textbf{\texttt{delete\_union(t)}}: desfaz a união realizada em $t$
+      %   \end{itemize}
+      % \end{shaded}
     \end{block}
 
     \begin{block}{Técnicas utilizadas}
@@ -186,7 +186,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
 
       \textbf{Técnica do cruzamento:}
       
-      Seja $P=\{x_1, e_1, x_2, \dots, e_{sz}, x_{sz + 1}\}$, sem repetição de cor e nem de vértice. 
+      Seja $P=(x_1, e_1, x_2, \dots, e_{sz}, x_{sz + 1})$, sem repetição de cor e nem de vértice. 
       Suponha que existam duas cores $c_1$ e $c_2$ que não pertencem ao caminho e não existem arestas
       entre $x_1$ e $V \backslash P$ com cor $c_1$ e entre $x_{sz + 1}$ e $V \backslash P$ com cor $c_2$.
       Suponha também que não existe uma aresta de cor $c_1$ ou $c_2$ entre $x_1$ e $x_{sz + 1}$.
@@ -198,7 +198,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
         |N_{G_{c_1}}(x_1)| + |N_{G_{c_2}}(x_{sz + 1})| \geq \frac{n}{2} + \frac{n}{2} > sz - 2.
       $$
 
-      Pelo princípio de Dirichlet, existe um índice $i$ tal que as arestas $(x_1, x_{i+1})$ e $(x_{sz + 1}, x_i)$ são de cores $c_1$ e $c_2$, respectivamente.
+      Pelo princípio da casa dos pombos, existe um índice $i$ tal que as arestas $(x_1, x_{i+1})$ e $(x_{sz + 1}, x_i)$ são de cores $c_1$ e $c_2$, respectivamente.
       
       Portanto, podemos formar um circuito de tamanho maior como na imagem abaixo:
 
@@ -214,13 +214,22 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
     % ----------------------------------------------------------------------------------------
     \onethirdcol
 
-    \begin{block}{Animação}
-    
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{logos/qrcode.png} 
-    \end{center}
+    \begin{block}{Implementação}
 
+      A prova feita por \cite{Joos_2020} pode ser adaptada para um algoritmo construtivo, em que o estado é um caminho ou ciclo \textit{rainbow}, e incrementalmente aumentamos o tamanho desse caminho ou ciclo.
+
+      A complexidade do algoritmo é da ordem de $\text{O}(n^3)$, em que $n$ é a ordem de $G$. Essa é complexidade é ótima, pois existem $\text{O}(n^3)$ arestas que devem ser consideradas no input.
+
+      Para validar a corretude da implementação, foram gerados grafos que respeitavam a condição de Dirac com $n$ até $300$, e o código implementado devolvia o ciclo hamiltoniano \textit{rainbow}.
     \end{block}
+
+  \begin{block}{Animação}
+
+      Animação demonstrando o algoritmo foram feitas com a biblioteca \texttt{manim} (do canal de Youtube \texttt{3Blue1Brown}) em Python. Um exemplo está disponível no QR Code abaixo
+      \begin{center}
+          \includegraphics[width=0.5\textwidth]{logos/qrcode.png} 
+      \end{center}
+  \end{block}
 
     \begin{block}{Informações e contato}
       Para mais informações, acesse a página do trabalho: \textcolor{jblue}{{\url{https://linux.ime.usp.br/~felipen/mac0499}}}
