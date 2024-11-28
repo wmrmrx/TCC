@@ -1,14 +1,31 @@
 from graph import *
 from math import ceil
 from typing import Union
+from enum import Enum
 
-def increment(G: Graph, path_or_cycle: Union[Path, Cycle]) -> Union[Path, Cycle]:
+class Case(Enum):
+    SMALL_PATH = "Path length is smaller than $\\lceil \\frac{n}{2} \\rceil$. Greedily expand the path."
+    UNDEFINED = "Undefined case."
+
+    def __str__(self):
+        return self.value 
+
+class Message:
+    case: Union[Case, str]
+
+    def __init__(self):
+        self.case = Case.UNDEFINED
+
+    def __str__(self):
+        return str(self.case)
+
+def increment(G: Graph, path_or_cycle: Union[Path, Cycle], msg: Message) -> Union[Path, Cycle]:
     if isinstance(path_or_cycle, Path):
-        return handle_path(G, path_or_cycle)
+        return handle_path(G, path_or_cycle, msg)
     elif isinstance(path_or_cycle, Cycle):
-        return handle_cycle(G, path_or_cycle)
+        return handle_cycle(G, path_or_cycle, msg)
 
-def handle_path(G: Graph, path: Path):
+def handle_path(G: Graph, path: Path, msg: Message):
     n = G.n
 
     if len(path.vertices) == 0:
@@ -24,6 +41,7 @@ def handle_path(G: Graph, path: Path):
         vertices_in_path[vertex] = True
 
     if path.size() < ceil(n / 2):
+        msg.case = Case.SMALL_PATH
         vertices = path.vertices
         edges = path.edges
         final_vertex = path.back()
@@ -49,6 +67,7 @@ def handle_path(G: Graph, path: Path):
             if edge is not None:
                 vertices = path.vertices.copy()
                 edges = path.edges.copy() + [edge]
+                msg.case = "There exists a edge that closes the path, creating a cycle"
                 return Cycle(G, vertices, edges)
 
         for [c1, c2] in [[cx, cy], [cy, cx]]:
@@ -59,6 +78,7 @@ def handle_path(G: Graph, path: Path):
                     if (edgeX is not None) and (edgeY is not None):
                         vertices = path.vertices.copy() + [i]
                         edges = path.edges.copy() + [edgeY, edgeX]
+                        msg.case = "There exists a vertex that closes the path, creating a cycle"
                         return Cycle(G, vertices, edges)
 
             for i in range(1, len(path.vertices) - 1):
@@ -73,11 +93,13 @@ def handle_path(G: Graph, path: Path):
                         vertices.append(path.vertices[j - 1])
                         edges.append(path.edges[j - 1])
                     edges.append(edgeX)
+                    msg.case = "We can use the crossing trick to create a cycle from the path"
                     return Cycle(G, vertices, edges)
 
     raise RuntimeError("Should not reach here. Did not find crossing.")
 
-def handle_cycle(G: Graph, cycle: Cycle):
+def handle_cycle(G: Graph, cycle: Cycle, msg: Message):
+    global increment_case
     n = G.n
     cycle_size = cycle.size()
 
@@ -101,6 +123,7 @@ def handle_cycle(G: Graph, cycle: Cycle):
     if cycle_size < ceil(n / 2):
         raise RuntimeError("Should not reach here. Should never get small cycle.")
     elif cycle_size == n - 1:
+        msg.case = "Find cycle of size $n$ from one of size $n-1$ (hard!)"
         new_color_id = [-1] * n
         y = next(i for i in range(n) if not vertices_in_cycle[i])
         cy = next(i for i in range(n) if not colors_in_cycle[i])
@@ -196,7 +219,6 @@ def handle_cycle(G: Graph, cycle: Cycle):
             new_vertices = []
             new_edges = []
             new_pos = [0] * n
-
 
             for i in I1:
                 if i in In:
@@ -347,6 +369,8 @@ def handle_cycle(G: Graph, cycle: Cycle):
                             edges.append(G.get_edge(w, v, j))
                             vertices.append(u)
                             edges.append(G.get_edge(v, u, i))
+
+                            msg.case = "There are two vertices outside the cycle that create a bigger path"
                             return Path(G, vertices, edges)  # Caminho de tamanho l + 1
 
         # Agora, para cada vértice não-u no ciclo, todas as arestas das cores miss1 e miss2
@@ -371,6 +395,7 @@ def handle_cycle(G: Graph, cycle: Cycle):
                             vertices.append(u)
                             edges.append(edge2)
                             
+                            msg.case = "We can remove a edge and add a vertex, creating a bigger cycle"
                             return Cycle(G, vertices, edges)  # Ciclo de tamanho l + 1
 
         raise RuntimeError("Código inacessível!")

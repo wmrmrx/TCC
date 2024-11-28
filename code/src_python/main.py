@@ -106,7 +106,7 @@ class Draw(manim.Scene):
         scene = draw("", [], [])
         self.play(manim.Create(scene))
 
-        def new_scene(text, edges, vertices, scene, wait: float = 1, add_edge: bool = False):
+        def new_scene(text, edges, vertices, scene, wait: float = 1):
             new_scene = draw(text, edges, vertices)
             self.play(manim.Transform(scene, new_scene))
             scene = new_scene
@@ -122,32 +122,19 @@ class Draw(manim.Scene):
         vertices = [0]
         new_scene("", edges, vertices, scene)
 
-        for color in range(0, (n + 1) // 2):
-            u = vertices[-1]
-            v = None
-            edge = None
-            for optv in range(n):
-                if optv not in vertices and G.check_edge(u, optv, color) is not None:
-                    v = optv
-                    edge = G.get_edge(u, v, color)
-                    break
-            assert v is not None
-            vertices.append(v)
-            edges.append(edge)
-            new_scene("", edges, vertices, scene, add_edge = True)
-
-        new_scene("Now we increment", edges, vertices, scene)
-        new_scene("", edges, vertices, scene)
-
+        msg = Message()
         while len(edges) != n:
             result = None
             if len(edges) == len(vertices):
                 cycle = Cycle(G, deepcopy(vertices), deepcopy(edges))
-                result = increment(G, cycle)
+                result = increment(G, cycle, msg)
             else:
                 path = Path(G, deepcopy(vertices), deepcopy(edges))
-                result = increment(G, path)
-
-            new_scene("", result.edges, result.vertices, scene, add_edge = len(result.edges) > len(edges))
+                result = increment(G, path, msg)
+            new_scene(str(msg), result.edges, result.vertices, scene)
+            new_scene("", result.edges, result.vertices, scene)
             vertices = result.vertices
             edges = result.edges
+            msg = Message()
+
+        new_scene("We have a Rainbow Hamiltonian Cycle.", edges, vertices, scene, wait = 5)
