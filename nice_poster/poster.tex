@@ -106,7 +106,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
           \item $\delta(G)$ é o grau mínimo de um vértice em $G$.
         \end{itemize}
         \vspace{0.5em}
-      \textbf{Teorema de Dirac (1952):}
+        \textbf{Teorema de Dirac (\cite{dirac1952}):}
         Se um grafo simples $G$ com $n$ vértices tem grau mínimo $\delta(G) \geq \frac{n}{2}$, então $G$ contém um ciclo hamiltoniano.
     \end{block}
 
@@ -295,26 +295,22 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
     \onethirdcol
 
     \begin{block}{Implementação}
-    
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{logos/qrcode.png} 
-    \end{center}
+
+        A prova feita por \cite{Joos_2020} pode ser adaptada para um algoritmo construtivo, em que o estado é um caminho ou ciclo \textit{rainbow}, e incrementalmente aumentamos o tamanho desse caminho ou ciclo.
+
+        A complexidade do algoritmo é da ordem de $\text{O}(n^3)$, em que $n$ é a ordem de $G$. Essa é complexidade é ótima, pois existem $\text{O}(n^3)$ arestas que devem ser consideradas no input.
+
+        Para validar a corretude da implementação, foram gerados grafos que respeitavam a condição de Dirac com $n$ até $300$, e o código implementado devolvia o ciclo hamiltoniano \textit{rainbow}.
 
     \end{block}
 
     \begin{block}{Animação}
-    
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{logos/qrcode.png} 
-    \end{center}
 
-    \end{block}
+        Animação demonstrando o algoritmo foram feitas com a biblioteca \texttt{manim} (do canal de Youtube \texttt{3Blue1Brown}) em Python. Um exemplo está disponível no QR Code abaixo
 
-    \begin{block}{Informações e contato}
-      Para mais informações, acesse a página do trabalho: \textcolor{jblue}{{\url{https://linux.ime.usp.br/~felipen/mac0499}}}
-
-      \medskip
-      Endereço para contato: \\ \textcolor{jblue}{{\url{felipe.castro.noronha@usp.br}}}
+        \begin{center}
+            \includegraphics[width=0.5\textwidth]{logos/qrcode.png} 
+        \end{center}
     \end{block}
 
     \begin{block}{Referências}
