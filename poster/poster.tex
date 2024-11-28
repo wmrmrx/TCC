@@ -12,6 +12,8 @@
 \usepackage{imegoodies}
 \usepackage[poster,hidelinks]{imelooks}
 % \tcbposterset{fontsize = 32pt} % default, mude se necessário
+\usepackage{graphicx} % For including images
+\usepackage{caption}  % For the \captionof command
 
 % Diretórios onde estão as figuras; com isso, não é necessário (mas
 % é permitido) colocar o caminho completo em \includegraphics. Note
@@ -143,16 +145,14 @@
 \posterbox[adjusted title = Dirac's Theorem and Basic Definitions]
           {name=intro, below=titlebox, column=1, span=6}{
     \begin{itemize}
-        \item \textbf{Dirac's Theorem (1952):} If a simple graph $G$ with $n$ vertices has minimum degree $\delta(G) \geq \frac{n}{2}$, then $G$ contains a Hamiltonian cycle.
-
-        \vspace{0.5em}
-
         \item \textbf{Key Definitions:}
         \begin{itemize}
 	    \item A simple graph is a undirected graph without loops and multiple edges.
 	    \item A \textcolor{imered}{Hamiltonian cycle} of $G$ is a cycle which visits every vertex of $G$ exactly once.
 	    \item $\delta(G)$ is the minimum degree of a vertex in $G$.
         \end{itemize}
+        \vspace{0.5em}
+        \item \textbf{Dirac's Theorem (1952):} If a simple graph $G$ with $n$ vertices has minimum degree $\delta(G) \geq \frac{n}{2}$, then $G$ contains a Hamiltonian cycle.
     \end{itemize}
 }
 
@@ -160,7 +160,8 @@
 \posterbox[adjusted title = Rainbow Version and Extensions]
           {name=rainbow, below=intro, column=1, span=6}{
     \begin{itemize}
-        \item \textbf{Rainbow version of Dirac's Theorem:} Given graphs $G_1,\ldots,G_n$ on the same $n$ vertices where each $G_i$ satisfies Dirac's condition, there exists a Rainbow Hamiltonian cycle --- that is, a Hamiltonian cycle where each edge belongs to a different $G_i$.
+        \item \textbf{Rainbow version of Dirac's Theorem:} 
+        Given a collection of graphs $G = \{G_1,\ldots,G_n\}$ on the same $n$ vertices where each $G_i$ satisfies Dirac's condition, there exists a Rainbow Hamiltonian cycle --- that is, a Hamiltonian cycle where each edge belongs to a different $G_i$.
        
         \vspace{0.5em}
 
@@ -168,7 +169,6 @@
         \begin{itemize}
             \item Rainbow Perfect Matching
             \item Rainbow Spanning Trees
-            \item Rainbow Connectivity
         \end{itemize}
     \end{itemize}
 }
@@ -177,24 +177,8 @@
 \posterbox[adjusted title = Algorithm Flowchart]
           {name=flowchart, below=rainbow, column=1, span=6}{
     \centering
-    \begin{tikzpicture}[node distance=2cm]
-        % Start node
-        \node[startstop] (start) {Start};
-        % Process nodes
-        \node[process, below of=start] (init) {Initialize empty path};
-        \node[decision, below of=init] (check) {Path length < n?};
-        \node[process, below of=check, yshift=-1cm] (extend) {Extend path};
-        \node[process, right of=check, xshift=3cm] (convert) {Convert to cycle};
-        % End node
-        \node[startstop, below of=convert] (end) {End};
-        % Arrows
-        \draw[arrow] (start) -- (init);
-        \draw[arrow] (init) -- (check);
-        \draw[arrow] (check) -- node[anchor=east] {Yes} (extend);
-        \draw[arrow] (check) -- node[anchor=south] {No} (convert);
-        \draw[arrow] (convert) -- (end);
-        \draw[arrow] (extend) -- ++(-3,0) |- (check);
-    \end{tikzpicture}
+    \includegraphics[width=\textwidth]{figuras/flowchart.png}
+    \captionof{figure}{Algorithm flowchart}
 }
 
 %%%%%%%% Right Column (spans 6 of 12 columns) %%%%%%%%
@@ -203,18 +187,28 @@
 \posterbox[adjusted title = Algorithm Implementation]
           {name=algo, below=titlebox, column=7, span=6}{
     \begin{itemize}
-        \item \textbf{Time Complexity:} $O(n^3)$
-       
         \item \textbf{Key Steps:}
         \begin{itemize}
-            \item Start with empty path
-            \item Incrementally extend path using unused colors
-            \item Convert path to cycle when length reaches $n-1$
-            \item Complete cycle using remaining vertex and color
+            \item Start with initial object: empty path
+            \item Incrementally extend the object
+            \item When reach cycle of size $n-1$, there is a special case
         \end{itemize}
        
-        \item \textbf{Space Complexity:} $O(n^2)$
+        \item \textbf{Complexity Analysis:}
+        \begin{itemize}
+            \item \textbf{Time Complexity:} $O(n^3)$
+            \begin{itemize}
+                \item Our object increment $O(n)$ times.
+                \item Each increment takes $O(n^2)$ time.
+            \end{itemize}
+            Final time complexity: $O(n^3)$. It can't be improved because of the graph size.
+            \item \textbf{Space Complexity:} $O(n^3)$
+            
+            For each graph, there are at most $n^2$ edges. We need to store all edges of all graphs.
+        \end{itemize}
     \end{itemize}
+
+    
 }
 
 % Visual Demo
@@ -236,11 +230,6 @@
             \item Final Hamiltonian cycle
         \end{enumerate}
     \end{minipage}
-    % \begin{minipage}{0.3\textwidth}
-    %     \centering
-    %     \includegraphics[width=0.8\textwidth]{qr-code}
-    %     \caption{Scan for full animation}
-    % \end{minipage}
 }
 
 % Results and Conclusion
@@ -249,7 +238,7 @@
     \begin{itemize}
         \item \textbf{Implementation Results:}
         \begin{itemize}
-            \item Successfully tested on graphs up to size 1000
+            \item Successfully tested on graphs up to size 300
             \item Average runtime: $O(n^2.8)$ in practice
             \item 100\% success rate on valid inputs
         \end{itemize}
