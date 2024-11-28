@@ -115,9 +115,9 @@ class Draw(manim.Scene):
         vertices = []
         edges = []
 
-        new_scene("Graphs have $n = 8$ vertices and degree greater or equal than $\\frac{n}{2}$", edges, vertices, scene)
+        new_scene("Graphs have $n = 8$ vertices and degree greater or equal than $\\frac{n}{2}$", edges, vertices, scene, wait = 5)
 
-        new_scene("We start from a path of length $0$, starting at vertex $0$", edges, vertices, scene)
+        new_scene("We start from a path of length $0$, starting at vertex $0$", edges, vertices, scene, wait = 5)
         
         vertices = [0]
         new_scene("", edges, vertices, scene)

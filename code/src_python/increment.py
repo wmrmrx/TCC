@@ -67,7 +67,7 @@ def handle_path(G: Graph, path: Path, msg: Message):
             if edge is not None:
                 vertices = path.vertices.copy()
                 edges = path.edges.copy() + [edge]
-                msg.case = "There exists a edge that closes the path, creating a cycle"
+                msg.case = "Pop the last edge and find a cycle"
                 return Cycle(G, vertices, edges)
 
         for [c1, c2] in [[cx, cy], [cy, cx]]:
@@ -78,7 +78,7 @@ def handle_path(G: Graph, path: Path, msg: Message):
                     if (edgeX is not None) and (edgeY is not None):
                         vertices = path.vertices.copy() + [i]
                         edges = path.edges.copy() + [edgeY, edgeX]
-                        msg.case = "There exists a vertex that closes the path, creating a cycle"
+                        msg.case = "Pop the last edge and find a cycle with a new vertex"
                         return Cycle(G, vertices, edges)
 
             for i in range(1, len(path.vertices) - 1):
@@ -93,7 +93,7 @@ def handle_path(G: Graph, path: Path, msg: Message):
                         vertices.append(path.vertices[j - 1])
                         edges.append(path.edges[j - 1])
                     edges.append(edgeX)
-                    msg.case = "We can use the crossing trick to create a cycle from the path"
+                    msg.case = "Pop the last edge and find a cycle with the crossing trick"
                     return Cycle(G, vertices, edges)
 
     raise RuntimeError("Should not reach here. Did not find crossing.")
