@@ -85,9 +85,10 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
     % ----------------------------------------------------------------------------------------
     % PRIMEIRA COLUNA
     % ----------------------------------------------------------------------------------------
-    \onethirdcol
+    \halfcol
+    \vspace{1.5em}
     \begin{alertblock}{Resumo}
-      Dada uma coleção $G = {G_1, G_2, \ldots, G_n}$ de grafos de ordem $n \geq 3$, definidos 
+      Dada uma coleção $\mathcal{G} = \{G_1, G_2, \ldots, G_n\}$ de grafos de ordem $n \geq 3$, definidos 
       sobre o mesmo conjunto de vértices e que satisfazem a condição de Dirac para cada 
       $G_i$, existe um $G$-transversal que forma um circuito hamiltoniano, também conhecido
       como Circuito Hamiltoniano Rainbow. Neste trabalho, desenvolvemos um 
@@ -100,12 +101,12 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
         \textbf{Definições principais:}
         \begin{itemize}
           \item Um grafo simples é um grafo não direcionado sem laços e sem arestas múltiplas.
-          \item Um \textbf{ciclo hamiltoniano} de $G$ é um ciclo que visita cada vértice de $G$ exatamente uma vez.
+          \item Um \textbf{circuito hamiltoniano} de $G$ é um circuito que visita cada vértice de $G$ exatamente uma vez.
           \item $\delta(G)$ é o grau mínimo de um vértice em $G$.
         \end{itemize}
         \vspace{0.5em}
         \textbf{Teorema de Dirac (1952):}
-        Se um grafo simples $G$ com $n \geq 3$ vértices tem grau mínimo $\delta(G) \geq \frac{n}{2}$, então $G$ contém um ciclo hamiltoniano.
+        Se um grafo simples $G$ com $n \geq 3$ vértices tem grau mínimo $\delta(G) \geq \frac{n}{2}$, então $G$ contém um circuito hamiltoniano.
     \end{block}
 
     \begin{block}{Versões Rainbow de problemas clássicos}
@@ -126,19 +127,9 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
       Cada grafo $G_i$ pode ser enxergado como se suas arestas fossem coloridas com a cor $i$.
       
       \begin{center}
-        \begin{tcolorbox}[
-            colframe=black,        % Border color
-            colback=white,         % Background color
-            coltitle=black,        % Title color (used for caption)
-            width=0.6\textwidth,   % Box width, 60% of the text width
-            boxrule=0.5mm,         % Border thickness
-            arc=4mm,               % Rounded corners
-            outer arc=1mm,         % Outer corner rounding
-        ]
             \centering
             \includegraphics[width=\textwidth]{logos/dirac_rainbow.png}
             \captionof{figure}{Exemplo de um Circuito Hamiltoniano Rainbow para uma coleção de grafos com 8 vértices.}
-        \end{tcolorbox}
       \end{center}
 
       \vspace{1em}
@@ -146,35 +137,30 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
       \begin{itemize}
         \item \textbf{Floresta Geradora Mínima Rainbow:} Dado um grafo $G$ e uma coleção de cores, encontre uma floresta geradora mínima que utilize exatamente uma aresta de cada cor.
         \item \textbf{Emparelhamento Perfeito Rainbow:} Dado um grafo bipartido $G$ e uma coleção de cores, encontre um emparelhamento perfeito que utilize exatamente uma aresta de cada cor.
+        \item \textbf{Conjunto Independente Rainbow:} Dado um grafo $G$ onde os vértices estão coloridos, encontre o maior conjunto independente de vértices (conjunto de vértices não adjacentes) tal que todas as cores nos vértices do conjunto sejam distintas.
       \end{itemize}
+
     \end{block}
 
     % ----------------------------------------------------------------------------------------
     % SEGUNDA COLUNA
     % ----------------------------------------------------------------------------------------
-    \onethirdcol
+    \halfcol
+    \vspace{1.5em}
 
     \begin{block}{Fluxograma do algoritmo}
-
-      A Figura \ref{fig:flowchart} mostra o fluxograma do algoritmo desenvolvido.
-      A ideia principal é, dado um objeto, que pode ser um caminho ou um ciclo,
-      incrementar esse objeto para um objeto maior.
-
-      \begin{center}
-        \label{fig:flowchart}
-        \includegraphics[width=0.8\textwidth]{logos/flowchart.png}
-        \captionof{figure}{Fluxograma do algoritmo.}
-      \end{center}
-      \vspace{1em}
-
-      % \definecolor{shadecolor}{rgb}{0.93, 0.80, 0.82} % pale pink
-      % \begin{shaded}
-      %   \begin{itemize}
-      %     \item[$\bullet$] \textbf{\texttt{create\_union(a, b, t)}}: adiciona a união dos conjuntos que contém $a$ e $b$ no instante de tempo $t$
-      %     \item[$\bullet$] \textbf{\texttt{same\_set(a, b, t)}}: consulta se dois elementos pertenciam ao mesmo conjunto no instante $t$
-      %     \item[$\bullet$] \textbf{\texttt{delete\_union(t)}}: desfaz a união realizada em $t$
-      %   \end{itemize}
-      % \end{shaded}
+      \begin{minipage}[1cm]{0.55\textwidth} % Texto ocupa 55% da largura
+        A Figura \ref{fig:flowchart} mostra o fluxograma do algoritmo desenvolvido.
+        A ideia principal é, dado um objeto, que pode ser um caminho ou um circuito,
+        incrementar esse objeto para um objeto maior.
+      \end{minipage}
+      \hspace{0.4em}
+      \begin{minipage}{0.4\textwidth} % Figura ocupa 40% da largura
+          \centering
+          \includegraphics[width=\textwidth]{logos/flowchart.png}
+          \captionof{figure}{Fluxograma do algoritmo.}
+          \label{fig:flowchart}
+      \end{minipage}
     \end{block}
 
     \begin{block}{Técnicas utilizadas}
@@ -182,26 +168,18 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
       Todas as técnicas utilizam fortemente a condição de Dirac para cada grafo.
       \vspace{1em}
 
-      \textbf{Técnica do cruzamento:}
-      
-      Seja $P=(x_1, e_1, x_2, \dots, e_{sz}, x_{sz + 1})$, sem repetição de cor e nem de vértice. 
-      Suponha que existam duas cores $c_1$ e $c_2$ que não pertencem ao caminho e não existem arestas
-      entre $x_1$ e $V \backslash P$ com cor $c_1$ e entre $x_{sz + 1}$ e $V \backslash P$ com cor $c_2$.
-      Suponha também que não existe uma aresta de cor $c_1$ ou $c_2$ entre $x_1$ e $x_{sz + 1}$.
-      
-      Olhando para as arestas de cor $c_1$ que saem de $x_1$, e para as arestas de cor $c_2$ que saem de $x_{sz + 1}$,
-      temos que:
-      
-      $$
-        |N_{G_{c_1}}(x_1)| + |N_{G_{c_2}}(x_{sz + 1})| \geq \frac{n}{2} + \frac{n}{2} > sz - 2.
-      $$
-
-      Pelo princípio da casa dos pombos, existe um índice $i$ tal que as arestas $(x_1, x_{i+1})$ e $(x_{sz + 1}, x_i)$ são de cores $c_1$ e $c_2$, respectivamente.
-      
-      Portanto, podemos formar um circuito de tamanho maior como na imagem abaixo:
+      \textbf{Cruzamento:}
 
       \begin{center}
         \includegraphics[width=\textwidth]{logos/cruzamento.png}
+        \captionof{figure}{Dado um caminho de tamanho $sz$, esta técnica cria um circuito de tamanho $sz+1$.}
+      \end{center}
+
+      \textbf{Aresta fora do circuito:}
+
+      \begin{center}
+        \includegraphics[width=\textwidth]{logos/edge_outside_cycle.png}
+        \captionof{figure}{Dado um circuito de tamanho $sz \geq \left \lceil \frac{n}{2} \right \rceil$, esta técnica cria um caminho de tamanho $sz+1$.}
       \end{center}
 
     \end{block}
@@ -210,30 +188,43 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
     % ----------------------------------------------------------------------------------------
     % TERCEIRA COLUNA
     % ----------------------------------------------------------------------------------------
-    \onethirdcol
+    % \halfcol
 
-    \begin{block}{Implementação}
+    \begin{block}{Desafios enfrentados}
+      \textbf{Criação de uma prova construtiva:}
 
-      A prova feita por \textbf{Joos, Kim (2020)} pode ser adaptada para um algoritmo construtivo, em que o estado é um caminho ou ciclo \textit{rainbow}, e incrementalmente aumentamos o tamanho desse caminho ou ciclo.
+      A prova original de \textbf{Joos, Kim (2020)} é de natureza não construtiva. Em diversos momentos, 
+      o autor solicita que se considere o maior caminho ou circuito \textit{rainbow} e, a partir 
+      disso, faz-se uma demonstração. No entanto, ele não explica como encontrar efetivamente 
+      esse caminho ou circuito.
+      \vspace{0.6em}
+
+      \textbf{Implementação do caso n - 1:}
+
+      Esta é a parte mais difícil do algoritmo. Quase metade do código serve para lidar com esse caso, são muitos detalhes a serem considerados.
+
+      \vspace{0.6em}
+      \textbf{Implementação eficiente:}
 
       A complexidade do algoritmo é da ordem de $\text{O}(n^3)$, em que $n$ é a ordem de $G$. Essa é complexidade é ótima, pois existem $\text{O}(n^3)$ arestas que devem ser consideradas no input.
-
-      Para validar a corretude da implementação, foram gerados grafos que respeitavam a condição de Dirac com $n$ até $300$;
+      
     \end{block}
 
-  \begin{block}{Animação}
+    \begin{block}{Animação}
+      \begin{minipage}{0.55\textwidth} % Texto ocupa 55% da largura
+          \raggedright
+          Animação demonstrando o algoritmo foram feitas com a biblioteca \texttt{manim} (do canal de Youtube \texttt{3Blue1Brown}) em Python. 
+          Um exemplo está disponível no QR Code ao lado.
+      \end{minipage}%
+      \begin{minipage}{0.4\textwidth} % QR Code ocupa 40% da largura
+          \centering
+          \includegraphics[width=0.7\textwidth]{logos/qrcode.png} 
+      \end{minipage}
+  \end{block}  
 
-      Animação demonstrando o algoritmo foram feitas com a biblioteca \texttt{manim} (do canal de Youtube \texttt{3Blue1Brown}) em Python. Um exemplo está disponível no QR Code abaixo
-      \begin{center}
-          \includegraphics[width=0.5\textwidth]{logos/qrcode.png} 
-      \end{center}
+  \begin{block}{Referências}
+    As referências estão na página da monografia em: \\\textcolor{jblue}{{\url{https://linux.ime.usp.br/~nathanluiz}}}
   \end{block}
-
-
-    \begin{block}{Referências}
-      As referências estão na página da monografia em \textcolor{jblue}{{\url{https://linux.ime.usp.br/~nathan_luiz}}}
-    \end{block}
-
 
   \end{columns}
 \end{frame}
