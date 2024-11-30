@@ -12,6 +12,7 @@
 \usepackage{graphicx}  % Para incluir imagens
 \usepackage{caption}   % Para legendas personalizadas
 \usepackage{tikz}
+\usepackage{svg}
 \usetikzlibrary{matrix,shapes,positioning,shadows,trees,patterns}
 
 \usepackage[shortlabels]{enumitem}
@@ -218,7 +219,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
       \end{minipage}%
       \begin{minipage}{0.4\textwidth} % QR Code ocupa 40% da largura
           \centering
-          \includegraphics[width=0.7\textwidth]{logos/qrcode.png} 
+          \includesvg[width=0.7\textwidth]{logos/qrcode.svg} 
       \end{minipage}
   \end{block}  
 
