@@ -89,7 +89,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
     % ----------------------------------------------------------------------------------------
     \onethirdcol
     \begin{alertblock}{Resumo}
-      Dada uma coleção $G = {G_1, G_2, \ldots, G_n}$ de grafos de ordem $n$, definidos 
+      Dada uma coleção $G = {G_1, G_2, \ldots, G_n}$ de grafos de ordem $n \geq 3$, definidos 
       sobre o mesmo conjunto de vértices e que satisfazem a condição de Dirac para cada 
       $G_i$, existe um $G$-transversal que forma um circuito hamiltoniano, também conhecido
       como Circuito Hamiltoniano Rainbow. Neste trabalho, desenvolvemos um 
@@ -107,7 +107,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
         \end{itemize}
         \vspace{0.5em}
         \textbf{Teorema de Dirac (\cite{dirac1952}):}
-        Se um grafo simples $G$ com $n$ vértices tem grau mínimo $\delta(G) \geq \frac{n}{2}$, então $G$ contém um ciclo hamiltoniano.
+        Se um grafo simples $G$ com $n \geq 3$ vértices tem grau mínimo $\delta(G) \geq \frac{n}{2}$, então $G$ contém um ciclo hamiltoniano.
     \end{block}
 
     \begin{block}{Versões Rainbow de problemas clássicos}
@@ -121,7 +121,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
 
       \textbf{Teorema de Dirac (\textit{Versão Rainbow}):}
 
-      Dada uma coleção $G = {G_1, G_2, \ldots, G_n}$ de grafos de ordem $n$, definidos
+      Dada uma coleção $G = {G_1, G_2, \ldots, G_n}$ de grafos de ordem $n \geq 3$, definidos
       sobre o mesmo conjunto de vértices e que satisfazem a condição de Dirac para cada
       $G_i$, existe um $G$-transversal que forma um circuito hamiltoniano, também conhecido
       como Circuito Hamiltoniano Rainbow.
@@ -220,7 +220,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
 
       A complexidade do algoritmo é da ordem de $\text{O}(n^3)$, em que $n$ é a ordem de $G$. Essa é complexidade é ótima, pois existem $\text{O}(n^3)$ arestas que devem ser consideradas no input.
 
-      Para validar a corretude da implementação, foram gerados grafos que respeitavam a condição de Dirac com $n$ até $300$, e o código implementado devolvia o ciclo hamiltoniano \textit{rainbow}.
+      Para validar a corretude da implementação, foram gerados grafos que respeitavam a condição de Dirac com $n$ até $300$;
     \end{block}
 
   \begin{block}{Animação}
@@ -231,15 +231,9 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
       \end{center}
   \end{block}
 
-    \begin{block}{Informações e contato}
-      Para mais informações, acesse a página do trabalho: \textcolor{jblue}{{\url{https://linux.ime.usp.br/~felipen/mac0499}}}
-
-      \medskip
-      Endereço para contato: \\ \textcolor{jblue}{{\url{felipe.castro.noronha@usp.br}}}
-    \end{block}
 
     \begin{block}{Referências}
-      \bibliography{bibliografia.bib}
+      As referências estão na página da monografia em \textcolor{jblue}{{\url{https://linux.ime.usp.br/~nathan_luiz}}}
     \end{block}
 
 
