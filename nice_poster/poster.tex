@@ -98,17 +98,16 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
 
     \begin{block}{Conceitos básicos}
         \textbf{Definições principais:}
-        \begin{itemize}
-          \item Um grafo simples $G$ é um grafo não direcionado sem laços e sem arestas múltiplas, onde $V(G)$ e $E(G)$ são definidos, respectivamente, o conjunto de vértices e o conjunto de arestas desse grafo.
-          \item Um \textbf{circuito hamiltoniano} de $G$ é um circuito que visita cada vértice de $G$ exatamente uma vez.
-          \item Definimos $\deg(v)$ como o número de vizinhos de um vértice de $v$ em $V(G)$, e $\delta(G) \coloneqq \min\{ \deg(v) : v \in V(G) \}$ como o grau mínimo de um vértice em $G$.
-        \end{itemize}
+
+        $\cdot$ Um grafo simples $G$ é um grafo não direcionado sem laços e sem arestas múltiplas, onde $V(G)$ e $E(G)$ são definidos, respectivamente, o conjunto de vértices e o conjunto de arestas desse grafo.\\
+        $\cdot$ Um \textbf{circuito hamiltoniano} de $G$ é um circuito que visita cada vértice de $G$ exatamente uma vez.\\
+        $\cdot$ Definimos $\deg(v)$ como o número de vizinhos de um vértice de $v$ em $V(G)$, e $\delta(G) \coloneqq \min\{ \deg(v) : v \in V(G) \}$ como o grau mínimo de um vértice em $G$.\\
         \vspace{0.5em}
         \textbf{Teorema de Dirac (1952):}
         Se um grafo simples $G$ com $n \geq 3$ vértices tem grau mínimo $\delta(G) \geq \frac{n}{2}$, então $G$ contém um circuito hamiltoniano.
     \end{block}
 
-    \begin{block}{Versões Rainbow de problemas clássicos}
+    \begin{block}{Versões rainbow de problemas clássicos}
       \textbf{Definição:}
 
       A versão rainbow de um problema na teoria dos grafos é uma variação 
@@ -119,7 +118,7 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
 
       \textbf{Teorema de Dirac (\textit{Versão Rainbow}):}
 
-      Dada uma coleção $\mathcal{G} = {G_1, G_2, \ldots, G_n}$ de grafos de ordem $n \geq 3$, definidos
+      Dada uma coleção $\mathcal{G} = \{G_1, G_2, \ldots, G_n\}$ de grafos de ordem $n \geq 3$, definidos
       sobre o mesmo conjunto de vértices e que satisfazem a condição de Dirac para cada
       $G_i$, existe um $\mathcal{G}$-transversal que forma um circuito hamiltoniano, também conhecido
       como Circuito Hamiltoniano Rainbow.
@@ -171,14 +170,14 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
 
       \begin{center}
         \includegraphics[width=\textwidth]{logos/cruzamento.png}
-        \captionof{figure}{Dado um caminho de tamanho $sz$, esta técnica cria um circuito de tamanho $sz+1$.}
+        \captionof{figure}{Construção de um circuito de tamanho $k+1$ a partir de um caminho de tamanho $k$.}
       \end{center}
 
       \textbf{Aresta fora do circuito:}
 
       \begin{center}
         \includegraphics[width=\textwidth]{logos/edge_outside_cycle.png}
-        \captionof{figure}{Dado um circuito de tamanho $sz \geq \left \lceil \frac{n}{2} \right \rceil$, esta técnica cria um caminho de tamanho $sz+1$.}
+        \captionof{figure}{Construção de um caminho de tamanho $k+1$ a partir de um circuito de tamanho $k$.}
       \end{center}
 
     \end{block}
@@ -200,12 +199,13 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
 
       \textbf{Implementação do caso n - 1:}
 
-      Esta é a parte mais difícil do algoritmo. Quase metade do código serve para lidar com esse caso, são muitos detalhes a serem considerados.
+      Esta é a parte mais difícil do algoritmo. Quase metade do código serve para lidar com esse caso, 
+      pois são muitos detalhes a serem considerados.
 
       \vspace{0.6em}
       \textbf{Implementação eficiente:}
 
-      A complexidade do algoritmo é da ordem de $\text{O}(n^3)$, em que $n$ é a ordem de $G$. Essa é complexidade é ótima, pois existem $\text{O}(n^3)$ arestas que devem ser consideradas no input.
+      A complexidade do algoritmo é da ordem de $\text{O}(n^3)$, em que $n$ é a ordem de $G$. Essa complexidade é ótima, pois existem $\text{O}(n^3)$ arestas que devem ser consideradas no input.
       
     \end{block}
 
