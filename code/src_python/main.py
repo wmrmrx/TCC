@@ -8,9 +8,16 @@ import manim
 
 manim.config["max_files_cached"] = 1000
 
-COLOR_ARRAY = [manim.PURE_RED, manim.PURE_GREEN, manim.WHITE, 
-               manim.RED, manim.GREEN, manim.BLUE,
-               manim.PINK, manim.ORANGE]
+COLOR_ARRAY = [
+    manim.ManimColor.from_rgb((0, 255, 255)), 
+    manim.ManimColor.from_rgb((0, 127, 255)), 
+    manim.ManimColor.from_rgb((115, 0, 255)), 
+    manim.ManimColor.from_rgb((255, 0, 0)), 
+    manim.ManimColor.from_rgb((255, 255, 0)), 
+    manim.ManimColor.from_rgb((127, 255, 127)), 
+    manim.ManimColor.from_rgb((0, 255, 0)), 
+    manim.ManimColor.from_rgb((255, 255, 255))
+]
 
 def read_graph():
     n, m = map(int, sys.stdin.readline().split())
