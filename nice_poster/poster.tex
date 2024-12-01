@@ -35,8 +35,7 @@
 \newcommand{\tdots}{\,.\,.\,}
 
 %----------------------------------------------------------------------------------------
-%	BEAMER STYLE
-%----------------------------------------------------------------------------------------
+%	BEAMER STYL
 
 \usetheme{poster}
 \setbeamercolor{block title}{fg=dblue,bg=white}
@@ -100,9 +99,9 @@ Instituto de Matemática e Estatística, Universidade de São Paulo}
     \begin{block}{Conceitos básicos}
         \textbf{Definições principais:}
         \begin{itemize}
-          \item Um grafo simples é um grafo não direcionado sem laços e sem arestas múltiplas.
+          \item Um grafo simples $G$ é um grafo não direcionado sem laços e sem arestas múltiplas, onde $V(G)$ e $E(G)$ são definidos, respectivamente, o conjunto de vértices e o conjunto de arestas desse grafo.
           \item Um \textbf{circuito hamiltoniano} de $G$ é um circuito que visita cada vértice de $G$ exatamente uma vez.
-          \item $\delta(G)$ é o grau mínimo de um vértice em $G$.
+          \item Definimos $\deg(v)$ como o número de vizinhos de um vértice de $v$ em $V(G)$, e $\delta(G) \coloneqq \min\{ \deg(v) : v \in V(G) \}$ como o grau mínimo de um vértice em $G$.
         \end{itemize}
         \vspace{0.5em}
         \textbf{Teorema de Dirac (1952):}
