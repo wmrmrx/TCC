@@ -8,7 +8,7 @@ import manim
 
 manim.config["max_files_cached"] = 1000
 
-COLOR_ARRAY = [manim.PURE_RED, manim.PURE_GREEN, manim.PURE_BLUE, 
+COLOR_ARRAY = [manim.PURE_RED, manim.PURE_GREEN, manim.WHITE, 
                manim.RED, manim.GREEN, manim.BLUE,
                manim.PINK, manim.ORANGE]
 
@@ -103,26 +103,43 @@ class Draw(manim.Scene):
                 manim.Tex(text)
             ).arrange(direction=manim.DOWN)
 
-        scene = draw("", [], [])
-        self.play(manim.Create(scene))
+
+        scene = []
 
         def new_scene(text, edges, vertices, scene, wait: float = 1):
             new_scene = draw(text, edges, vertices)
-            self.play(manim.Transform(scene, new_scene))
-            scene = new_scene
-            self.wait(wait)
+            self.add(new_scene)
 
         vertices = []
         edges = []
 
-        new_scene("Graphs have $n = 8$ vertices and degree greater or equal than $\\frac{n}{2}$", edges, vertices, scene, wait = 5)
+        #new_scene("Graphs have $n = 8$ vertices and degree greater or equal than $\\frac{n}{2}$", edges, vertices, scene, wait = 5)
 
-        new_scene("We start from a path of length $0$, starting at vertex $0$", edges, vertices, scene, wait = 5)
+        #new_scene("We start from a path of length $0$, starting at vertex $0$", edges, vertices, scene, wait = 5)
+
+        #new_scene("Since the degree of all vertices is greater than $\\frac{n}{2}$,", edges, vertices, scene, wait = 5)
+        #new_scene("we can greedily expand the path to have size $\\lceil \\frac{n}{2} \\rceil$.", edges, vertices, scene, wait = 5)
         
-        vertices = [0]
-        new_scene("", edges, vertices, scene)
-
         msg = Message()
+
+        vertices = [0]
+        while len(edges) < (n + 1) // 2:
+            result = None
+            if len(edges) == len(vertices):
+                cycle = Cycle(G, deepcopy(vertices), deepcopy(edges))
+                result = increment(G, cycle, msg)
+            else:
+                path = Path(G, deepcopy(vertices), deepcopy(edges))
+                result = increment(G, path, msg)
+            vertices = result.vertices
+            edges = result.edges
+            msg = Message()
+
+        #new_scene("", edges, vertices, scene, wait = 5)
+
+        #new_scene("With the easy part done,", edges, vertices, scene, wait = 2)
+        #new_scene("casework is needed to expand our path/cycle.", edges, vertices, scene, wait = 5)
+
         while len(edges) != n:
             result = None
             if len(edges) == len(vertices):
@@ -131,10 +148,10 @@ class Draw(manim.Scene):
             else:
                 path = Path(G, deepcopy(vertices), deepcopy(edges))
                 result = increment(G, path, msg)
-            new_scene(str(msg), result.edges, result.vertices, scene)
-            new_scene("", result.edges, result.vertices, scene)
+            #new_scene(str(msg), result.edges, result.vertices, scene)
+            #new_scene("", result.edges, result.vertices, scene)
             vertices = result.vertices
             edges = result.edges
             msg = Message()
 
-        new_scene("We have a Rainbow Hamiltonian Cycle.", edges, vertices, scene, wait = 5)
+        new_scene("", edges, vertices, scene, wait = 5)
