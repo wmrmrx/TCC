@@ -626,6 +626,54 @@ we just make a linear search for a crossing and find the solution.
 
 \subsection{Case 2: Cycle of length $l = n - 1$}
 
+\subsubsection{Auxiliary Functions}
+
+\begin{itemize}
+    \item \texttt{find\_adjacency(u, color, vertex\_positions)}: This function gives the indexes of the 
+    vertices that are adjacent to $u$ with color $color$, based on the current 
+    positions of the vertices. This is useful when we need to change the vertex position in the cycle.
+    The algorithm is shown below:
+
+    \begin{algorithm}
+        \caption{Find Adjacency Index List for a Given Source and Color}
+        \begin{algorithmic}[1]
+            \Function{Find\_Adjacency}{$u, color, vertex\_positions$}
+                \State $ans \gets []$
+                \For{$tgt \in G.\text{adjacency}[color][u]$}
+                    \State $ans.\text{append}(vertex\_positions[tgt])$
+                \EndFor
+                \State \Return $ans$ \Comment{Return the list of positions}
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+    It's complexity is $O(n)$, as we just need to iterate over the adjacency list of $u$ with color $color$.
+
+    \item \texttt{find\_answer(G, y, cy, C, i)}: Let $G$ be the graph, $C$ a cycle with
+    size $n-1$, $y$ be the only vertex outside the cycle, $c_y$ be the only color
+    outside the cycle and $i$ the index of the edge $e_i$ to be removed. This function 
+    builds a cycle with size $n$ by removing the edge $e_i$ and adding the edges
+    $edge(x_{i}, y, e_i.color)$ and $edge(y, x_{i+1}, c_y)$.
+
+    The algorithm is shown below:
+
+    \begin{algorithm}
+        \caption{Find Answer for \( l = n - 1 \)}
+        \begin{algorithmic}[1]
+            \Function{Find\_Answer}{$G, y, cy, C, i$}
+                \State $vertices \gets C.vertices[i + 1:] + C.vertices[:i + 1] + [y]$
+                \State $edges \gets C.edges[i + 1:] + C.edges[:i]$
+                \State \hspace{2.5em} $+ [G.\text{get\_edge}(vertices[-1], y, C.edges[i].color), G.\text{get\_edge}(y, C.vertices[0], cy)]$
+                \State \Return $\text{Cycle}(G, vertices, edges)$
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+    The complexity is $O(n)$, as we just need to rotate some lists of size $n$ and the other operations are $O(1)$.
+\end{itemize}
+
+\subsubsection{Algorithm}
+
 This case is a bit more complicated. It is always the last iteration of the algorithm and will
 find the desired cycle.
 
@@ -645,8 +693,8 @@ These variables can be calculated in \( O(n) \) time complexity. The algorithm i
     \begin{algorithmic}
         \Function{Extend\_Cycle}{$G, C$}
             \State $new\_color\_id \gets [-1] \times n$
-            \State $y \gets \text{primeiro } i \in \{0, \dots, n-1\} \text{ tal que } \textbf{not } vertices\_in\_cycle[i]$
-            \State $cy \gets \text{primeiro } i \in \{0, \dots, n-1\} \text{ tal que } \textbf{not } colors\_in\_cycle[i]$
+            \State $y \gets \text{first } i \in \{0, \dots, n-1\} \text{ such that } \textbf{not } vertices\_in\_cycle[i]$
+            \State $cy \gets \text{first } i \in \{0, \dots, n-1\} \text{ such that } \textbf{not } colors\_in\_cycle[i]$
             \State $new\_color\_id[cy] \gets n - 1$
             
             \For{$i \in \{0, \dots, C.size() - 1\}$}
@@ -666,7 +714,7 @@ Let's build the following digraph on the same vertex set of $G$. There is a visu
 of the digraph below:
 
 $$
-A(D) = \bigcup_{i \in \{0,..., n - 2\}} \{\{x_i, y\} : y \neq x_{i + 1}, edge(x_i, y, C.edge[i].color) \in E(G)\}.
+A(D) = \bigcup_{i \in \{0,..., n - 2\}} \{\{x_i, z\} : z \neq x_{i + 1}, edge(x_i, z, C.edge[i].color) \in E(G)\}.
 $$
 
 \begin{center}
@@ -772,40 +820,214 @@ $$
 
 Observe that as $\delta(G_i) \geq \frac{n}{2}$ for all $i \in \{0, \dots, n - 2\}$, thus 
 $d^+_{D}(x) \geq \frac{n}{2} - 1$ for every vertex $x$ on the cycle. We get that 
-$|A(D)| \geq (n-1)(\frac{n}{2} - 1)$. Let's define the following auxiliary function
-$find\_adjacency(u, color, vertex\_positions)$:
+$|A(D)| \geq (n-1)(\frac{n}{2} - 1)$. 
+
+Now, let's define the following variables:
 
 \begin{itemize}
-    \item $u$ is a vertex of $G$,
-    \item $color$ is a color of $G$,
-    \item $vertex\_positions$ is an array of size $n$ where $vertex\_positions[i]$ is the 
-    current position of vertex $i$. This is useful when we need to change the position
-    of the vertex in the cycle.
+    \item $in\_degree$: An array of size $n$ where $in\_degree[i]$ is the in-degree of vertex $i$ in the digraph $D$.
+    \item $incoming\_neighborhood$: An array of size $n$ where $incoming\_neighborhood[i]$ is the list of vertices that have an edge to vertex $i$ in the digraph $D$.
+    \item $I \coloneqq \{i \in [n - 1]: \{x_i, y\} \in A(D)\}$
+    \item $\bar{I} \coloneqq \{i \in [n - 1]: edge(y, x_{i+1}, cy) \in E(G)\}$
 \end{itemize}
 
-This function gives the indexes of the vertices that are adjacent to $u$ with color $color$, based on the current
-positions of the vertices. The algorithm is shown below:
+To effectively build these variables, we can iterate over the vertices of the cycle and iterate over it's adjacency list,
+such as the following algorithm:
 
-\begin{algorithm}
-    \caption{Find Adjacency Index List for a Given Source and Color}
+\begin{algorithm}[H]
+    \caption{Part 2: Cycle Extension for \( l < n - 1 \). Building digraph variables, $I$ and $\bar{I}$}
     \begin{algorithmic}[1]
-        \Function{Find\_Adjacency}{$u, color, vertex\_positions$}
-            \State $ans \gets []$
-            \For{$tgt \in G.\text{adjacency}[color][u]$}
-                \State $ans.\text{append}(vertex\_positions[tgt])$
+        \Function{Extend\_Cycle}{$G, C$}
+            \State $I \gets []$
+            \State $in\_degree \gets [0] \times n$
+            \State $incoming\_neighborhood \gets [\text{empty list}] \times n$
+            
+            \For{$i \gets 0$ to $cycle\_size - 1$}
+                \State $u \gets cycle.vertices[i]$
+                \State $v \gets cycle.vertices[(i + 1) \bmod cycle\_size]$
+                \State $color \gets color\_in\_position[i]$
+                
+                \For{$tgt \in G.adjacency[color][u]$}
+                    \If{$tgt = v$}
+                        \State \textbf{continue}
+                    \EndIf
+                    
+                    \State $in\_degree[tgt] \gets in\_degree[tgt] + 1$
+                    \State $incoming\_neighborhood[tgt].append(u)$
+                    
+                    \If{$tgt = y$}
+                        \State $I.append(i)$
+                    \EndIf
+                \EndFor
             \EndFor
-            \State \Return $ans$ \Comment{Return the list of positions}
+            
+            \State $\bar{I} \gets \text{Find\_Adjacency}(y, cy, vertex\_position\_on\_cycle)$
+            \State $\bar{I} \gets [(u - 1 + cycle\_size) \bmod cycle\_size : u \in \bar{I}]$
+
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
 
-It's complexity is $O(n)$, as we just need to iterate over the adjacency list of $u$ with color $color$.
-Let 
-
-$$
-I \coloneqq \{i \in [n - 1]: \{x_i, y\} \in A(D)\} \text{ and } \bar{I} \coloneqq \{i \in [n - 1]: edge(y, x_{i+1}, cy) \in E(G)\}.
-$$
+The complexity of this algorithm is $O(n^2)$, as we need to iterate over the vertices of the cycle and iterate over 
+it's adjacency list for a specific color. 
 
 Let's find the answer for the case $d^-_D(y) \geq \frac{n}{2}$. We have that 
 $|I| + |\bar{I}|  \geq d^-_D(y) +  \frac{n}{2} $. 
-Thus, from Dirichlet Principle, $I \cap \bar{I} \neq \emptyset$. In this case, we can build a cycle of length $n$ with the following crossing, removing the edge $x_i$:
+Thus, from Dirichlet Principle, $I \cap \bar{I} \neq \emptyset$. In this case, we can build 
+a cycle of length $n$ with the following crossing, removing the edge $x_i$:
+
+% set scale
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figuras/cycle_n-1_crossing_1.png}
+    \caption{Crossing for the case $d^-_D(y) \geq \frac{n}{2}$.}
+    \label{fig:crossing_case_2}
+\end{figure}
+
+To the algorithm part, we can just check the intersection and build the answer.
+
+\begin{algorithm}[H]
+    \caption{Part 3: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) \geq \frac{n}{2} \)}
+    \begin{algorithmic}[1]
+        \Function{Extend\_Cycle}{$G, C$}
+            \For{$i \in I$}
+                \If{$i \in \bar{I}$}
+                    \State \Return \Call{Find\_Answer}{$G, y, cy, C, i$}
+                \EndIf
+            \EndFor
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+The complexity is $O(n^2)$, as we just need to iterate over $I$, check if it's in $\bar{I}$ and, once we find an element in $\bar{I}$, 
+we call the function \texttt{Find\_Answer} that has complexity $O(n)$.
+
+From now on, we will assume that $d^-_D(y) < \frac{n}{2}$. Here we will divide in two cases:
+
+\begin{enumerate}
+    \item If there is a vertex $x_i$ such that $d^-_D(x_i) > \frac{n}{2} - 1$.
+    \item Otherwise.
+\end{enumerate}
+
+Let's start with the first case. We may assume, WLOG, that $d^-_D(x_0) > \frac{n}{2} - 1$.
+For this, we can just find the vertex $x_i$ and rotate the cycle, such as the following algorithm:
+
+\begin{algorithm}[H]
+    \caption{Part 4: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
+    \begin{algorithmic}[1]
+        \Function{Extend\_Cycle}{$G, C$}
+            \For{$i \in [0, \dots, cycle\_size - 1]$}
+                \State $u \gets cycle.vertices[i]$
+                \If{$in\_degree[u] > \frac{n}{2} - 1$}
+                    \State $cycle.vertices \gets cycle.vertices[i:] + cycle.vertices[:i]$
+                    \State $cycle.edges \gets cycle.edges[i:] + cycle.edges[:i]$
+                \EndIf
+                % # Rebuild the needed variables
+                \For{$j \in [0, \dots, cycle\_size - 1]$}
+                    \State $color \gets cycle.edges[j].color$
+                    \State $new\_color\_id[color] \gets j$
+                    \State $vertex\_position\_on\_cycle[cycle.vertices[j]] \gets j$
+                    \State $pos\_color\_cic[j] \gets color$
+                \EndFor
+                \State \textbf{break}
+            \EndFor
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+The time completity for this is just $O(n)$, as we iterate over the vertices and
+as soon as we find a vertex with in-degree greater than $\frac{n}{2} - 1$, we make 
+$O(n)$ operations to rebuild the needed variables and then we break.
+
+Let's define the following variables:
+
+\begin{itemize}
+    \item $I_0 \coloneqq \{i \in [n - 1]: edge(x_i, y, c_0) \in E(G)\}$
+    \item $I_{n-1} \coloneqq \{i \in [n - 1]: edge(x_{i+1}, y, c_{n-1}) \in E(G)\}$
+\end{itemize}
+
+We have that $I_0 + I_{n-1} \geq d_{G_0}(y) + d_{G_{n-1}}(y) \geq n$. Thus, 
+from Dirichlet Principle, $I_0 \cap I_{n-1} \neq \emptyset$. Take $j \in I_0 \cap I_{n-1}$.
+If $j = 0$, we can just remove the edge $x_0$ and build the cycle of length $n$ 
+adding crossing edges $edge(x_0, y, c_0)$ and $edge(y, x_1, c_1)$. So, assume $j \neq 0$.
+
+Let's construct a $G$-transversal path $P$ such as on the figure below:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figuras/cycle_n-1_build_path.png}
+    \caption{Building the transversal path $P$.}
+    \label{fig:cycle_n-1_build_path}
+\end{figure}
+
+We are going to create the following variables to manipulate the path $P$:
+
+\begin{itemize}
+    \item $removed\_color$: The color of the edge outside the path $P$, $C.edges[j].color$;
+    \item $P\_vertices$: The vertices of the path $P$, $(x_1, x_2, \dots, x_{j}, y, x_{j+1}, \dots, x_{n-2}, x_{0})$;
+    \item $P\_edges$: The edges of the path $P$, $(e_1, e_2, \dots, e_{j}, e_{j+1}, \dots, e_{n-2}, e_{0})$;
+    \item $P\_pos$: An array to store the new position of each vertex on the path.
+\end{itemize}
+
+To compute these variables, we can use the following algorithm:
+\begin{algorithm}[H]
+    \caption{Part 5: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
+    \begin{algorithmic}[1]
+        \Function{Extend\_Cycle}{$G, C$}
+            \State $j \gets -1$
+            \State $removed\_color \gets -1$
+            \State $P\_vertices \gets []$
+            \State $P\_edges \gets []$
+            \State $P\_pos \gets [0] \times n$
+
+            \For{$i \in I_0$}
+                \If{$i \in I_{n-1}$}
+                    \If{$i = 0$}
+                        \State \Return \Call{Find\_Answer}{$G, y, cy, C, i$}
+                    \EndIf
+
+                    \State $j \gets i$
+
+                    \State $removed\_color \gets C.edges[j].color$
+                    \State $P\_vertices \gets C.vertices[1:j+1] +$
+                    \State $\hspace{4.3em} \gets [y] +$
+                    \State $\hspace{4.3em} \gets C.vertices[j+1:n] +$
+                    \State $\hspace{4.3em} \gets [C.vertices[0]]$
+
+                    \State $P\_edges \gets C.edges[1:j] +$
+                    \State $\hspace{4.1em} \gets [G.get\_edge(C.vertices[j], y, pos\_color\_cic[0])] +$
+                    \State $\hspace{4.1em} \gets [G.get\_edge(y, C.vertices[(j + 1) \bmod n], cy)] +$
+                    \State $\hspace{4.1em} \gets C.edges[j+1:n]$
+
+                    \For{$j \in [0, \dots, n-1]$}
+                        \State $P\_pos[P\_vertices[j]] \gets j$
+                    \EndFor
+
+                    \State \textbf{break}
+                \EndIf
+            \EndFor
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+The time complexity is $O(n^2)$, as we iterate over $I_0$, check if it's in $I_{n-1}$ and, if it is, we build the path $P$ just once.
+To build the path it is just $O(n)$ operations.
+
+Let's now create the following variables:
+
+\begin{itemize}
+    \item $J_0 \coloneqq \{i \in [n-2]: edge(P\_vertices[0], P\_vertices[i + 1], removed\_color) \in E(G)\}$
+    \item $J_{n-1} \coloneqq \{i \in [n-2]: P\_vertices[i] \in incoming\_neighborhood[P\_vertices[n - 1]]\}$
+\end{itemize}
+
+
+If $edge(P\_vertices[0], P\_vertices[-1], removed\_color)$ in $G$, we can just 
+close the cycle adding this edge. Let's assume then we don't have this edge. 
+Thus, $|J_0| \geq \delta(G_{removed\_color}) \geq \frac{n}{2} + \frac{1}{2}$. Also, as $P\_vertices[n-2] \in \{x_{n-2}, y\}$, 
+from the construction of $D$ we guarantee that $P\_vertices[n-2] \notin N^-_D(x_0)$
+and consequently $|J_{n-1}| \geq \frac{n}{2} - \frac{1}{2}$.
+
+From Dirichlet Principle, as $J_0 + J_{n-1} \geq n$, we have that $|J_0 \cap J_{n-1}| \geq 2$. Thus,
+there is at least one element on $J_0 \cap J_{n-1}$, let's call it $k$, such that $P\_vertices[k] \neq y$.
+We can then build the following $G$-transversal cycle:
+
