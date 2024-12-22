@@ -1023,11 +1023,60 @@ Let's now create the following variables:
 
 If $edge(P\_vertices[0], P\_vertices[-1], removed\_color)$ in $G$, we can just 
 close the cycle adding this edge. Let's assume then we don't have this edge. 
-Thus, $|J_0| \geq \delta(G_{removed\_color}) \geq \frac{n}{2} + \frac{1}{2}$. Also, as $P\_vertices[n-2] \in \{x_{n-2}, y\}$, 
+Thus, $|J_0| \geq \delta(G_{removed\_color}) \geq \frac{n}{2}$. Also, as $P\_vertices[-2] \in \{x_{n-2}, y\}$, 
 from the construction of $D$ we guarantee that $P\_vertices[n-2] \notin N^-_D(x_0)$
 and consequently $|J_{n-1}| \geq \frac{n}{2} - \frac{1}{2}$.
 
-From Dirichlet Principle, as $J_0 + J_{n-1} \geq n$, we have that $|J_0 \cap J_{n-1}| \geq 2$. Thus,
+From Dirichlet Principle, as $|J_0| + |J_{n-1}| \geq n$, we have that $|J_0 \cap J_{n-1}| \geq 2$. Thus,
 there is at least one element on $J_0 \cap J_{n-1}$, let's call it $k$, such that $P\_vertices[k] \neq y$.
 We can then build the following $G$-transversal cycle:
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figuras/cycle_n-1_cruzamento_not_y.png}
+    \caption{Crossing for the case $d^-_D(y) < \frac{n}{2}$ and $P\_vertices[k] \neq y$.}
+    \label{fig:cycle_n-1_cruzamento_not_y}
+\end{figure}
+
+The algorithm to find the answer in this case is the following:
+
+\begin{algorithm}[H]
+    \caption{Part 6: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
+    \begin{algorithmic}[1]
+        \Function{Extend\_Cycle}{$G, C$}
+            \State $edge \gets G.check\_edge(P\_vertices[0], P\_vertices[-1], removed\_color)$
+            \If{$edge$ is not $None$}
+                \State \Return \Call{Cycle}{$G, P\_vertices, P\_edges + [edge]$}
+            \EndIf
+
+            \State $J1 \gets \Call{Find\_Adjacency}{$P\_vertices[0], removed\_color, P\_pos$}$
+            \State $J1 \gets [(u - 1 + n) \bmod n : u \in J1]$
+
+            \State $Jn \gets incoming\_neighborhood[P\_vertices[-1]]$
+            \State $Jn \gets [P\_pos[u] : u \in Jn]$
+
+            \For{$i \in J1$}
+                \If{$i \in Jn$}
+                    \If{$P\_vertices[i + 1] = y$}
+                        \State \textbf{continue}
+                    \EndIf
+
+                    \State $final\_vertices \gets P\_vertices[:i+1] + P\_vertices[i+1:][::-1]$
+                    \State $final\_edges \gets P\_edges[:i] +$
+                    \State $\hspace{6.7em} [G.get\_edge(P\_vertices[i], P\_vertices[-1], P\_edges[i].color)] +$
+                    \State $\hspace{6.7em} P\_edges[i+1:][::-1] +$
+                    \State $\hspace{6.7em} [G.get\_edge(P\_vertices[i+1], P\_vertices[0], removed\_color)]$
+
+                    \State \Return \Call{Cycle}{$G, final\_vertices, final\_edges$}
+                \EndIf
+            \EndFor
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+The time complexity is $O(n^2)$, as we iterate over $J_0$ and check 
+if the element is in $J_{n-1}$. If it is, we build the cycle and return it, in $O(n)$ operations.
+Therefore, for the there exists $x_i$ such that $d^-_D(x_i) > \frac{n}{2} - 1$, we have a total 
+complexity of $O(n^2)$.
+
+Now, let's analyze the case where every $x_i$ satisfies $d^-_D(x_i) \leq \frac{n}{2} - 1$.
