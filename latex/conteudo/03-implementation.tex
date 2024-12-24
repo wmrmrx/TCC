@@ -1182,48 +1182,6 @@ We can finally build the following transversal cycle:
 
 The algorithm to find the answer in this case is the following:
 
-% x = Q.vertices
-
-%             edge = G.get_edge(x[n - 2], x[0], cj)
-%             if edge is not None:
-%                 edges = Q.edges[:]
-%                 edges.append(edge)
-%                 return Cycle(G, vertices, edges)
-
-%             J1 = []
-%             for i in range(n - 2):
-%                 edge = G.get_edge(x[0], x[i + 1], cj)
-%                 J1.append((i, edge))
-
-%             position = [0] * n
-%             for i in range(n):
-%                 position[x[i]] = i
-
-%             inJn = [False] * n
-%             for v in incoming_neighborhood[x[n - 1]]:
-%                 inJn[position[v]] = True
-
-%             for k, edge_from_first in J1:
-%                 color = Q.edges[k].color
-%                 edge_from_last = G.check_edge(x[n - 1], x[k], color)
-%                 if edge_from_last is None:
-%                     continue
-
-%                 new_vertices = [x[0], x[k + 1]]
-%                 new_edges = [edge_from_first]
-
-%                 for i in range(k + 1, n - 1):
-%                     new_vertices.append(x[i + 1])
-%                     new_edges.append(Q.edges[i])
-
-%                 new_edges.append(edge_from_last)
-
-%                 for i in range(k, 0, -1):
-%                     edge = G.get_edge(x[i], x[i - 1], Q.edges[i - 1].color)
-%                     new_edges.append(edge)
-
-%                 return Cycle(G, new_vertices, new_edges)
-
 \begin{algorithm}[H]
     \caption{Part 8: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
     \begin{algorithmic}[1]
