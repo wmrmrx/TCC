@@ -1,6 +1,6 @@
 from graph import *
 from math import ceil
-from typing import Union
+from typing import Union, Optional
 from enum import Enum
 
 class Case(Enum):
@@ -19,13 +19,13 @@ class Message:
     def __str__(self):
         return str(self.case)
 
-def increment(G: Graph, path_or_cycle: Union[Path, Cycle], msg: Message) -> Union[Path, Cycle]:
+def increment(G: Graph, path_or_cycle: Union[Path, Cycle], msg: Optional[Message] = None) -> Union[Path, Cycle]:
     if isinstance(path_or_cycle, Path):
         return handle_path(G, path_or_cycle, msg)
     elif isinstance(path_or_cycle, Cycle):
         return handle_cycle(G, path_or_cycle, msg)
 
-def handle_path(G: Graph, path: Path, msg: Message):
+def handle_path(G: Graph, path: Path, msg: Optional[Message] = None):
     n = G.n
 
     if len(path.vertices) == 0:
@@ -41,20 +41,17 @@ def handle_path(G: Graph, path: Path, msg: Message):
         vertices_in_path[vertex] = True
 
     if path.size() < ceil(n / 2):
-        msg.case = Case.SMALL_PATH
+        msg and setattr(msg, 'case', Case.SMALL_PATH)
         vertices = path.vertices
         edges = path.edges
-        final_vertex = path.back()
 
         color_outside_path = next(i for i in range(n) if not colors_in_path[i])
 
         for i in range(n):
             if not vertices_in_path[i]:
-                edge = G.check_edge(final_vertex, i, color_outside_path)
+                edge = G.check_edge(path.back(), i, color_outside_path)
                 if edge is not None:
-                    vertices.append(i)
-                    edges.append(edge)
-                    return Path(G, vertices, edges)
+                    return Path(G, vertices + [i], edges + [edge])
         raise RuntimeError("Should not reach here. Small path should return a new path.")
     else:
         cx = path.edges[-1].color
@@ -65,9 +62,9 @@ def handle_path(G: Graph, path: Path, msg: Message):
         for c in [cx, cy]:
             edge = G.check_edge(x, y, c)
             if edge is not None:
-                vertices = path.vertices.copy()
-                edges = path.edges.copy() + [edge]
-                msg.case = "Pop the last edge and find a cycle"
+                vertices = path.vertices
+                edges = path.edges + [edge]
+                msg and setattr(msg, 'case', "Pop the last edge and find a cycle")
                 return Cycle(G, vertices, edges)
 
         for [c1, c2] in [[cx, cy], [cy, cx]]:
@@ -76,9 +73,9 @@ def handle_path(G: Graph, path: Path, msg: Message):
                     edgeX = G.check_edge(x, i, c1)
                     edgeY = G.check_edge(y, i, c2)
                     if (edgeX is not None) and (edgeY is not None):
-                        vertices = path.vertices.copy() + [i]
-                        edges = path.edges.copy() + [edgeY, edgeX]
-                        msg.case = "Pop the last edge and find a cycle with a new vertex"
+                        vertices = path.vertices + [i]
+                        edges = path.edges + [edgeY, edgeX]
+                        msg and setattr(msg, 'case', "Pop the last edge and find a cycle with a new vertex")
                         return Cycle(G, vertices, edges)
 
             for i in range(1, len(path.vertices) - 1):
@@ -87,18 +84,14 @@ def handle_path(G: Graph, path: Path, msg: Message):
                 edgeY = G.check_edge(u, y, c2)
 
                 if (edgeX is not None) and (edgeY is not None):
-                    vertices = path.vertices[:i + 1] + [y]
-                    edges = path.edges[:i] + [edgeY]
-                    for j in range(len(path.vertices) - 1, i + 1, -1):
-                        vertices.append(path.vertices[j - 1])
-                        edges.append(path.edges[j - 1])
-                    edges.append(edgeX)
-                    msg.case = "Pop the last edge and find a cycle with the crossing trick"
+                    vertices = path.vertices[:i + 1] + [y] + path.vertices[i + 1:-1][::-1]
+                    edges = path.edges[:i] + [edgeY] + path.edges[i + 1:][::-1] + [edgeX]
+                    msg and setattr(msg, 'case', "Pop the last edge and find a cycle with the crossing trick")
                     return Cycle(G, vertices, edges)
 
     raise RuntimeError("Should not reach here. Did not find crossing.")
 
-def handle_cycle(G: Graph, cycle: Cycle, msg: Message):
+def handle_cycle(G: Graph, cycle: Cycle, msg: Optional[Message] = None):
     global increment_case
     n = G.n
     cycle_size = cycle.size()
@@ -123,7 +116,19 @@ def handle_cycle(G: Graph, cycle: Cycle, msg: Message):
     if cycle_size < ceil(n / 2):
         raise RuntimeError("Should not reach here. Should never get small cycle.")
     elif cycle_size == n - 1:
-        msg.case = "Find cycle of size $n$ from one of size $n-1$ (hard!)"
+        msg and setattr(msg, 'case', "Find cycle of size $n$ from one of size $n-1$ (hard!)")
+        def find_adjacency(src: int, color: int, pos: List[int]) -> List[int]:
+            ans = []
+            for tgt in G.adjacency[color][src]:
+                assert pos[tgt] != -1
+                ans.append(pos[tgt])
+            return ans
+
+        def find_answer(vertices: List[Vertex], edges: List[Edge], i):
+            vertices = vertices[i + 1:] + vertices[:i + 1] + [y]
+            edges = edges[i + 1:] + edges[:i] + [G.get_edge(vertices[-2], y, pos_color_cic[i]), G.get_edge(y, vertices[0], cy)]
+            return Cycle(G, vertices, edges)
+        
         new_color_id = [-1] * n
         y = next(i for i in range(n) if not vertices_in_cycle[i])
         cy = next(i for i in range(n) if not colors_in_cycle[i])
@@ -144,7 +149,6 @@ def handle_cycle(G: Graph, cycle: Cycle, msg: Message):
         in_degree = [0] * n
         incoming_neighborhood = [[] for _ in range(n)]
 
-
         for i in range(cycle_sz):
             u, v = cycle.vertices[i], cycle.vertices[(i + 1) % cycle_sz]
             color = pos_color_cic[i]
@@ -159,29 +163,9 @@ def handle_cycle(G: Graph, cycle: Cycle, msg: Message):
 
                 if tgt == y:
                     I.append(i)
-        
-        def find_adjacency(src: int, color: int, pos: List[int]) -> List[int]:
-            ans = []
-            for tgt in G.adjacency[color][src]:
-                assert pos[tgt] != -1
-                ans.append(pos[tgt])
-            return ans
 
         _I = find_adjacency(y, cy, vertex_position_on_cycle)
         _I = [(u - 1 + cycle_sz) % cycle_sz for u in _I]
-
-        def find_answer(vertices: List[Vertex], edges: List[Edge], i):
-            vertices = vertices[i + 1:] + vertices[:i + 1]
-            edges = edges[i + 1:] + edges[:i + 1]
-            edges.pop()
-
-            edge = G.get_edge(vertices[-1], y, pos_color_cic[i])
-            edge2 = G.get_edge(y, vertices[0], cy)
-            vertices.append(y)
-            edges.append(edge)
-            edges.append(edge2)
-
-            return Cycle(G, vertices, edges)
 
         for i in I:
             if i in _I:
@@ -269,66 +253,55 @@ def handle_cycle(G: Graph, cycle: Cycle, msg: Message):
 
                     return Cycle(cycle.G, final_vertices, final_edges)
         else:
-            def get_Q_and_cj():
-                for j in range(n - 1):
-                    edge = G.get_edge(y, cycle.vertices[j], cy)
-                    if edge is None or in_degree[cycle.vertices[j]] != n // 2 - 1:
-                        continue
-                    new_vertices = cycle.vertices[:]
-                    new_edges = cycle.edges[:]
-                    new_vertices = new_vertices[j + 1:] + new_vertices[:j + 1]
-                    new_edges = new_edges[j + 1:] + new_edges[:j + 1]
-                    cj = new_edges[-1].color
-                    new_edges.pop()
-                    new_vertices.insert(0, y)
-                    new_edges.insert(0, edge)
-                    return Path(G, new_vertices, new_edges), cj
-                raise RuntimeError("j not found!")
+            Q = None
+            cj = -1
+            for j in range(n - 1):
+                edge = G.get_edge(y, cycle.vertices[j], cy)
+                if edge is None or in_degree[cycle.vertices[j]] != n // 2 - 1:
+                    continue
+                Q_vertices = [y] + cycle.vertices[j + 1:] + cycle.vertices[:j + 1]
+                Q_edges = [edge] + cycle.edges[j + 1:] + cycle.edges[:j]
+                cj = Q_edges[-1].color
+                Q = Path(G, Q_vertices, Q_edges)
+                break
 
-            Q, cj = get_Q_and_cj()
+            assert Q is not None
 
-            # assert that Q misses cj
-            for edge in Q.edges:
-                assert edge.color != cj
-
-            x = Q.vertices
-
-            edge = G.get_edge(x[n - 2], x[0], cj)
+            edge = G.get_edge(Q.vertices[n - 2], Q.vertices[0], cj)
             if edge is not None:
-                edges = Q.edges[:]
-                edges.append(edge)
+                edges = Q.edges + [edge]
                 return Cycle(G, vertices, edges)
 
             J1 = []
             for i in range(n - 2):
-                edge = G.get_edge(x[0], x[i + 1], cj)
+                edge = G.get_edge(Q.vertices[0], Q.vertices[i + 1], cj)
                 J1.append((i, edge))
 
             position = [0] * n
             for i in range(n):
-                position[x[i]] = i
+                position[Q.vertices[i]] = i
 
             inJn = [False] * n
-            for v in incoming_neighborhood[x[n - 1]]:
+            for v in incoming_neighborhood[Q.vertices[n - 1]]:
                 inJn[position[v]] = True
 
             for k, edge_from_first in J1:
                 color = Q.edges[k].color
-                edge_from_last = G.check_edge(x[n - 1], x[k], color)
+                edge_from_last = G.check_edge(Q.vertices[n - 1], Q.vertices[k], color)
                 if edge_from_last is None:
                     continue
 
-                new_vertices = [x[0], x[k + 1]]
+                new_vertices = [Q.vertices[0], Q.vertices[k + 1]]
                 new_edges = [edge_from_first]
 
                 for i in range(k + 1, n - 1):
-                    new_vertices.append(x[i + 1])
+                    new_vertices.append(Q.vertices[i + 1])
                     new_edges.append(Q.edges[i])
 
                 new_edges.append(edge_from_last)
 
                 for i in range(k, 0, -1):
-                    edge = G.get_edge(x[i], x[i - 1], Q.edges[i - 1].color)
+                    edge = G.get_edge(Q.vertices[i], Q.vertices[i - 1], Q.edges[i - 1].color)
                     new_edges.append(edge)
 
                 return Cycle(G, new_vertices, new_edges)
@@ -361,16 +334,10 @@ def handle_cycle(G: Graph, cycle: Cycle, msg: Message):
                             assert vertices[w_id] == w
                             
                             # Coloca w como o último vértice
-                            vertices = vertices[w_id + 1:] + vertices[:w_id + 1]
-                            edges = edges[w_id + 1:] + edges[:w_id]
+                            vertices = vertices[w_id + 1:] + vertices[:w_id + 1] + [v, u]
+                            edges = edges[w_id + 1:] + edges[:w_id] + [G.get_edge(w, v, j), G.get_edge(v, u, i)]
 
-                            # Cria um novo caminho com o vértice e arestas
-                            vertices.append(v)
-                            edges.append(G.get_edge(w, v, j))
-                            vertices.append(u)
-                            edges.append(G.get_edge(v, u, i))
-
-                            msg.case = "There are two vertices outside the cycle that create a bigger path"
+                            msg and setattr(msg, 'case', "There are two vertices outside the cycle that create a bigger path")
                             return Path(G, vertices, edges)  # Caminho de tamanho l + 1
 
         # Agora, para cada vértice não-u no ciclo, todas as arestas das cores miss1 e miss2
@@ -388,14 +355,10 @@ def handle_cycle(G: Graph, cycle: Cycle, msg: Message):
                         edge2 = G.check_edge(u, x2, c2)
                         
                         if (edge1 is not None) and (edge2 is not None):
-                            vertices = vertices[i + 1:] + vertices[:i + 1]
-                            edges = edges[i + 1:] + edges[:i + 1]
-                            edges.pop()  # Remove a última aresta
-                            edges.append(edge1)
-                            vertices.append(u)
-                            edges.append(edge2)
+                            vertices = vertices[i + 1:] + vertices[:i + 1] + [u]
+                            edges = edges[i + 1:] + edges[:i] + [edge1, edge2]
                             
-                            msg.case = "We can remove a edge and add a vertex, creating a bigger cycle"
+                            msg and setattr(msg, 'case', "We can remove a edge and add a vertex, creating a bigger cycle")
                             return Cycle(G, vertices, edges)  # Ciclo de tamanho l + 1
 
         raise RuntimeError("Código inacessível!")

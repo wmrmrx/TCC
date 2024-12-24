@@ -138,3 +138,35 @@ class Draw(manim.Scene):
             msg = Message()
 
         new_scene("We have a Rainbow Hamiltonian Cycle.", edges, vertices, scene, wait = 5)
+
+def run():
+    instance = read_graph()
+    G = instance
+    n = G.n
+
+    def print_cycle(cycle: Cycle):
+        print(cycle.vertices)
+        for e in cycle.edges:
+            print(e.u, e.v, e.color)
+
+    if n < 6:
+        cycle = brute_force(G)
+        print_cycle(cycle)
+        return
+
+    vertices = [0]
+    edges = []
+    while len(edges) != n:
+        if len(edges) == len(vertices):
+            cycle = Cycle(G, deepcopy(vertices), deepcopy(edges))
+            result = increment(G, cycle)
+        else:
+            path = Path(G, deepcopy(vertices), deepcopy(edges))
+            result = increment(G, path)
+        vertices = result.vertices
+        edges = result.edges
+
+    assert len(edges) == n
+
+if __name__ == "__main__":
+    run()
