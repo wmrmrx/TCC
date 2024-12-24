@@ -1080,3 +1080,164 @@ Therefore, for the there exists $x_i$ such that $d^-_D(x_i) > \frac{n}{2} - 1$, 
 complexity of $O(n^2)$.
 
 Now, let's analyze the case where every $x_i$ satisfies $d^-_D(x_i) \leq \frac{n}{2} - 1$.
+Define
+
+\begin{equation}
+    \mathcal{J} \coloneqq \{i \in [n-1]: d^-_D(x_i) = \lfloor \frac{n}{2} - 1 \rfloor\}.
+    \label{eq:J_definition}
+\end{equation}
+
+From the construction of $D$, as $d^+_D(y) = 0$ and $d^-_D(y) \leq \frac{n}{2} - 1$, we have:
+
+\begin{equation}
+    |A(D - y)| \geq (n - 1) (\frac{n}{2} - 1) - \frac{n}{2} + 1 > (n - 1) (\frac{n}{2} - \frac{3}{2}).
+    \label{eq:A_D_minus_y}
+\end{equation}
+
+Therefore, from \ref{eq:A_D_minus_y} and \ref{eq:J_definition}, if we analyze
+the sum of the in-degrees of the vertices:
+
+\begin{equation}
+    |\mathcal{J}| \lfloor \frac{n}{2} - 1 \rfloor + (n - 1 - |\mathcal{J}|) \lfloor \frac{n}{2} - 2 \rfloor \geq |A(D - y)| > (n - 1) \frac{n}{2} - \frac{3}{2}.
+\end{equation}
+
+Therefore, $|\mathcal{J}| \geq \frac{n}{2} > \frac{n - 1}{2}$. Defining 
+$\mathcal{J}' \coloneqq \{i \in [n - 1]: edge(x_{i+1}, y, c_y) \in A(G)\}$, we have that 
+$|\mathcal{J}'| + |\mathcal{J}| \geq n$. From Dirichlet Principle, there exists 
+$j \in \mathcal{J}' \cap \mathcal{J}$. Let's build the following transversal path $Q$:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figuras/cycle_n-1_path_q.png}
+    \caption{Building the transversal path $Q$.}
+    \label{fig:cycle_n-1_path_q}
+\end{figure}
+
+The algorithm to build $Q$ and get the new missing color is the following:
+
+                % for j in range(n - 1):
+                %     edge = G.get_edge(y, cycle.vertices[j], cy)
+                %     if edge is None or in_degree[cycle.vertices[j]] != n // 2 - 1:
+                %         continue
+                %     new_vertices = cycle.vertices[:]
+                %     new_edges = cycle.edges[:]
+                %     new_vertices = new_vertices[j + 1:] + new_vertices[:j + 1]
+                %     new_edges = new_edges[j + 1:] + new_edges[:j + 1]
+                %     cj = new_edges[-1].color
+                %     new_edges.pop()
+                %     new_vertices.insert(0, y)
+                %     new_edges.insert(0, edge)
+                %     return Path(G, new_vertices, new_edges), cj
+                % raise RuntimeError("j not found!")
+
+\begin{algorithm}[H]
+    \caption{Part 7: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
+    \begin{algorithmic}[1]
+        \Function{Extend\_Cycle}{$G, C$}
+            \State $Q \gets Path()$
+            \State $Q\_pos \gets [0] \times n$
+            \State $removed\_color \gets -1$
+            \For{$j \in [0, \dots, n - 1]$}
+                \State $edge \gets G.get\_edge(y, C.vertices[j], cy)$
+                \If{$edge$ is $None$ or $in\_degree[C.vertices[j]] \neq \lfloor \frac{n}{2} - 1 \rfloor$}
+                    \State \textbf{continue}
+                \EndIf
+                \State $Q\_vertices \gets [y] + C.vertices[j + 1:] + C.vertices[:j + 1]$
+                \State $Q\_edges \gets [edge] + C.edges[j + 1:] + C.edges[:j]$
+                \State $removed\_color \gets C.edges[j].color$
+                \For{$i \in [0, \dots, n - 1]$}
+                    \State $Q\_pos[Q\_vertices[i]] \gets i$
+                \EndFor
+                \State $Q \gets$ \Call{Path}{$G, Q\_vertices, Q\_edges$}
+                \State \textbf{break}
+            \EndFor
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+This is $O(n)$ as the most expensive operations are the manipulations on $C$.
+Now, define:
+
+\begin{equation}
+    J_0 \coloneqq \{i \in [0, n - 3]: edge(y, Q.vertices[i+1], removed\_color) \in A(G)\},
+\end{equation}
+\begin{equation}
+    J_{n-1} \coloneqq \{i \in [1, n - 3] : Q.vertices[i] \in incoming\_neighborhood[Q.vertices[n-1]]\}.
+\end{equation}
+
+If $edge(y, Q.vertices[0], removed\_color)$ in $G$, we can just close the cycle adding this edge.
+Let's assume that this edge is not in $G$. We have that $|J_0| \geq \delta(G_{removed\_color}) \geq \frac{n}{2}$.
+Observe that $Q.vertices[0] = y \notin N^-_D(Q_vertices[n - 1])$ and $Q.vertices[n - 2] = C.vertices[j - 1] \notin N^-_D(Q.vertices[n - 1])$,
+by the construction of $D$. As $C.vertices[j] \in \mathcal{J}$, we get that
+$|J_{n-1}| = \lfloor \frac{n}{2} - 1 \rfloor$. We obtain that $|J_0| + |J_{n-1}| \geq n - 1$.
+Thus, from Dirichlet Principle, there exists $k \in (J_0 \backslash \{0\}) \cap J_{n-1}$. 
+We can finally build the following transversal cycle:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figuras/cycle_n-1_last_crossing.png}
+    \caption{Final crossing for the case $d^-_D(y) < \frac{n}{2}$ and $P\_vertices[k] \neq y$.}
+    \label{fig:cycle_n-1_last_crossing}
+\end{figure}
+
+The algorithm to find the answer in this case is the following:
+
+% x = Q.vertices
+
+%             edge = G.get_edge(x[n - 2], x[0], cj)
+%             if edge is not None:
+%                 edges = Q.edges[:]
+%                 edges.append(edge)
+%                 return Cycle(G, vertices, edges)
+
+%             J1 = []
+%             for i in range(n - 2):
+%                 edge = G.get_edge(x[0], x[i + 1], cj)
+%                 J1.append((i, edge))
+
+%             position = [0] * n
+%             for i in range(n):
+%                 position[x[i]] = i
+
+%             inJn = [False] * n
+%             for v in incoming_neighborhood[x[n - 1]]:
+%                 inJn[position[v]] = True
+
+%             for k, edge_from_first in J1:
+%                 color = Q.edges[k].color
+%                 edge_from_last = G.check_edge(x[n - 1], x[k], color)
+%                 if edge_from_last is None:
+%                     continue
+
+%                 new_vertices = [x[0], x[k + 1]]
+%                 new_edges = [edge_from_first]
+
+%                 for i in range(k + 1, n - 1):
+%                     new_vertices.append(x[i + 1])
+%                     new_edges.append(Q.edges[i])
+
+%                 new_edges.append(edge_from_last)
+
+%                 for i in range(k, 0, -1):
+%                     edge = G.get_edge(x[i], x[i - 1], Q.edges[i - 1].color)
+%                     new_edges.append(edge)
+
+%                 return Cycle(G, new_vertices, new_edges)
+
+\begin{algorithm}[H]
+    \caption{Part 8: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
+    \begin{algorithmic}[1]
+        \Function{Extend\_Cycle}{$G, C$}
+            \State $edge \gets G.check\_edge(Q.vertices[n - 2], Q.vertices[0], removed\_color)$
+            \If{$edge$ is not $None$}
+                \State \Return \Call{Cycle}{$G, Q.vertices, Q.edges + [edge]$}
+            \EndIf
+
+            \State $J_1 \gets \Call{Find\_Adjacency}{$Q.vertices[0], removed\_color, Q.pos$}$
+            \State $J_1 \gets [(u - 1 + n) \bmod n : u \in J1]$
+
+            \State $J_{n-1} \gets incoming\_neighborhood[Q.vertices[-1]]$
+            \State $J_{n-1} \gets [Q.pos[u] : u \in J_{n-1}]$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
