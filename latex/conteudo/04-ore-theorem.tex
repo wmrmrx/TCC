@@ -7,20 +7,20 @@ $\deg_G(u) + \deg_G(v) \geq n$ for all $u, v \in V$ such that $\{u, v\} \not\in 
 We will call such condition Ore's condition.
 
 Ore's theorem is a generalization to Dirac's theorem, since if a graph satisfies Dirac's condition, it also satisfies Ore's condition.
-We want to prove that if for a collection of graphs $G = \{G_1, G_2, \ldots, G_n\}$, they all satisfy Ore's condition, 
+We want to prove that if for a collection of graphs $G = \{G_0, G_1, \ldots, G_{n-1}\}$, they all satisfy Ore's condition, 
 then there exists a rainbow hamiltonian cycle in \(G\).
 
 \section{Flowchart}
 
 \subsection{Path of Length $l$}
 
-Suppose we have a path \( P = (x_1, e_1, \dots, x_{l}, e_{l}, x_{l + 1}) \) of length \( l \). 
+Suppose we have a path \( P = (x_0, e_0, \dots, x_{l-1}, e_{l-1}, x_{l}) \) of length \( l \). 
 Just like in Dirac's Rainbow version's proof case, 
 we want to find either a path of length \( l+1 \) or a cycle of length \( l \) or \( l+1 \). 
 
 \subsubsection{Case 1: \( l < \frac{n}{2} \)}
 
-Let \( c \) be a color that is not in the path and \(u \coloneqq x_1\), \(v \coloneqq x_{l+1}\). 
+Let \( c \) be a color that is not in the path and \(u \coloneqq x_0\), \(v \coloneqq x_{l}\). 
 If \( \{u, v\} \in G_c \), then we have a cycle of length \( l+1 \).
 Else, since \( \{u, v\} \not\in G_c \), by Ore's condition, 
 we have that \( \deg_{G_c}(u) + \deg_{G_c}(v) \geq n \), which implies there exists a 
@@ -33,27 +33,48 @@ Given such \(w\), we can construct a path of length \( l+1 \) by appending \(w\)
 
 This case is analogous to Rainbow Dirac's equivalent case.
 
-% TODO
+Consider the path $P'$ as being the path $P$ with the last vertex removed, i.e., $P' = (x_0, e_0, \dots, x_{l-1}, e_{l-1})$.
+There are two colors, $c_0$ and $c_1$, that are not in the path. Define 
+\(G_0 \coloneqq G_{c_0}, G_1 \coloneqq G_{c_1}, u \coloneqq x_0, v \coloneqq x_{l-1}\), and 
+\( \deg^{\text{out}}_{G_i}(w), \deg^{\text{in}}_{G_i}(w) \) as the number of neighbors of \(w \in V(G_i)\) that are not in the path
+and the number of neighbors of \(v\) that are in the path, respectively.
+By definition, \( \deg^{\text{in}}_{G_i}(w) +  \deg^{\text{out}}_{G_i}(w) = \deg_{G_i}(w) \).
+
+If \( \{u, v\} \in G_0 \) or \( \{u, v\} \in G_1 \), then we have a cycle of length \( l \).
+Else, by Ore's condition, \( \deg_{G_0}(u) + \deg_{G_0}(v) \geq n \) and \( \deg_{G_1}(u) + \deg_{G_1}(v) \geq n \).
+If there exists a vertex \(w\) not in the path such that \( \{u, w\} \in G_0 \) and \( \{v, w\} \in G_1 \), 
+then we have a cycle of length \( l + 1 \). The same is true if \( \{u, w\} \in G_1 \) and \( \{v, w\} \in G_0 \).
+
+We can assume that such vertex \(w\) doesn't exists, implying 
+\( \deg^{\text{out}}_{G_0}(u) + \deg^{\text{out}}_{G_1}(v) \leq n - l \) and
+\( \deg^{\text{out}}_{G_1}(u) + \deg^{\text{out}}_{G_0}(v) \leq n - l \). 
+So, we have that \( \deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_1}(v) + 
+\deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_1}(v)  \geq 2 n - 2 ( n - l  ) = 2 l \). We must have that 
+either \( \deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_1}(v) \geq l \) or 
+\( \deg^{\text{in}}_{G_1}(u) + \deg^{\text{in}}_{G_0}(v) \geq l \).
+Suppose, without loss of generality, that \( \deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_1}(v) \geq l \).
+% TODO: detalhar mais
+By the Pigeonhole Principle, there exists \(i\) such that 
+\( \{u, x_i\} \in G_0 \) and \( \{v, x_{i-1}\} \in G_1 \).
+Implying in the existence of a cycle of length \( l \).
 
 \subsection{Cycle of Length $l < n - 1$}
 
-Let \( C = \{x_1, e_1, \dots, x_{l}, e_{l}, x_{l + 1}\} \) be a cycle of length \( l < n - 1 \).
-
-Let \( c_1, c_2 \) be colors that are not in the cycle. Define \(G_1 \coloneqq G_{c_1}, G_2 \coloneqq G_{c_2} \).
+Let \( C = \{x_0, e_0, \dots, x_{l-1}, e_{l-1}, x_{l}\} \) be a cycle of length \( l < n - 1 \).
+There are two colors, $c_0$ and $c_1$, that are not in the cycle. Define \(G_0 \coloneqq G_{c_0}, G_1 \coloneqq G_{c_1} \).
 
 \subsubsection{Case 1: \( l < \frac{n}{2} \)}
 
-From Ore's theorem, we know \(G_1\) is a connected graph, since it contains a hamiltonian cycle. 
-Then, there exists a edge \( \{u, v\} \in E(G_1) \) such that \( u \in C \) and \( v \not\in C \). 
+From Ore's theorem, we know \(G_0\) is a connected graph, since it contains a hamiltonian cycle. 
+Then, there exists a edge \( \{u, v\} \in E(G_0) \) such that \( u \in C \) and \( v \not\in C \). 
 Let \(w\) be a vertex adjacent to \(u\) in \(C\). 
-If \(\{v, w\} \in G_2\), then we have a rainbow cycle of length \( l+1 \). 
-Else, since \( \{v, w\} \not\in G_2 \), by Ore's condition, \( \deg_{G_1}(v) + \deg_{G_1}(w) \geq n \),
-which implies there exists a vertex \( z \) such that \( \{v, z\} \in G_2 \) or \( \{w, z\} \in G_2 \), because otherwise
-\( \deg_{G_2}(v) \leq l \) and \( \deg_{G_2}(w) \leq l - 1 \), which implies 
-\( \deg_{G_2}(v) + \deg_{G_2}(w) \leq 2l - 1 < n \), a contradiction.
-Given such \(z\), we can construct a path of length \( l+1 \) if \( \{v, z\} \in G_2 \) or 
-\( z = w \) and \( \{w, z\} \in G_2 \), or a cycle of length \( l+1 \) if \( \{w, z\} \in G_2 \) and \(z \neq w\).
+If \(\{v, w\} \in G_1\), then we have a rainbow cycle of length \( l+1 \). 
+Else, since \( \{v, w\} \not\in G_1 \), by Ore's condition, \( \deg_{G_1}(v) + \deg_{G_1}(w) \geq n \),
+which implies there exists a vertex \( z \) such that \( \{v, z\} \in G_1 \) or \( \{w, z\} \in G_1 \), because otherwise
+\( \deg_{G_1}(v) \leq l \) and \( \deg_{G_1}(w) \leq l - 1 \), implying 
+\( \deg_{G_1}(v) + \deg_{G_1}(w) \leq 2l - 1 < n \), a contradiction.
+Given such \(z\), we can construct a path of length \( l+1 \) if \( \{v, z\} \in G_1 \) or 
+\( z = w \) and \( \{w, z\} \in G_1 \), or a cycle of length \( l+1 \) if \( \{w, z\} \in G_1 \) and \(z \neq w\).
 
 \subsubsection{Case 2: \( l \geq \frac{n}{2} \)}
 
-% TODO: Prove that symmetric difference of edges is empty
