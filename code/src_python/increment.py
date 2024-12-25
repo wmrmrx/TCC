@@ -469,6 +469,7 @@ def test_handle_cycle_n_minus_1_upper_bound_degree_D():
         for color in range(n):
             assert len(G.adjacency[color][i]) >= n // 2
         assert len(incoming_neighborhood[i]) == in_degree[i]
+        assert in_degree[i] <= n // 2 - 1
 
     result = handle_cycle_n_minus_1_upper_bound_degree_D(G, cycle, y, cy, in_degree, incoming_neighborhood)
     
