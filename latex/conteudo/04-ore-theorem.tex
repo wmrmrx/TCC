@@ -78,3 +78,15 @@ Given such \(z\), we can construct a path of length \( l+1 \) if \( \{v, z\} \in
 
 \subsubsection{Case 2: \( l \geq \frac{n}{2} \)}
 
+Suppose there exists two vertices \( u, v \not\in C \) such that \( \{u, v\} \in E(G_0) \) and \( \{u, v) \not\in E(G_1) \).
+By Ore's condition, 
+\( \deg_{G_1}(u) + \deg_{G_1}(v) \geq n \), and by the Pigeonhole Principle, 
+there exists a vertex \( w \in C \) such that \( \{u, w\} \in G_1 \) or \( \{v, w\} \in G_1 \). 
+With this, we can build a rainbow path of length \( l+1 \).
+Otherwise, we have that for all \( u, v \not\in C \), 
+\[ \{u, v\} \in E(G_0) \leftrightarrow \{u, v\} \in E(G_1). \]
+Since \(G_0\) and \(G_1\) if there exists \(u, v \not\in C\) such that \( \{u, v\} \in E(G_0) \), 
+then we have a path with endpoint in \(u\) or \(v\) and in a vertex in the cycle, creating a path of length at 
+least \( l + 1 \).
+
+We now assume that there is no such \(u, v\).
