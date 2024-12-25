@@ -2,6 +2,7 @@ from graph import *
 from math import ceil
 from typing import Union, Optional
 from enum import Enum
+import pytest
 
 class Case(Enum):
     SMALL_PATH = "Path length is smaller than $\\lceil \\frac{n}{2} \\rceil$. Greedily expand the path."
@@ -253,61 +254,7 @@ def handle_cycle(G: Graph, cycle: Cycle, msg: Optional[Message] = None):
 
                     return Cycle(cycle.G, final_vertices, final_edges)
         else:
-            Q = None
-            cj = -1
-            for j in range(n - 1):
-                edge = G.get_edge(y, cycle.vertices[j], cy)
-                if edge is None or in_degree[cycle.vertices[j]] != n // 2 - 1:
-                    continue
-                Q_vertices = [y] + cycle.vertices[j + 1:] + cycle.vertices[:j + 1]
-                Q_edges = [edge] + cycle.edges[j + 1:] + cycle.edges[:j]
-                cj = Q_edges[-1].color
-                Q = Path(G, Q_vertices, Q_edges)
-                break
-
-            assert Q is not None
-
-            edge = G.get_edge(Q.vertices[n - 2], Q.vertices[0], cj)
-            if edge is not None:
-                edges = Q.edges + [edge]
-                return Cycle(G, vertices, edges)
-
-            J1 = []
-            for i in range(n - 2):
-                edge = G.get_edge(Q.vertices[0], Q.vertices[i + 1], cj)
-                J1.append((i, edge))
-
-            position = [0] * n
-            for i in range(n):
-                position[Q.vertices[i]] = i
-
-            inJn = [False] * n
-            for v in incoming_neighborhood[Q.vertices[n - 1]]:
-                inJn[position[v]] = True
-
-            for k, edge_from_first in J1:
-                color = Q.edges[k].color
-                edge_from_last = G.check_edge(Q.vertices[n - 1], Q.vertices[k], color)
-                if edge_from_last is None:
-                    continue
-
-                new_vertices = [Q.vertices[0], Q.vertices[k + 1]]
-                new_edges = [edge_from_first]
-
-                for i in range(k + 1, n - 1):
-                    new_vertices.append(Q.vertices[i + 1])
-                    new_edges.append(Q.edges[i])
-
-                new_edges.append(edge_from_last)
-
-                for i in range(k, 0, -1):
-                    edge = G.get_edge(Q.vertices[i], Q.vertices[i - 1], Q.edges[i - 1].color)
-                    new_edges.append(edge)
-
-                return Cycle(G, new_vertices, new_edges)
-
-            raise RuntimeError("Not found")
-
+            return handle_cycle_n_minus_1_upper_bound_degree_D(G, cycle, y, cy, in_degree, incoming_neighborhood)
 
         raise RuntimeError("Should not reach here. Did not find answer :(")
     else:
@@ -362,4 +309,170 @@ def handle_cycle(G: Graph, cycle: Cycle, msg: Optional[Message] = None):
                             return Cycle(G, vertices, edges)  # Ciclo de tamanho l + 1
 
         raise RuntimeError("Código inacessível!")
+
+def handle_cycle_n_minus_1_upper_bound_degree_D(G: Graph, cycle: Cycle, y: int, cy: int, in_degree: List[int], incoming_neighborhood: List[List[int]]):
+    n = G.n
+    Q = None
+    removed_color = -1
+
+    for j in range(2, n - 1):
+        edge = G.check_edge(y, cycle.vertices[(j + 1) % len(cycle.vertices)], cy)
+        if edge is None or in_degree[cycle.vertices[j]] != n // 2 - 1:
+            continue
+        Q_vertices = [y] + cycle.vertices[j + 1:] + cycle.vertices[:j + 1]
+        Q_edges = [edge] + cycle.edges[j + 1:] + cycle.edges[:j]
+        removed_color = cycle.edges[j].color
+        Q = Path(G, Q_vertices, Q_edges)
+        break
+
+    if Q is None:
+        raise RuntimeError("Did not find Path Q :(")
+
+    edge = G.check_edge(Q.vertices[-1], Q.vertices[0], removed_color)
+    if edge is not None:
+        return Cycle(G, Q.vertices, Q.edges + [edge])
+
+    J0 = []
+    for i in range(n - 2):
+        edge = G.check_edge(Q.vertices[0], Q.vertices[i + 1], removed_color)
+        if edge is not None:
+            J0.append((i, edge))
+
+    position = [0] * n
+    for i in range(n):
+        position[Q.vertices[i]] = i
+
+    inJn = [False] * n
+    for v in incoming_neighborhood[Q.vertices[-1]]:
+        inJn[position[v]] = True
+
+    for k, edge_from_first in J0:
+        if not inJn[k]:
+            continue
+        edge_from_last = G.get_edge(Q.vertices[n - 1], Q.vertices[k], Q.edges[k].color)
+        
+        new_vertices = Q.vertices[:k+1] + Q.vertices[k+1:][::-1]
+        new_edges = Q.edges[:k] + [edge_from_last] + Q.edges[k+1:][::-1] + [edge_from_first]
+
+        return Cycle(G, new_vertices, new_edges)
+
+    raise RuntimeError("Not found")
+
+def test_handle_cycle_n_minus_1_upper_bound_degree_D():
+    # Create a graph with n=6 vertices
+    n = 6
+
+    # Create a cycle of size n-1 (5 vertices)
+    cycle_vertices = [0, 1, 2, 3, 4]  # y will be vertex 5
+    cycle_edges = [
+        Edge(0, 1, 0),
+        Edge(1, 2, 1),
+        Edge(2, 3, 2),
+        Edge(3, 4, 3),
+        Edge(4, 0, 4)
+    ]
+
+    incoming_neighborhood = [
+        [2, 3], # 0
+        [3, 4], # 1
+        [4, 0], # 2
+        [1],    # 3
+        [2],    # 4
+        [0, 1], # 5
+    ]
+    in_degree = [2, 2, 2, 1, 1, 2]
+
+    # we just need to build G with the edges of the digraph and cycle
+    graph_edges = [
+        # Edges of the cycle and digraph
+        Edge(0, 1, 0),
+        Edge(0, 2, 0),
+        Edge(0, 5, 0),
+        Edge(1, 2, 1),
+        Edge(1, 3, 1),
+        Edge(1, 5, 1),
+        Edge(2, 3, 2),
+        Edge(2, 4, 2),
+        Edge(2, 0, 2),
+        Edge(3, 4, 3),
+        Edge(3, 0, 3),
+        Edge(3, 1, 3),
+        Edge(4, 0, 4),
+        Edge(4, 1, 4),
+        Edge(4, 2, 4),
+
+        # Edges to complete Dirac condition
+        # For graph color 0
+        Edge(3, 4, 0),
+        Edge(1, 2, 0),
+        Edge(2, 3, 0),
+        Edge(3, 4, 0),
+        Edge(4, 5, 0),
+        Edge(5, 1, 0),
+
+        # For graph color 1
+        Edge(4, 0, 1),
+        Edge(0, 2, 1),
+        Edge(2, 3, 1),
+        Edge(3, 4, 1),
+        Edge(4, 5, 1),
+        Edge(5, 0, 1),
+
+        # For graph color 2
+        Edge(1, 5, 2),
+        Edge(0, 1, 2),
+        Edge(1, 3, 2),
+        Edge(3, 4, 2),
+        Edge(4, 5, 2),
+        Edge(5, 0, 2),
+
+        # For graph color 3
+        Edge(2, 5, 3),
+        Edge(0, 1, 3),
+        Edge(1, 2, 3),
+        Edge(2, 4, 3),
+        Edge(4, 5, 3),
+        Edge(5, 0, 3),
+        
+        # For graph color 4
+        Edge(3, 5, 4),
+        Edge(0, 1, 4),
+        Edge(1, 2, 4),
+        Edge(2, 3, 4),
+        Edge(3, 5, 4),
+        Edge(5, 0, 4),
+
+        # For graph color 5
+        Edge(0, 1, 5),
+        Edge(1, 2, 5),
+        Edge(2, 3, 5),
+        Edge(3, 4, 5),
+        Edge(4, 5, 5),
+        Edge(5, 0, 5),
+
+        Edge(3, 5, 5),
+        Edge(0, 2, 5),
+        Edge(1, 4, 5),
+    ]
+
+    G = Graph(n)
+    for edge in graph_edges:
+        G.add_edge(edge.u, edge.v, edge.color)
+
+    cycle = Cycle(G, cycle_vertices, cycle_edges)
+
+    y = 5
+    cy = 5
+
+    # Lets verify the digraph we built is correct
+    for i in range(n):
+        for color in range(n):
+            assert len(G.adjacency[color][i]) >= n // 2
+        assert len(incoming_neighborhood[i]) == in_degree[i]
+
+    result = handle_cycle_n_minus_1_upper_bound_degree_D(G, cycle, y, cy, in_degree, incoming_neighborhood)
+    
+    assert isinstance(result, Cycle)
+    assert len(result.vertices) == n  # Should have all n vertices
+    assert len(result.edges) == n     # Should have n edges
 

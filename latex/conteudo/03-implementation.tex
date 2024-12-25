@@ -1115,21 +1115,6 @@ $j \in \mathcal{J}' \cap \mathcal{J}$. Let's build the following transversal pat
 
 The algorithm to build $Q$ and get the new missing color is the following:
 
-                % for j in range(n - 1):
-                %     edge = G.get_edge(y, cycle.vertices[j], cy)
-                %     if edge is None or in_degree[cycle.vertices[j]] != n // 2 - 1:
-                %         continue
-                %     new_vertices = cycle.vertices[:]
-                %     new_edges = cycle.edges[:]
-                %     new_vertices = new_vertices[j + 1:] + new_vertices[:j + 1]
-                %     new_edges = new_edges[j + 1:] + new_edges[:j + 1]
-                %     cj = new_edges[-1].color
-                %     new_edges.pop()
-                %     new_vertices.insert(0, y)
-                %     new_edges.insert(0, edge)
-                %     return Path(G, new_vertices, new_edges), cj
-                % raise RuntimeError("j not found!")
-
 \begin{algorithm}[H]
     \caption{Part 7: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
     \begin{algorithmic}[1]
