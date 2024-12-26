@@ -48,8 +48,8 @@ then we have a cycle of length \( l + 1 \). The same is true if \( \{u, w\} \in 
 We can assume that such vertex \(w\) doesn't exists, implying 
 \( \deg^{\text{out}}_{G_0}(u) + \deg^{\text{out}}_{G_1}(v) \leq n - l \) and
 \( \deg^{\text{out}}_{G_1}(u) + \deg^{\text{out}}_{G_0}(v) \leq n - l \). 
-So, we have that \( \deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_1}(v) + 
-\deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_1}(v)  \geq 2 n - 2 ( n - l  ) = 2 l \). We must have that 
+So, we have that \( \deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_0}(v) + 
+\deg^{\text{in}}_{G_1}(u) + \deg^{\text{in}}_{G_1}(v)  \geq 2 n - 2 ( n - l  ) = 2 l \). We must have that 
 either \( \deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_1}(v) \geq l \) or 
 \( \deg^{\text{in}}_{G_1}(u) + \deg^{\text{in}}_{G_0}(v) \geq l \).
 Suppose, without loss of generality, that \( \deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_1}(v) \geq l \).
@@ -74,14 +74,14 @@ which implies there exists a vertex \( z \) such that \( \{v, z\} \in G_1 \) or 
 \( \deg_{G_1}(v) \leq l \) and \( \deg_{G_1}(w) \leq l - 1 \), implying 
 \( \deg_{G_1}(v) + \deg_{G_1}(w) \leq 2l - 1 < n \), a contradiction.
 Given such \(z\), we can construct a path of length \( l+1 \) if \( \{v, z\} \in G_1 \) or 
-\( z = w \) and \( \{w, z\} \in G_1 \), or a cycle of length \( l+1 \) if \( \{w, z\} \in G_1 \) and \(z \neq w\).
+\( z = w \) and \( \{w, z\} \in E(G_1) \), or a cycle of length \( l+1 \) if \( \{w, z\} \in E(G_1) \) and \(z \neq w\).
 
 \subsubsection{Case 2: \( l \geq \frac{n}{2} \)}
 
 Suppose there exists two vertices \( u, v \not\in C \) such that \( \{u, v\} \in E(G_0) \) and \( \{u, v) \not\in E(G_1) \).
 By Ore's condition, 
 \( \deg_{G_1}(u) + \deg_{G_1}(v) \geq n \), 
-implying there exists a vertex \( w \in C \) such that \( \{u, w\} \in G_1 \) or \( \{v, w\} \in G_1 \) 
+implying there exists a vertex \( w \in C \) such that \( \{u, w\} \in E(G_1) \) or \( \{v, w\} \in E(G_1) \) 
 --- otherwise \( \deg_{G_1}(u) + \deg_{G_1}(v) \leq 2 (n - l - 1) < n \).
 With this, we can build a rainbow path of length \( l+1 \).
 Otherwise, we have that for all \( u, v \not\in C \), 
@@ -97,4 +97,4 @@ We also know that every neighbor of \(u\) and \(v\) in \(G_0, G_1\) is in the cy
 given \( \deg_{G_0}(u) + \deg_{G_0}(v) + \deg_{G_1}(u) + \deg_{G_1}(v) \geq 2n > 2l \), we 
 can assume without loss of generality that \( \deg_{G_0}(u) + \deg_{G_1}(v) > l \).
 This means that there exists adjacent vertices in \(C\) \(w, z\) such that
-\( \{u, w\} \in G_0 \) and \( \{v, z\} \in G_1 \), creating a path of length \( l+1 \).
+\( \{u, w\} \in E(G_0) \) and \( \{v, z\} \in E(G_1) \), creating a path of length \( l+1 \).
