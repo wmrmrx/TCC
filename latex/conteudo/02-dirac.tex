@@ -11,15 +11,14 @@ statement and formally present the Rainbow version of the theorem.
 \section{Definitions}
 
 Given a simple graph $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges, we denote by $E(G)$ as
-the set of edges of $G$, $V(G)$ as the set of vertices of $G$ and $\deg_G(v)$ as the degree of vertex $v$ in $G$.
+the set of edges of $G$, $V(G)$ as the set of vertices of $G$, $N_G(v)$ as the adjacency list of vertex $i$ on graph $G$ 
+and $\deg_G(v)$ as the degree of vertex $v$ in $G$
 
-A path $P$ of length $l$ is a sequence of vertices and edges $(v_1, e_1, v_2, e_2, \ldots, v_{l}, e_{l}, v_{l + 1})$ such that
-$v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_j$ for $i \neq j$, and $v_i \neq v_{i+1}$ for $i \in [l]$.
+A path $P$ of length $l$ is a sequence of vertices and edges $(v_0, e_0, v_1, e_1, \ldots, v_{l - 1}, e_{l - 1}, v_{l})$ such that
+$v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_j$ for $i \neq j$, and $v_{i-1} \neq v_{i}$ for $i \in [l-1]$.
 
-A cycle $C$ of length $l$ is a sequence of vertices and edges $(v_1, e_1, v_2, e_2, \ldots, v_{l}, e_{l}, v_{l + 1})$ such that
-$v_{1} = v_{l + 1}$, $v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_{i+1}$ for $i \in [l]$.
-
-$N_G(i)$ is the adjacency list of vertex $i$ on graph $G$. $d_G(i)$ is the degree of vertex $i$ in graph $G$.
+A cycle $C$ of length $l$ is a sequence of vertices and edges $(v_0, e_0, v_1, e_1, \ldots, v_{l}, e_{l}, v_{l + 1})$ such that
+$v_{0} = v_{l + 1}$, $v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_{i-1} \neq v_{i}$ for $i \in [l + 1]$.
 
 \section{Hamiltonian Cycles}
 
