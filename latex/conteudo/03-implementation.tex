@@ -73,13 +73,21 @@ a path of length $l+1$, as shown in the flowchart below.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{figuras/flowchart.png}
+    \includegraphics[width=0.3\textwidth]{figuras/flowchart.png}
     \caption{Flowchart of the algorithm}
     \label{fig:flowchart}
 \end{figure}
 
-The algorithm considers two primary cases: when the object is a path and when it is a cycle. We will assume the algorithm is processing a graph with at
+We will assume the algorithm is processing a graph with at
 least $6$ vertices. The other cases were already covered by brute force.
+The image below shows the possible cases the algorithm can find:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figuras/flowchart_case.png}
+    \caption{Possible cases the algorithm can find}
+    \label{fig:flowchart_cases}
+\end{figure}
 
 \subsection{Path of Length \( l \)}
 
@@ -930,3 +938,15 @@ The algorithm to find the answer in this case is the following:
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
+
+\section{Time completity analysis}
+
+We have run the algorithm for different values of $n$ to see how the time complexity behaves.
+The results are shown in the figure below:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figuras/time_complexity.png}
+    \caption{Time complexity for different values of $n$.}
+    \label{fig:time_complexity}
+\end{figure}
