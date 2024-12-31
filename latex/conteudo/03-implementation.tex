@@ -502,8 +502,7 @@ Now, let's define the following variables:
     \item $\bar{I} \coloneqq \{i \in [n - 1]: \{y, x_{i+1}\} \in A(G_{cy})\}$
 \end{itemize}
 
-To effectively build these variables, we can iterate over the vertices of the cycle and iterate over it's adjacency list,
-such as the following algorithm:
+We can build these variables with the following algorithm:
 
 \begin{algorithm}[H]
     \caption{Part 2: Cycle Extension for \( l < n - 1 \). Building digraph variables, $I$ and $\bar{I}$}
@@ -539,13 +538,13 @@ such as the following algorithm:
     \end{algorithmic}
 \end{algorithm}
 
-The complexity of this algorithm is $O(n^2)$, as we need to iterate over the vertices of the cycle and iterate over 
-it's adjacency list for a specific color. 
+The time complexity of this algorithm is $O(n^2)$, as we need to iterate over the vertices of the cycle and iterate over 
+it's adjacency list for a specific color. The space complexity is $O(n^2)$, as we need to store the adjacency list of each vertex.
 
 Let's find the answer for the case $d^-_D(y) \geq \frac{n}{2}$. We have that 
 $|I| + |\bar{I}|  \geq d^-_D(y) +  \frac{n}{2} $. 
 Thus, from Dirichlet Principle, $I \cap \bar{I} \neq \emptyset$. In this case, we can build 
-a cycle of length $n$ with the following crossing, removing the edge $x_i$:
+a cycle of length $n$ with the following crossing, removing the edge $e_i$:
 
 % set scale
 \begin{figure}[H]
@@ -581,24 +580,23 @@ From now on, we will assume that $d^-_D(y) < \frac{n}{2}$. Here we will divide i
 \end{enumerate}
 
 Let's start with the first case. We may assume, WLOG, that $d^-_D(x_0) > \frac{n}{2} - 1$.
-For this, we can just find the vertex $x_i$ and rotate the cycle, such as the following algorithm:
+For considering this, we can just find the vertex with in-degree greater than $\frac{n}{2} - 1$ and rotate the cycle, such as the following algorithm:
 
 \begin{algorithm}[H]
     \caption{Part 4: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Cycle}{$G, C$}
-            \For{$i \in [0, \dots, cycle\_size - 1]$}
-                \State $u \gets cycle.vertices[i]$
+            \For{$i \in [0, \dots, C.\text{size()} - 1]$}
+                \State $u \gets C.vertices[i]$
                 \If{$in\_degree[u] > \frac{n}{2} - 1$}
-                    \State $cycle.vertices \gets cycle.vertices[i:] + cycle.vertices[:i]$
-                    \State $cycle.edges \gets cycle.edges[i:] + cycle.edges[:i]$
+                    \State $C.vertices \gets C.vertices[i:] + C.vertices[:i]$
+                    \State $C.edges \gets C.edges[i:] + C.edges[:i]$
                 \EndIf
                 % # Rebuild the needed variables
-                \For{$j \in [0, \dots, cycle\_size - 1]$}
-                    \State $color \gets cycle.edges[j].color$
+                \For{$j \in [0, \dots, C.\text{size()} - 1]$}
+                    \State $color \gets C.edges[j].color$
                     \State $new\_color\_id[color] \gets j$
-                    \State $vertex\_position\_on\_cycle[cycle.vertices[j]] \gets j$
-                    \State $pos\_color\_cic[j] \gets color$
+                    \State $vertex\_position\_on\_cycle[C.vertices[j]] \gets j$
                 \EndFor
                 \State \textbf{break}
             \EndFor
@@ -607,17 +605,16 @@ For this, we can just find the vertex $x_i$ and rotate the cycle, such as the fo
 \end{algorithm}
 
 The time completity for this is just $O(n)$, as we iterate over the vertices and
-as soon as we find a vertex with in-degree greater than $\frac{n}{2} - 1$, we make 
-$O(n)$ operations to rebuild the needed variables and then we break.
+as soon as we find the desired vertex, we make $O(n)$ operations to rebuild the needed variables and then we break.
 
 Let's define the following variables:
 
 \begin{itemize}
-    \item $I_0 \coloneqq \{i \in [n - 1]: edge(x_i, y, c_0) \in E(G)\}$
-    \item $I_{n-1} \coloneqq \{i \in [n - 1]: edge(x_{i+1}, y, c_{n-1}) \in E(G)\}$
+    \item $I_0 \coloneqq \{i \in [n - 1]: \{x_i, y\} \in A(G_{c_0})\}$
+    \item $I_{n-1} \coloneqq \{i \in [n - 1]: \{y, x_{i+1}\} \in A(G_{c_{n-1}})\}$
 \end{itemize}
 
-We have that $I_0 + I_{n-1} \geq d_{G_0}(y) + d_{G_{n-1}}(y) \geq n$. Thus, 
+We have that $I_0 + I_{n-1} \geq d(0, y) + d(n-1, y) \geq n$. Thus, 
 from Dirichlet Principle, $I_0 \cap I_{n-1} \neq \emptyset$. Take $j \in I_0 \cap I_{n-1}$.
 If $j = 0$, we can just remove the edge $x_0$ and build the cycle of length $n$ 
 adding crossing edges $edge(x_0, y, c_0)$ and $edge(y, x_1, c_1)$. So, assume $j \neq 0$.
@@ -636,8 +633,8 @@ We are going to create the following variables to manipulate the path $P$:
 \begin{itemize}
     \item $removed\_color$: The color of the edge outside the path $P$, $C.edges[j].color$;
     \item $P\_vertices$: The vertices of the path $P$, $(x_1, x_2, \dots, x_{j}, y, x_{j+1}, \dots, x_{n-2}, x_{0})$;
-    \item $P\_edges$: The edges of the path $P$, $(e_1, e_2, \dots, e_{j}, e_{j+1}, \dots, e_{n-2}, e_{0})$;
-    \item $P\_pos$: An array to store the new position of each vertex on the path.
+    \item $P\_edges$: The edges of the path $P$, $(e_1, e_2, \dots, edge(x_j, y, e_0.color), edge(y, x_{j+1}, cy), \dots, e_{n-2}, e_{0})$;
+    \item $P\_pos$: An array to store the new index of each vertex on the path.
 \end{itemize}
 
 To compute these variables, we can use the following algorithm:
@@ -666,8 +663,8 @@ To compute these variables, we can use the following algorithm:
                     \State $\hspace{4.3em} \gets [C.vertices[0]]$
 
                     \State $P\_edges \gets C.edges[1:j] +$
-                    \State $\hspace{4.1em} \gets [G.get\_edge(C.vertices[j], y, pos\_color\_cic[0])] +$
-                    \State $\hspace{4.1em} \gets [G.get\_edge(y, C.vertices[(j + 1) \bmod n], cy)] +$
+                    \State $\hspace{4.1em} \gets [get\_edge(G, C.vertices[j], y, C.edges[0].color)] +$
+                    \State $\hspace{4.1em} \gets [get\_edge(G, y, C.vertices[(j + 1) \bmod n], cy)] +$
                     \State $\hspace{4.1em} \gets C.edges[j+1:n]$
 
                     \For{$j \in [0, \dots, n-1]$}
