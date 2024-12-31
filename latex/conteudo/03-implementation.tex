@@ -46,10 +46,20 @@ $vertices$ is equal to size of $edges$ plus one. We
 also added the constraint that a $Path$ can't contain repeated 
 vertices or edge colors.
 
+This structure has the following methods:
+
+\begin{itemize}
+    \item \texttt{pop\_back()}: removes the last vertex and edge from the path
+    \item \texttt{back()}: returns the last vertex of the path
+    \item \texttt{size()}: returns the size of the path
+\end{itemize}
+
 \subsubsection{Structure of $Cycle$}
 
 Same Structure as $Path$. The only difference is that a cycle contains
-at least three vertices and $vertices$ is equal to $edges$.
+at least three vertices and $vertices$ length is equal to $edges$ length.
+
+Also, this structure has only one method, \texttt{size()}, which returns the size of the cycle.
 
 \subsubsection{Function $check\_edge(G, u, v, c)$}
 
@@ -243,7 +253,7 @@ be done in $O(n)$ with the code below:
     \caption{Part 3: Path Extension for \( l > \left \lceil \frac{n}{2} \right \rceil \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Path\_Big}{$G, P$}
-            \For{$i \in [1, \dots, P.\text{vertices}.size() - 1]$}
+            \For{$i \in [1, \dots, P.vertices.\text{size()} - 1]$}
                 \State $u \gets P.\text{vertices}[i]$
                 \State $v \gets P.\text{vertices}[i + 1]$
                 \State $edgeX \gets \text{check\_edge}(G, P.\text{vertices}[0], v, cx)$
@@ -302,7 +312,7 @@ This can be done in $O(n^2)$ time complexity with the following code:
                         \If{\textbf{not} $vertices\_in\_cycle[u]$ \text{and} \textbf{not} $vertices\_in\_cycle[v]$}
                             \State $edgeU \gets \text{check\_edge}(G, u, v, ci)$
                             \If{$edgeU \neq \text{None}$}
-                                \For{$k \in [0, \dots, C.vertices\text{.size()} - 1]$}
+                                \For{$k \in [0, \dots, C.vertices.\text{size()} - 1]$}
                                     \State $w \gets C.vertices[k]$
                                     \State $edgeW \gets \text{check\_edge}(G, w, u, cj)$
                                     \If{$edgeW \neq \text{None}$}
@@ -354,15 +364,15 @@ The code for finding this cycle is shown below:
     \begin{algorithmic}
         \Function{Extend\_Cycle}{$G, C$}
             \State $u \gets \text{next}(i \text{ for } i \text{ in range(n) if \textbf{not} } colors\_in\_cycle[i])$
-            \For{$i \in [0, \dots, C.\text{vertices}\text{.size()} - 1]$}
-                \State $edge1 \gets \text{check\_edge}(G, u, C.\text{vertices}[i + 1], c1)$
-                \State $edge2 \gets \text{check\_edge}(G, u, C.\text{vertices}[i], c2)$
+            \For{$i \in [0, \dots, C.vertices.\text{size()} - 1]$}
+                \State $edge1 \gets \text{check\_edge}(G, u, C.vertices[i + 1], c1)$
+                \State $edge2 \gets \text{check\_edge}(G, u, C.vertices[i], c2)$
                 
                 \If{$edge1 \neq \text{None} \text{ and } edge2 \neq \text{None}$}
-                    \State $vertices \gets C.\text{vertices}[i + 1:] + C.\text{vertices}[:i + 1] + [u]$
+                    \State $vertices \gets C.vertices[i + 1:] + C.vertices[:i + 1] + [u]$
 
-                    \State $edges \gets C.\text{edges}[i + 1:] +$
-                    \State \hspace{3.3em} $C.\text{edges}[:i - 1] +$
+                    \State $edges \gets C.edges[i + 1:] +$
+                    \State \hspace{3.3em} $C.edges[:i - 1] +$
                     \State \hspace{3.3em} $[edge2, edge1]$
                     \State \Return $\text{Cycle}(G, vertices, edges)$
                 \EndIf
@@ -447,18 +457,19 @@ These variables can be calculated in \( O(n) \) time complexity. The algorithm i
     \begin{algorithmic}
         \Function{Extend\_Cycle}{$G, C$}
             \State $new\_color\_id \gets [-1] \times n$
-            \State $y \gets \text{first } i \in \{0, \dots, n-1\} \text{ such that } \textbf{not } vertices\_in\_cycle[i]$
-            \State $cy \gets \text{first } i \in \{0, \dots, n-1\} \text{ such that } \textbf{not } colors\_in\_cycle[i]$
+
+            \State $y \gets \text{next}(i \text{ for } i \text{ in range(n) if \textbf{not} } vertices\_in\_cycle[i])$
+            \State $cy \gets \text{next}(i \text{ for } i \text{ in range(n) if \textbf{not} } colors\_in\_cycle[i])$
             \State $new\_color\_id[cy] \gets n - 1$
             
-            \For{$i \in \{0, \dots, C.size() - 1\}$}
+            \For{$i \in [0, \dots, C.\text{size()} - 1]$}
                 \State $new\_color\_id[color] \gets i$
                 \State $color\_in\_position \gets C.edges[i].color$
             \EndFor
             
             \State $vertex\_position\_on\_cycle \gets [-1] \times n$
-            \For{$i \in \{0, \dots, C.size() - 1\}$}
-                \State $vertex\_position\_on\_cycle[cycle.vertices[i]] \gets i$
+            \For{$i \in [0, \dots, C.\text{size()} - 1]$}
+                \State $vertex\_position\_on\_cycle[C.vertices[i]] \gets i$
             \EndFor
         \EndFunction
     \end{algorithmic}
@@ -468,111 +479,17 @@ Let's build the following digraph on the same vertex set of $G$. There is a visu
 of the digraph below:
 
 $$
-A(D) = \bigcup_{i \in \{0,..., n - 2\}} \{\{x_i, z\} : z \neq x_{i + 1}, edge(x_i, z, C.edge[i].color) \in E(G)\}.
+A(D) = \bigcup_{i \in \{0,..., n - 2\}} \{\{x_i, z\} : z \neq x_{i + 1}, \{x_i, z\} \in A(G_{C.edges[i].color})\}.
 $$
 
-\begin{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figuras/cycle_n-1_digraph.png}
+    \caption{Digraph construction for the case $l = n - 1$.}
+    \label{fig:cycle_n-1_digraph}
+\end{figure}
 
-
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
-
-\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
-%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
-
-%Shape: Circle [id:dp6772890116560196] 
-\draw   (270,162.91) .. controls (270,155.78) and (275.78,150) .. (282.91,150) .. controls (290.03,150) and (295.81,155.78) .. (295.81,162.91) .. controls (295.81,170.03) and (290.03,175.81) .. (282.91,175.81) .. controls (275.78,175.81) and (270,170.03) .. (270,162.91) -- cycle ;
-%Shape: Circle [id:dp5871526391848064] 
-\draw   (420,162.91) .. controls (420,155.78) and (425.78,150) .. (432.91,150) .. controls (440.03,150) and (445.81,155.78) .. (445.81,162.91) .. controls (445.81,170.03) and (440.03,175.81) .. (432.91,175.81) .. controls (425.78,175.81) and (420,170.03) .. (420,162.91) -- cycle ;
-%Shape: Circle [id:dp07729495910565454] 
-\draw   (490,162.91) .. controls (490,155.78) and (495.78,150) .. (502.91,150) .. controls (510.03,150) and (515.81,155.78) .. (515.81,162.91) .. controls (515.81,170.03) and (510.03,175.81) .. (502.91,175.81) .. controls (495.78,175.81) and (490,170.03) .. (490,162.91) -- cycle ;
-%Shape: Circle [id:dp262131491828823] 
-\draw   (200,162.91) .. controls (200,155.78) and (205.78,150) .. (212.91,150) .. controls (220.03,150) and (225.81,155.78) .. (225.81,162.91) .. controls (225.81,170.03) and (220.03,175.81) .. (212.91,175.81) .. controls (205.78,175.81) and (200,170.03) .. (200,162.91) -- cycle ;
-%Straight Lines [id:da10861800407645683] 
-\draw    (231.67,164.68) -- (263.67,165.35) ;
-%Straight Lines [id:da536121074656983] 
-\draw    (368.48,165.57) -- (383,165.67) ;
-%Straight Lines [id:da7967913679803297] 
-\draw    (400.15,165.67) -- (416,166.11) ;
-%Shape: Circle [id:dp6503647512544207] 
-\draw   (120,162.91) .. controls (120,155.78) and (125.78,150) .. (132.91,150) .. controls (140.03,150) and (145.81,155.78) .. (145.81,162.91) .. controls (145.81,170.03) and (140.03,175.81) .. (132.91,175.81) .. controls (125.78,175.81) and (120,170.03) .. (120,162.91) -- cycle ;
-%Shape: Circle [id:dp06282722717729516] 
-\draw   (50,162.91) .. controls (50,155.78) and (55.78,150) .. (62.91,150) .. controls (70.03,150) and (75.81,155.78) .. (75.81,162.91) .. controls (75.81,170.03) and (70.03,175.81) .. (62.91,175.81) .. controls (55.78,175.81) and (50,170.03) .. (50,162.91) -- cycle ;
-%Straight Lines [id:da6634256240143169] 
-\draw    (83.67,164.02) -- (115.67,164.68) ;
-%Straight Lines [id:da9040406415564918] 
-\draw    (149.15,164.91) -- (163.67,165) ;
-%Straight Lines [id:da7188137218222393] 
-\draw    (180.81,165) -- (196.67,165.44) ;
-%Shape: Circle [id:dp7453527750909341] 
-\draw   (340,162.91) .. controls (340,155.78) and (345.78,150) .. (352.91,150) .. controls (360.03,150) and (365.81,155.78) .. (365.81,162.91) .. controls (365.81,170.03) and (360.03,175.81) .. (352.91,175.81) .. controls (345.78,175.81) and (340,170.03) .. (340,162.91) -- cycle ;
-%Straight Lines [id:da6151250731140607] 
-\draw    (303,165.35) -- (335,166.02) ;
-%Straight Lines [id:da38307478583040533] 
-\draw    (452.33,165.35) -- (484.33,166.02) ;
-%Shape: Circle [id:dp9073302596091972] 
-\draw   (270,72.91) .. controls (270,65.78) and (275.78,60) .. (282.91,60) .. controls (290.03,60) and (295.81,65.78) .. (295.81,72.91) .. controls (295.81,80.03) and (290.03,85.81) .. (282.91,85.81) .. controls (275.78,85.81) and (270,80.03) .. (270,72.91) -- cycle ;
-%Curve Lines [id:da6936501442548073] 
-\draw    (70.33,184.02) .. controls (99.67,290.02) and (454.33,290.68) .. (496.33,184.02) ;
-%Curve Lines [id:da014900277525460415] 
-\draw [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,draw opacity=1 ]   (282.67,143.67) .. controls (321.87,114.27) and (390.52,116.91) .. (423.68,144.94) ;
-\draw [shift={(425.67,146.68)}, rotate = 222.52] [fill={rgb, 255:red, 126; green, 211; blue, 33 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- cycle    ;
-%Curve Lines [id:da8694063449774041] 
-\draw [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,draw opacity=1 ]   (282.67,143.67) .. controls (282.97,114.26) and (283,104.99) .. (283,95.02) ;
-\draw [shift={(283,92.02)}, rotate = 90] [fill={rgb, 255:red, 126; green, 211; blue, 33 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- cycle    ;
-%Curve Lines [id:da38542955546341706] 
-\draw [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,draw opacity=1 ]   (282.67,143.67) .. controls (256.86,112) and (95.64,106.88) .. (69.12,140.57) ;
-\draw [shift={(67.67,142.68)}, rotate = 300.65] [fill={rgb, 255:red, 126; green, 211; blue, 33 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- cycle    ;
-%Curve Lines [id:da14735042368726803] 
-\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (214.67,143.67) .. controls (253.87,114.27) and (380.78,121.39) .. (416.28,149.6) ;
-\draw [shift={(418.33,151.35)}, rotate = 222.52] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- cycle    ;
-%Curve Lines [id:da2490603722840098] 
-\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (214.67,143.67) .. controls (261.62,127.59) and (297.9,122.18) .. (351.22,143.68) ;
-\draw [shift={(353.67,144.68)}, rotate = 202.52] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- cycle    ;
-%Curve Lines [id:da36788092610899037] 
-\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (214.67,143.67) .. controls (193.65,124.61) and (162.91,123.41) .. (139.79,144.65) ;
-\draw [shift={(137.67,146.68)}, rotate = 315] [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ][line width=0.08]  [draw opacity=0] (8.93,-4.29) -- (0,0) -- (8.93,4.29) -- cycle    ;
-%Straight Lines [id:da6908283822718694] 
-\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][fill={rgb, 255:red, 208; green, 2; blue, 27 }  ,fill opacity=1 ]   (79,151.35) -- (262.46,83.38) ;
-\draw [shift={(264.33,82.68)}, rotate = 159.67] [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-
-% Text Node
-\draw (420.5,157.4) node [anchor=north west][inner sep=0.75pt]    {$x_{l-3}$};
-% Text Node
-\draw (275,157.4) node [anchor=north west][inner sep=0.75pt]    {$x_{i}$};
-% Text Node
-\draw (490.5,157.4) node [anchor=north west][inner sep=0.75pt]    {$x_{l-2}$};
-% Text Node
-\draw (201,157.4) node [anchor=north west][inner sep=0.75pt]    {$x_{i-1}$};
-% Text Node
-\draw (238,169.4) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,opacity=1 ]  {$e_{i-1}{}$};
-% Text Node
-\draw (460.67,168.07) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 189; green, 16; blue, 224 }  ,opacity=1 ]  {$e_{n-3}{}$};
-% Text Node
-\draw (385.33,152.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {...};
-% Text Node
-\draw (125,156.73) node [anchor=north west][inner sep=0.75pt]    {$x_{1}$};
-% Text Node
-\draw (55,157.4) node [anchor=north west][inner sep=0.75pt]    {$x_{0}$};
-% Text Node
-\draw (166,152) node [anchor=north west][inner sep=0.75pt]   [align=left] {...};
-% Text Node
-\draw (341,157.4) node [anchor=north west][inner sep=0.75pt]    {$x_{i+1}$};
-% Text Node
-\draw (308.67,170.07) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,opacity=1 ]  {$e_{i}{}$};
-% Text Node
-\draw (92.67,168.73) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,opacity=1 ]  {$e_{0}{}$};
-% Text Node
-\draw (277,67.4) node [anchor=north west][inner sep=0.75pt]    {$y$};
-% Text Node
-\draw (260,264.07) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 139; green, 87; blue, 42 }  ,opacity=1 ]  {$e_{n-2}{}$};
-
-\end{tikzpicture}
-
-
-\captionof{figure}{Representation of digraph $A(D)$. Each colored edge belongs to the digraph.}
-\end{center}
-
-Observe that as $\delta(G_i) \geq \frac{n}{2}$ for all $i \in \{0, \dots, n - 2\}$, thus 
+Observe that as $\delta(G_i) \geq \frac{n}{2}$ for all $i \in [0, n - 2]$, thus 
 $d^+_{D}(x) \geq \frac{n}{2} - 1$ for every vertex $x$ on the cycle. We get that 
 $|A(D)| \geq (n-1)(\frac{n}{2} - 1)$. 
 
@@ -582,7 +499,7 @@ Now, let's define the following variables:
     \item $in\_degree$: An array of size $n$ where $in\_degree[i]$ is the in-degree of vertex $i$ in the digraph $D$.
     \item $incoming\_neighborhood$: An array of size $n$ where $incoming\_neighborhood[i]$ is the list of vertices that have an edge to vertex $i$ in the digraph $D$.
     \item $I \coloneqq \{i \in [n - 1]: \{x_i, y\} \in A(D)\}$
-    \item $\bar{I} \coloneqq \{i \in [n - 1]: edge(y, x_{i+1}, cy) \in E(G)\}$
+    \item $\bar{I} \coloneqq \{i \in [n - 1]: \{y, x_{i+1}\} \in A(G_{cy})\}$
 \end{itemize}
 
 To effectively build these variables, we can iterate over the vertices of the cycle and iterate over it's adjacency list,
@@ -596,11 +513,11 @@ such as the following algorithm:
             \State $in\_degree \gets [0] \times n$
             \State $incoming\_neighborhood \gets [\text{empty list}] \times n$
             
-            \For{$i \gets 0$ to $cycle\_size - 1$}
-                \State $u \gets cycle.vertices[i]$
-                \State $v \gets cycle.vertices[(i + 1) \bmod cycle\_size]$
+            \For{$i \gets 0$ to $C.\text{size()} - 1$}
+                \State $u \gets C.vertices[i]$
+                \State $v \gets C.vertices[(i + 1) \bmod C.\text{size()}]$
                 \State $color \gets color\_in\_position[i]$
-                
+
                 \For{$tgt \in G.adjacency[color][u]$}
                     \If{$tgt = v$}
                         \State \textbf{continue}
@@ -616,7 +533,7 @@ such as the following algorithm:
             \EndFor
             
             \State $\bar{I} \gets \text{Find\_Adjacency}(y, cy, vertex\_position\_on\_cycle)$
-            \State $\bar{I} \gets [(u - 1 + cycle\_size) \bmod cycle\_size : u \in \bar{I}]$
+            \State $\bar{I} \gets [(u - 1 + C.\text{size()}) \bmod C.\text{size()} : u \in \bar{I}]$
 
         \EndFunction
     \end{algorithmic}
@@ -898,13 +815,13 @@ This is $O(n)$ as the most expensive operations are the manipulations on $C$.
 Now, define:
 
 \begin{equation}
-    J_0 \coloneqq \{i \in [0, n - 3]: edge(y, Q.vertices[i+1], removed\_color) \in A(G)\},
+    J_0 \coloneqq \{i \in [0, n - 3]: \{y, Q.vertices[i+1]\} \in A(G_{removed\_color})\},
 \end{equation}
 \begin{equation}
     J_{n-1} \coloneqq \{i \in [1, n - 3] : Q.vertices[i] \in incoming\_neighborhood[Q.vertices[n-1]]\}.
 \end{equation}
 
-If $edge(y, Q.vertices[0], removed\_color)$ in $G$, we can just close the cycle adding this edge.
+If $\{y, Q.vertices[0]\} \in A(G_{removed\_color})$, we can just close the cycle adding this edge.
 Let's assume that this edge is not in $G$. We have that $|J_0| \geq \delta(G_{removed\_color}) \geq \frac{n}{2}$.
 Observe that $Q.vertices[0] = y \notin N^-_D(Q_vertices[n - 1])$ and $Q.vertices[n - 2] = C.vertices[j - 1] \notin N^-_D(Q.vertices[n - 1])$,
 by the construction of $D$. As $C.vertices[j] \in \mathcal{J}$, we get that
@@ -925,19 +842,63 @@ The algorithm to find the answer in this case is the following:
     \caption{Part 8: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Cycle}{$G, C$}
-            \State $edge \gets G.check\_edge(Q.vertices[n - 2], Q.vertices[0], removed\_color)$
+            \State $Q \gets None$
+            \State $removed\_color \gets -1$
+
+            \For{$j \in [2, \dots, n - 1]$}
+                \State $edge \gets G.check\_edge(y, C.vertices[(j + 1) \bmod n], cy)$
+                \If{$edge$ is $None$ or $in\_degree[C.vertices[j]] \neq \lfloor \frac{n}{2} - 1 \rfloor$}
+                    \State \textbf{continue}
+                \EndIf
+                \State $Q\_vertices \gets [y] + C.vertices[j + 1:] + C.vertices[:j + 1]$
+                \State $Q\_edges \gets [edge] + C.edges[j + 1:] + C.edges[:j]$
+                \State $removed\_color \gets C.edges[j].color$
+                \State $Q \gets$ \Call{Path}{$G, Q\_vertices, Q\_edges$}
+                \State \textbf{break}
+            \EndFor
+
+            \If{$Q$ is $None$}
+                \State \textbf{raise} RuntimeError("Did not find Path Q :(")
+            \EndIf
+
+            \State $edge \gets check\_edge(G, Q.vertices[-1], Q.vertices[0], removed\_color)$
             \If{$edge$ is not $None$}
                 \State \Return \Call{Cycle}{$G, Q.vertices, Q.edges + [edge]$}
             \EndIf
 
-            \State $J_1 \gets \Call{Find\_Adjacency}{$Q.vertices[0], removed\_color, Q.pos$}$
-            \State $J_1 \gets [(u - 1 + n) \bmod n : u \in J1]$
+            \State $J0 \gets []$
+            \For{$i \in [0, \dots, n - 2]$}
+                \State $edge \gets G.check\_edge(Q.vertices[0], Q.vertices[i + 1], removed\_color)$
+                \If{$edge$ is not $None$}
+                    \State $J0.append((i, edge))$
+                \EndIf
+            \EndFor
 
-            \State $J_{n-1} \gets incoming\_neighborhood[Q.vertices[-1]]$
-            \State $J_{n-1} \gets [Q.pos[u] : u \in J_{n-1}]$
+            \State $position \gets [0] \times n$
+            \For{$i \in [0, \dots, n - 1]$}
+                \State $position[Q.vertices[i]] \gets i$
+            \EndFor
+
+            \State $inJn \gets [False] \times n$
+            \For{$i \in [0, \dots, n - 1]$}
+                \State $inJn[position[i]] \gets True$
+            \EndFor
+
+            \For{$k, edge\_from\_first \in J0$}
+                \If{$not inJn[k]$}
+                    \State \textbf{continue}
+                \EndIf
+                \State $edge\_from\_last \gets get\_edge(G, Q.vertices[n - 1], Q.vertices[k], Q.edges[k].color)$
+                \State $new\_vertices \gets Q.vertices[:k+1] + Q.vertices[k+1:][::-1]$
+                \State $new\_edges \gets Q.edges[:k] + [edge\_from\_last] + Q.edges[k+1:][::-1] + [edge\_from\_first]$
+                \State \Return \Call{Cycle}{$G, new\_vertices, new\_edges$}
+            \EndFor
+
+            \State \textbf{raise} Should never reach this point!
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
+        
 
 \section{Time completity analysis}
 
