@@ -7,7 +7,7 @@ $\deg_G(u) + \deg_G(v) \geq n$ for all $u, v \in V$ such that ${u, v} \not\in E(
 We will refer to this condition as Ore's condition.
 
 Ore's theorem generalizes Dirac's theorem, since if a graph satisfies Dirac's condition, it also satisfies Ore's condition.
-We want to prove that if for a collection of graphs $G = {G_0, G_1, \ldots, G_{n-1}}$, they all satisfy Ore's condition,
+We want to prove that if for a collection of graphs $G = (G_0, G_1, \ldots, G_{n-1})$, they all satisfy Ore's condition,
 then there exists a rainbow Hamiltonian cycle in $G$.
 
 \section{Flowchart}
@@ -17,6 +17,9 @@ then there exists a rainbow Hamiltonian cycle in $G$.
 Suppose we have a path $ P = (x_0, e_0, \dots, x_{l-1}, e_{l-1}, x_{l}) $ of length $ l $.
 As in the proof of the rainbow version of Dirac's theorem,
 we want to find either a path of length $ l+1 $ or a cycle of length $ l $ or $ l+1 $.
+
+We may assume that there always exists a path with $ l \geq 2 $, since every graph 
+$ G_i $ satisfies $ \delta_{G_i}(v) \geq 2 $ for all $ v \in V(G_1) $ due to Ore's condition.
 
 \subsubsection{Case 1: \( l < \frac{n}{2} \)}
 
