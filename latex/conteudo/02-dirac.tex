@@ -20,8 +20,6 @@ $v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_j$ for $i \
 A cycle $C$ of length $l$ is a sequence of vertices and edges $(v_0, e_0, v_1, e_1, \ldots, v_{l}, e_{l}, v_{l + 1})$ such that
 $v_{0} = v_{l + 1}$, $v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_{i-1} \neq v_{i}$ for $i \in [l + 1]$.
 
-\section{Hamiltonian Cycles}
-
 Given a simple graph $G = (V, E)$, a hamiltonian cycle of $G$ is a cycle with length $|V|$.
 Finding whether a graph has a hamiltonian cycle is a well-known NP-complete problem. 
 However, there are conditions that guarantee the existence of a hamiltonian cycle in a graph, one of them being Dirac's theorem.
@@ -52,7 +50,7 @@ then $G$ contains a hamiltonian cycle.
 
 \end{proof}
 
-\section{Rainbow Version}
+\section{Rainbow Version of Dirac's Theorem}
 
 Given a collection of simple graphs $G = \{G_1, G_2, \ldots, G_n\}$ defined on the same set of vertices $V$ with $|V| = n$,
 the rainbow version of Dirac's theorem states that if $\deg_{G_i}(v) \geq \frac{n}{2}$ for all $i \in [n], v \in V$, 
