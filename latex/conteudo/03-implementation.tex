@@ -77,9 +77,9 @@ If the edge $\{u, v\}$ belongs to $G_c$, the function returns this edge. Otherwi
 
 The algorithm begins with a single object representing an empty path. At 
 each iteration, the algorithm processes this object, which may be either 
-a path or a cycle of length $l$, and transforms it into a new object. 
-The result could be a cycle of length $l$, a cycle of length $l+1$, or 
-a path of length $l+1$, as shown in the flowchart below.
+a path or a cycle of length $\ell$, and transforms it into a new object. 
+The result could be a cycle of length $\ell$, a cycle of length $\ell+1$, or 
+a path of length $\ell+1$, as shown in the flowchart below.
 
 \begin{figure}[H]
     \centering
@@ -99,9 +99,9 @@ The image below shows the possible cases the algorithm can find:
     \label{fig:flowchart_cases}
 \end{figure}
 
-\subsection{Path of Length \( l \)}
+\subsection{Path of Length \( \ell \)}
 
-In this case, we start with a path \( P = (x_0, e_0, \dots, x_{l-1}, e_{l-1}, x_{l}) \) of length \( l \). 
+In this case, we start with a path \( P = (x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1}, x_{\ell}) \) of length \( \ell \). 
 To assist in this process, we define the following variables:
 
 \begin{itemize}
@@ -109,25 +109,25 @@ To assist in this process, we define the following variables:
     \item \texttt{vertices\_in\_path}: An array of size \( n \) where \texttt{vertices\_in\_path[i]} is \texttt{True} if vertex \( i \) is included in the path.
 \end{itemize}
 
-Let's divide the proof into two cases: when \( l \geq \left \lceil \frac{n}{2} \right \rceil \) and when \( l < \left \lceil \frac{n}{2} \right \rceil \).
+Let's divide the proof into two cases: when \( \ell \geq \left \lceil \frac{n}{2} \right \rceil \) and when \( \ell < \left \lceil \frac{n}{2} \right \rceil \).
 
-\subsubsection{Case 1: \( l < \left \lceil \frac{n}{2} \right \rceil \)}
+\subsubsection{Case 1: \( \ell < \left \lceil \frac{n}{2} \right \rceil \)}
 
 In this case, we select a color \( c \) that is not present among 
 the edges of the current path. Since 
-\( d(c, x_{l}) \geq \left \lceil \frac{n}{2} \right \rceil \), from Dirac's condition, 
+\( d(c, x_{\ell}) \geq \left \lceil \frac{n}{2} \right \rceil \), from Dirac's condition, 
 and there are at most 
-\( l < \left \lceil \frac{n}{2} \right \rceil \)
+\( \ell < \left \lceil \frac{n}{2} \right \rceil \)
 other vertices in the path, there must be a vertex 
 \( y \) 
 outside the path that is adjacent to 
-\( x_{l + 1} \) via an edge in \( A(G_c) \). 
+\( x_{\ell + 1} \) via an edge in \( A(G_c) \). 
 This guarantees that we can extend the path to a bigger path.
 
 The code below implements the algorithm:
 
 \begin{algorithm}[H]
-    \caption{Path Extension for \( l < \left \lceil \frac{n}{2} \right \rceil \)}
+    \caption{Path Extension for \( \ell < \left \lceil \frac{n}{2} \right \rceil \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Path\_Small}{$G, P$}
         \State $color\_outside\_path \gets \text{next}(i \text{ for } i \text{ in range(n) if \textbf{not} colors\_in\_path[i]})$
@@ -152,17 +152,17 @@ only need to find a color that is not in the path’s colors
 the path that connects to the back of the path using the 
 function $check\_edge$.
 
-\subsubsection{Case 2: \( l \geq \left \lceil \frac{n}{2} \right \rceil \)}
+\subsubsection{Case 2: \( \ell \geq \left \lceil \frac{n}{2} \right \rceil \)}
 
 First, remove the last edge and
 vertex of the path and let $c_y$ be the color of the removed edge and $c_x$ 
 be a color that is not on the path.
-We can check if the edge $\{x_0, x_{l-1}\}$ belongs to $A(G_{c_x})$ or
+We can check if the edge $\{x_0, x_{\ell-1}\}$ belongs to $A(G_{c_x})$ or
 to $A(G_{c_y})$. If it does, we just found a cycle of size $l$. 
 This can be done with the code below:
 
 \begin{algorithm}[H]
-    \caption{Part 1: Path Extension for \( l > \left \lceil \frac{n}{2} \right \rceil \)}
+    \caption{Part 1: Path Extension for \( \ell > \left \lceil \frac{n}{2} \right \rceil \)}
     \begin{algorithmic}
         \Function{Extend\_Path\_Big}{$G, P$}
             \State $c_x \gets P.\text{edges}[-1].\text{color}$ \Comment{Color of the last edge in the path}
@@ -184,13 +184,13 @@ to find a color outside the path and create the object Cycle. The other
 operations are $O(1)$.
 
 We can now check if there exists a vertex $y$ outside the Path
-such that $y$ is connects to the path on vertices $x_0$ and $x_{l-1}$
+such that $y$ is connects to the path on vertices $x_0$ and $x_{\ell-1}$
 and uses colors $c_x$ and $c_y$, such as in the image below:
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figuras/path_vertex_outside.png}
-    \caption{Cycle of length \( l + 1 \) found}
+    \caption{Cycle of length \( \ell + 1 \) found}
     \label{fig:path_vertex_outside}
 \end{figure}
 
@@ -198,7 +198,7 @@ This part can also be done on $O(n)$ time complexity with
 the code below:
 
 \begin{algorithm}[H]
-    \caption{Part 3: Path Extension for \( l > \left \lceil \frac{n}{2} \right \rceil \)}
+    \caption{Part 3: Path Extension for \( \ell > \left \lceil \frac{n}{2} \right \rceil \)}
     \begin{algorithmic}
         \Function{Extend\_Path\_Big}{$G, P$}
             \For{$[c1, c2] \in [[cx, cy], [cy, cx]]$} \Comment{Try both color pairs}
@@ -218,30 +218,30 @@ the code below:
     \end{algorithmic}
 \end{algorithm}
 
-Let's define $I_1 = \{i \in [0, l - 3]: \{x_0, x_{i + 1}\} \in A(G_{c_x})\}$ and 
-$I_2 = \{i \in [1, l - 2]: \{x_i, x_{l-1}\} \in A(G_{c_y})\}$.
+Let's define $I_1 = \{i \in [0, \ell - 3]: \{x_0, x_{i + 1}\} \in A(G_{c_x})\}$ and 
+$I_2 = \{i \in [1, \ell - 2]: \{x_i, x_{\ell-1}\} \in A(G_{c_y})\}$.
 
 Note that as we did not find a cycle yet, 
 
 $$
-|N_{G_{c_x}}(x_0) \backslash V(P)| + |N_{G_{c_y}}(x_l) \backslash V(P)| \leq n - l,
+|N_{G_{c_x}}(x_0) \backslash V(P)| + |N_{G_{c_y}}(x_\ell) \backslash V(P)| \leq n - \ell,
 $$
 
 otherwise, by Dirichlet Principle, we would have found a cycle
 with the previous procedures. Thus, we have that
 
 $$
-|I_1| + |I_2| \geq \frac{n}{2} + \frac{n}{2} - |N_{G_cx}(x_1) \backslash V(P)| - |N_{G_cy}(x_l) \backslash V(P)| \geq l.
+|I_1| + |I_2| \geq \frac{n}{2} + \frac{n}{2} - |N_{G_cx}(x_1) \backslash V(P)| - |N_{G_cy}(x_\ell) \backslash V(P)| \geq \ell.
 $$
 
-As $I_1 \cap I_2 \subseteq [0, l - 2]$, from Dirichlet Principle, $I_1 \cap I_2 \neq \emptyset$. Given an element
-$i \in I_1 \cap I_2$, we can build a cycle with size $l$ with
+As $I_1 \cap I_2 \subseteq [0, \ell - 2]$, from Dirichlet Principle, $I_1 \cap I_2 \neq \emptyset$. Given an element
+$i \in I_1 \cap I_2$, we can build a cycle with size $\ell$ with
 the following crossing:
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figuras/path_cycle_crossing.png}
-    \caption{Cycle of length \( l + 1 \) found}
+    \caption{Cycle of length \( \ell + 1 \) found}
     \label{fig:path_cycle_crossing}
 \end{figure}
 
@@ -250,7 +250,7 @@ for $I_1$ and $I_2$ and build the solution. This can also
 be done in $O(n)$ with the code below:
 
 \begin{algorithm}[H]
-    \caption{Part 3: Path Extension for \( l > \left \lceil \frac{n}{2} \right \rceil \)}
+    \caption{Part 3: Path Extension for \( \ell > \left \lceil \frac{n}{2} \right \rceil \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Path\_Big}{$G, P$}
             \For{$i \in [1, \dots, P.vertices.\text{size()} - 1]$}
@@ -270,9 +270,9 @@ be done in $O(n)$ with the code below:
 \end{algorithm}
 
 
-\subsection{Cycle of length \( l \)}
+\subsection{Cycle of length \( \ell \)}
 
-In this case, we start with a cycle \( C = \{x_0, e_0, \dots, x_{l-1}, e_{l-1}, x_{l} = x_0\} \) of length \( l \).
+In this case, we start with a cycle \( C = \{x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1}, x_{\ell} = x_0\} \) of length \( \ell \).
 To assist the process, we define the following variables:
 
 \begin{itemize}
@@ -281,29 +281,29 @@ To assist the process, we define the following variables:
 \end{itemize}
 
 These variables can be calculated in \( O(n) \) time complexity. We may assume the cycle is of length at least \( \left \lceil \frac{n}{2} \right \rceil \).
-Let's divide the proof into two cases: when \( l < n - 1 \) and when \( l = n - 1 \).
+Let's divide the proof into two cases: when \( \ell < n - 1 \) and when \( \ell = n - 1 \).
 
 \subsection{Case 1: \( n - 1 \neq \ell \geq \left \lceil \frac{n}{2} \right \rceil + 1 \)}
 
 Let $c_1$ and $c_2$ be two colors that are not in the cycle. Suppose, WLOG, that 
 there is an edge $edge(u, v, c_1) \in A(G)$ not incident to the cycle. Then, because
 the adjacency of $u$ is at least $\left \lceil \frac{n}{2} \right \rceil$ and the 
-length of the cycle is $l \geq \left \lceil \frac{n}{2} \right \rceil + 1$, there is at least
+length of the cycle is $\ell \geq \left \lceil \frac{n}{2} \right \rceil + 1$, there is at least
 one vertex $w$ on the cycle such that $\{u, w\} \in A(G_{c_2})$.
 
-Thus, we can build a path of length $l + 1$ by removing the edge as on the diagram below:
+Thus, we can build a path of length $\ell + 1$ by removing the edge as on the diagram below:
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{figuras/cycle_path_extension.png}
-    \caption{Path of length \( l + 1 \) found}
+    \caption{Path of length \( \ell + 1 \) found}
     \label{fig:cycle_path_extension}
 \end{figure}
 
 This can be done in $O(n^2)$ time complexity with the following code:
 
 \begin{algorithm}[H]
-    \caption{Part 1: Cycle Extension for \( l < n - 1 \)}
+    \caption{Part 1: Cycle Extension for \( \ell < n - 1 \)}
     \begin{algorithmic}
         \Function{Extend\_Cycle}{$G, C$}
             \For{$[ci, cj] \in [[c1, c2], [c2, c1]]$} \Comment{Try both color pairs}
@@ -343,24 +343,24 @@ $u$ must also be incident to the cycle.
 Take a vertex $u$ outside the cycle and let
 
 $$
-I_1 \coloneqq \{i \in [0, l - 1]: \{u, x_{i + 1}\} \in A(G_{c_1})\} \text{ and } I_2 \coloneqq \{i \in [0, l - 1]: \{x_i, u\} \in A(G_{c_2})\}.
+I_1 \coloneqq \{i \in [0, \ell - 1]: \{u, x_{i + 1}\} \in A(G_{c_1})\} \text{ and } I_2 \coloneqq \{i \in [0, \ell - 1]: \{x_i, u\} \in A(G_{c_2})\}.
 $$
 
-We have that $|I_1| + |I_2| = |N_{G_{c_1}}(u)| + |N_{G_{c_2}}(u)| > l$. Thus, 
-from Dirichlet Principle, $I_1 \cap I_2 \neq \emptyset$. In this case, we can build a cycle of length $l + 1$
+We have that $|I_1| + |I_2| = |N_{G_{c_1}}(u)| + |N_{G_{c_2}}(u)| > \ell$. Thus, 
+from Dirichlet Principle, $I_1 \cap I_2 \neq \emptyset$. In this case, we can build a cycle of length $\ell + 1$
 such as in the image below:
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{figuras/cycle_cycle_extension.png}
-    \caption{Cycle of length \( l + 1 \) found}
+    \caption{Cycle of length \( \ell + 1 \) found}
     \label{fig:cycle_cycle_extension}
 \end{figure}
 
 The code for finding this cycle is shown below:
 
 \begin{algorithm}[H]
-    \caption{Part 2: Cycle Extension for \( l < n - 1 \)}
+    \caption{Part 2: Cycle Extension for \( \ell < n - 1 \)}
     \begin{algorithmic}
         \Function{Extend\_Cycle}{$G, C$}
             \State $u \gets \text{next}(i \text{ for } i \text{ in range(n) if \textbf{not} } colors\_in\_cycle[i])$
@@ -385,7 +385,7 @@ The code for finding this cycle is shown below:
 This part works in $O(n)$ time complexity, as we as soon as we find a vertex outside the cycle,
 we just make a linear search for a crossing and find the solution.
 
-\subsection{Case 2: Cycle of length \( l = n - 1 \)}
+\subsection{Case 2: Cycle of length \( \ell = n - 1 \)}
 
 This is the most complicated case. We are going to define some auxiliary functions
 to simplify the code.
@@ -422,7 +422,7 @@ to simplify the code.
     The algorithm is shown below:
 
     \begin{algorithm}
-        \caption{Find Answer for \( l = n - 1 \)}
+        \caption{Find Answer for \( \ell = n - 1 \)}
         \begin{algorithmic}[1]
             \Function{Find\_Answer}{$G, y, cy, C, i$}
                 \State $vertices \gets C.vertices[i + 1:] + C.vertices[:i + 1] + [y]$
@@ -453,7 +453,7 @@ of the colors such that the remaining color has label $n - 1$. Let's also define
 These variables can be calculated in \( O(n) \) time complexity. The algorithm is shown below:
 
 \begin{algorithm}
-    \caption{Part 1: Cycle Extension for \( l = n - 1 \)}
+    \caption{Part 1: Cycle Extension for \( \ell = n - 1 \)}
     \begin{algorithmic}
         \Function{Extend\_Cycle}{$G, C$}
             \State $new\_color\_id \gets [-1] \times n$
@@ -505,7 +505,7 @@ Now, let's define the following variables:
 We can build these variables with the following algorithm:
 
 \begin{algorithm}[H]
-    \caption{Part 2: Cycle Extension for \( l < n - 1 \). Building digraph variables, $I$ and $\bar{I}$}
+    \caption{Part 2: Cycle Extension for \( \ell < n - 1 \). Building digraph variables, $I$ and $\bar{I}$}
     \begin{algorithmic}[1]
         \Function{Extend\_Cycle}{$G, C$}
             \State $I \gets []$
@@ -557,7 +557,7 @@ a cycle of length $n$ with the following crossing, removing the edge $e_i$:
 To the algorithm part, we can just check the intersection and build the answer.
 
 \begin{algorithm}[H]
-    \caption{Part 3: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) \geq \frac{n}{2} \)}
+    \caption{Part 3: Cycle Extension for \( \ell < n - 1 \). Case \( d^-_D(y) \geq \frac{n}{2} \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Cycle}{$G, C$}
             \For{$i \in I$}
@@ -583,7 +583,7 @@ Let's start with the first case. We may assume, WLOG, that $d^-_D(x_0) > \frac{n
 For considering this, we can just find the vertex with in-degree greater than $\frac{n}{2} - 1$ and rotate the cycle, such as the following algorithm:
 
 \begin{algorithm}[H]
-    \caption{Part 4: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
+    \caption{Part 4: Cycle Extension for \( \ell < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Cycle}{$G, C$}
             \For{$i \in [0, \dots, C.\text{size()} - 1]$}
@@ -639,7 +639,7 @@ We are going to create the following variables to manipulate the path $P$:
 
 To compute these variables, we can use the following algorithm:
 \begin{algorithm}[H]
-    \caption{Part 5: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
+    \caption{Part 5: Cycle Extension for \( \ell < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Cycle}{$G, C$}
             \State $j \gets -1$
@@ -709,7 +709,7 @@ We can then build the following $G$-transversal cycle:
 The algorithm to find the answer in this case is the following:
 
 \begin{algorithm}[H]
-    \caption{Part 6: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
+    \caption{Part 6: Cycle Extension for \( \ell < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Cycle}{$G, C$}
             \State $edge \gets G.check\_edge(P\_vertices[0], P\_vertices[-1], removed\_color)$
@@ -784,7 +784,7 @@ $j \in \mathcal{J}' \cap \mathcal{J}$. Let's build the following transversal pat
 The algorithm to build $Q$ and get the new missing color is the following:
 
 \begin{algorithm}[H]
-    \caption{Part 7: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
+    \caption{Part 7: Cycle Extension for \( \ell < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Cycle}{$G, C$}
             \State $Q \gets Path()$
@@ -836,7 +836,7 @@ We can finally build the following transversal cycle:
 The algorithm to find the answer in this case is the following:
 
 \begin{algorithm}[H]
-    \caption{Part 8: Cycle Extension for \( l < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
+    \caption{Part 8: Cycle Extension for \( \ell < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
     \begin{algorithmic}[1]
         \Function{Extend\_Cycle}{$G, C$}
             \State $Q \gets None$
