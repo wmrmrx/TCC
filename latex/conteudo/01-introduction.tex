@@ -4,38 +4,41 @@
 
 \chapter{Introduction}
 
-The problem studied in this paper is relatively recent, although its origins trace back to classical concepts. 
-In 1978, Caccetta and Häggkvist formulated the conjecture that every digraph of order $n$ with minimum degree $d$ 
+The problem we address in the monograph is relatively recent, although its origins trace back to classical concepts. 
+In 1978, Caccetta and Häggkvist \cite{nathanson2006caccettahaggkvistconjectureadditivenumber} formulated the conjecture 
+that every simple digraph of order $n$ with minimum outdegree $d$ 
 has a directed cycle of size at most $\lceil n/d \rceil$. This conjecture marked the beginning of investigations 
-into cycles in graphs with degree constraints.
+of short cycles in digraphs with degree constraints.
 
 Nearly four decades later, in 2017, Ron Aharoni, from the Department of Mathematics at Technion, proposed a stronger 
-version of this conjecture using the Rainbow version. His conjecture states that, given a graph $G$ of order $n$ 
+version of this conjecture known as a rainbow version \cite{AharonisConjecture}. His conjecture states that, given a graph $G$ of order $n$ 
 with edges colored in $n$ colors, where each color appears in at most $r$ edges, there is a rainbow cycle of size 
 at most $\lceil n/r \rceil$.
 
-In 2019, Felix Joos, professor at the University of Heidelberg, and Jaehoon Kim, associate professor at KAIST, 
-managed to prove the existence of a rainbow Hamiltonian cycle in a collection of graphs defined on the same set 
-of vertices, with edges distinctly colored, that satisfy the Dirac condition. This proof gave strong support to 
-Aharoni's conjecture.
+In 2019, Felix Joos, from the University of Heidelberg, and Jaehoon Kim, from KAIST, 
+proved the existence of a rainbow hamiltonian cycle in a graph $G$ that results from the union of $n$ graphs
+$G_i$ ($1 \leq i \leq n$) defined on the same set of $n$ vertices, each $G_i$ monochromatically edge colored
+and collectively using $n$ distinct colors, each one satisfying Dirac's condition. A rainbows cycle is a cycle 
+in which all edges are colored differently. This result gave strong support to Aharoni's conjecture.
 
-Joos and Kim's work used simple and elegant, yet non-trivial, techniques that enabled the development of a cubic 
+Joos and Kim's work uses simple and elegant, yet non-trivial, techniques that enabled the development of an $O(n^3)$ 
 algorithm in the number of vertices. Moreover, they extended their results to the existence of a perfect rainbow 
 matching.
 
-More recently, in 2023, Liqing Gao and Jian Wang, Chinese researchers, published a paper that extends the problem 
-by proving the existence of a rainbow Hamiltonian cycle in graphs that satisfy the Ore condition, using the 
+More recently, in 2023, Liqing Gao and Jian Wang \cite{gao_wang_2024}, Chinese researchers, published a paper that extends the problem 
+by proving the existence of a rainbow hamiltonian cycle in graphs that satisfy a simpler Ore condition, using the 
 "shifting operator" tool. This technique, developed by Erdös, Ko, and Rado, is widely used in extremal set theory 
 and has led to significant advances in solving this problem. However, we will not cover this work in detail in 
 this paper.
 
-This work is structured as follows: In Chapter 2, we will explain and prove Dirac's condition. In Chapter 3, we 
-will address the Rainbow version of the algorithms, essential for understanding the final algorithm. In Chapter 4, 
-we will implement the algorithm based on the work of Joos and Kim, presenting pseudocode and proving the correctness 
-of the algorithm. In Chapter 5, we will include a graphical animation to illustrate the operation of the algorithm. 
-Finally, in Chapter 6, we will make final considerations about the work developed.
+% TODO: ATUALIZAR ISSO SEMPRE
+This work is structured as follows: In Chapter 2, prove Dirac's theorem obtained in 1952 \cite{dirac1952}. In Chapter 3, we 
+address the Rainbow version of the algorithms, essential to understand the final algorithm. In Chapter 4, 
+we present a pseudocode and the details of the implementation of the algorithm based on the work of Joos and Kim \cite{Joos_2020}.
+In Chapter 5, we include a graphical animation to illustrate the algorithm. 
+Finally, in Chapter 6, we make some final considerations about the work we have developed.
 
-All the source code used in this project is available in $our-repo$. The code was written in C++, using the Boost 
+All the source code used in this project is available in \href{https://github.com/wmrmrx/TCC}{GitHub}. The code was written in C++, using the Boost 
 library, and in Python, which supports an animation made using the Graph-Tool framework.
 
 

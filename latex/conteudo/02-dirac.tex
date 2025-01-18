@@ -4,15 +4,16 @@
 
 \chapter{Preliminary}
 
-In this chapter, we will present the concepts and theorems that are fundamental to understanding the 
-work developed in this thesis. We will start by presenting and proving Dirac's theorem's original
-statement and formally present the Rainbow version of the theorem.
+In this chapter, we present the concepts and theorems that are fundamental to understand the 
+work developed in this monograph. We start by presenting and proving Dirac's theorem (from 1952) \cite{dirac1952} 
+and then we formally present the rainbow version of this theorem, the main topic of this work.
+
+We assume that the reader is familiar with some basic concepts of graph theory. We present some 
+of them to estabilish the terminology and notation, which follow basically those used in Bondy and Murty \cite{bondy1976}.
 
 \section{Definitions}
 
-Given a simple graph $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges, we denote by $E(G)$ as
-the set of edges of $G$, $V(G)$ as the set of vertices of $G$, $N_G(v)$ as the adjacency list of vertex $i$ on graph $G$ 
-and $\deg_G(v)$ as the degree of vertex $v$ in $G$
+We denote by $G = (V, E)$ a simple graph $G$ with vertex set $V$ and edge set $E$.
 
 A path $P$ of length $l$ is a sequence of vertices and edges $(v_0, e_0, v_1, e_1, \ldots, v_{l - 1}, e_{l - 1}, v_{l})$ such that
 $v_i \in V(G)$, $e_i = \{v_i, v_{i + 1}\} \in E(G)$, and $v_i \neq v_j$ for $i \neq j$, and $v_{i-1} \neq v_{i}$ for $i \in [l]$.

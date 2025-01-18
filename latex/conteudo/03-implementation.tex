@@ -227,14 +227,14 @@ $$
 |N_{G_{c_x}}(x_0) \backslash V(P)| + |N_{G_{c_y}}(x_\ell) \backslash V(P)| \leq n - \ell,
 $$
 
-otherwise, by Dirichlet Principle, we would have found a cycle
+otherwise, by Pigeonhole Principle, we would have found a cycle
 with the previous procedures. Thus, we have that
 
 $$
 |I_1| + |I_2| \geq \frac{n}{2} + \frac{n}{2} - |N_{G_cx}(x_1) \backslash V(P)| - |N_{G_cy}(x_\ell) \backslash V(P)| \geq \ell.
 $$
 
-As $I_1 \cap I_2 \subseteq [0, \ell - 2]$, from Dirichlet Principle, $I_1 \cap I_2 \neq \emptyset$. Given an element
+As $I_1 \cap I_2 \subseteq [0, \ell - 2]$, from Pigeonhole Principle, $I_1 \cap I_2 \neq \emptyset$. Given an element
 $i \in I_1 \cap I_2$, we can build a cycle with size $\ell$ with
 the following crossing:
 
@@ -347,7 +347,7 @@ I_1 \coloneqq \{i \in [0, \ell - 1]: \{u, x_{i + 1}\} \in A(G_{c_1})\} \text{ an
 $$
 
 We have that $|I_1| + |I_2| = |N_{G_{c_1}}(u)| + |N_{G_{c_2}}(u)| > \ell$. Thus, 
-from Dirichlet Principle, $I_1 \cap I_2 \neq \emptyset$. In this case, we can build a cycle of length $\ell + 1$
+from Pigeonhole Principle, $I_1 \cap I_2 \neq \emptyset$. In this case, we can build a cycle of length $\ell + 1$
 such as in the image below:
 
 \begin{figure}[H]
@@ -543,7 +543,7 @@ it's adjacency list for a specific color. The space complexity is $O(n^2)$, as w
 
 Let's find the answer for the case $d^-_D(y) \geq \frac{n}{2}$. We have that 
 $|I| + |\bar{I}|  \geq d^-_D(y) +  \frac{n}{2} $. 
-Thus, from Dirichlet Principle, $I \cap \bar{I} \neq \emptyset$. In this case, we can build 
+Thus, from Pigeonhole Principle, $I \cap \bar{I} \neq \emptyset$. In this case, we can build 
 a cycle of length $n$ with the following crossing, removing the edge $e_i$:
 
 % set scale
@@ -615,7 +615,7 @@ Let's define the following variables:
 \end{itemize}
 
 We have that $I_0 + I_{n-1} \geq d(0, y) + d(n-1, y) \geq n$. Thus, 
-from Dirichlet Principle, $I_0 \cap I_{n-1} \neq \emptyset$. Take $j \in I_0 \cap I_{n-1}$.
+from Pigeonhole Principle, $I_0 \cap I_{n-1} \neq \emptyset$. Take $j \in I_0 \cap I_{n-1}$.
 If $j = 0$, we can just remove the edge $x_0$ and build the cycle of length $n$ 
 adding crossing edges $edge(x_0, y, c_0)$ and $edge(y, x_1, c_1)$. So, assume $j \neq 0$.
 
@@ -695,7 +695,7 @@ Thus, $|J_0| \geq \delta(G_{removed\_color}) \geq \frac{n}{2}$. Also, as $P\_ver
 from the construction of $D$ we guarantee that $P\_vertices[n-2] \notin N^-_D(x_0)$
 and consequently $|J_{n-1}| \geq \frac{n}{2} - \frac{1}{2}$.
 
-From Dirichlet Principle, as $|J_0| + |J_{n-1}| \geq n$, we have that $|J_0 \cap J_{n-1}| \geq 2$. Thus,
+From Pigeonhole Principle, as $|J_0| + |J_{n-1}| \geq n$, we have that $|J_0 \cap J_{n-1}| \geq 2$. Thus,
 there is at least one element on $J_0 \cap J_{n-1}$, let's call it $k$, such that $P\_vertices[k] \neq y$.
 We can then build the following $G$-transversal cycle:
 
@@ -771,7 +771,7 @@ the sum of the in-degrees of the vertices:
 
 Therefore, $|\mathcal{J}| \geq \frac{n}{2} > \frac{n - 1}{2}$. Defining 
 $\mathcal{J}' \coloneqq \{i \in [n - 1]: edge(x_{i+1}, y, c_y) \in A(G)\}$, we have that 
-$|\mathcal{J}'| + |\mathcal{J}| \geq n$. From Dirichlet Principle, there exists 
+$|\mathcal{J}'| + |\mathcal{J}| \geq n$. From Pigeonhole Principle, there exists 
 $j \in \mathcal{J}' \cap \mathcal{J}$. Let's build the following transversal path $Q$:
 
 \begin{figure}[H]
@@ -823,7 +823,7 @@ Let's assume that this edge is not in $G$. We have that $|J_0| \geq \delta(G_{re
 Observe that $Q.vertices[0] = y \notin N^-_D(Q_vertices[n - 1])$ and $Q.vertices[n - 2] = C.vertices[j - 1] \notin N^-_D(Q.vertices[n - 1])$,
 by the construction of $D$. As $C.vertices[j] \in \mathcal{J}$, we get that
 $|J_{n-1}| = \lfloor \frac{n}{2} - 1 \rfloor$. We obtain that $|J_0| + |J_{n-1}| \geq n - 1$.
-Thus, from Dirichlet Principle, there exists $k \in (J_0 \backslash \{0\}) \cap J_{n-1}$. 
+Thus, from Pigeonhole Principle, there exists $k \in (J_0 \backslash \{0\}) \cap J_{n-1}$. 
 We can finally build the following transversal cycle:
 
 \begin{figure}[H]
