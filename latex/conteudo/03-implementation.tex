@@ -283,7 +283,7 @@ To assist the process, we define the following variables:
 These variables can be calculated in \( O(n) \) time complexity. We may assume the cycle is of length at least \( \left \lceil \frac{n}{2} \right \rceil \).
 Let's divide the proof into two cases: when \( \ell < n - 1 \) and when \( \ell = n - 1 \).
 
-\subsection{Case 1: \( n - 1 \neq \ell \geq \left \lceil \frac{n}{2} \right \rceil + 1 \)}
+\subsection{Case 1: \(\left \lceil \frac{n}{2} \right \rceil + 1 \leq \ell \leq n - 1 \)}
 
 Let $c_1$ and $c_2$ be two colors that are not in the cycle. Suppose, WLOG, that 
 there is an edge $edge(u, v, c_1) \in A(G)$ not incident to the cycle. Then, because
