@@ -3,12 +3,12 @@
 \chapter{Rainbow version of Ore's Theorem}
 
 \cite{Ore_1960} states that if a simple graph $G$ with $n$ vertices satisfies the condition
-$\deg_G(u) + \deg_G(v) \geq n$ for all $u, v \in V$ such that ${u, v} \not\in E(G)$, then $G$ contains a hamiltonian cycle.
+$\deg_G(u) + \deg_G(v) \geq n$ for all $u, v \in V$ such that ${u, v} \not\in E(G)$, then $G$ contains a Hamiltonian cycle.
 We will refer to this condition as Ore's condition.
 
 Ore's theorem generalizes Dirac's theorem, since if a graph satisfies Dirac's condition, it also satisfies Ore's condition.
 We want to prove that if for a collection of graphs $G = (G_0, G_1, \ldots, G_{n-1})$, they all satisfy Ore's condition,
-then there exists a rainbow hamiltonian cycle in $G$.
+then there exists a rainbow Hamiltonian cycle in $G$.
 
 \section{Flowchart}
 
@@ -68,7 +68,7 @@ There are two colors, $c_0$ and $c_1$, that are not in the cycle. Define \(G_0 \
 
 \subsubsection{Case 1: \( \ell < \frac{n}{2} \)}
 
-From Ore's theorem, we know \(G_0\) is a connected graph, since it contains a hamiltonian cycle. 
+From Ore's theorem, we know \(G_0\) is a connected graph, since it contains a Hamiltonian cycle. 
 Then, there exists a edge \( \{u, v\} \in E(G_0) \) such that \( u \in C \) and \( v \not\in C \). 
 Let \(w\) be a vertex adjacent to \(u\) in \(C\). 
 If \(\{v, w\} \in G_1\), then we have a rainbow cycle of length \( \ell+1 \). 
