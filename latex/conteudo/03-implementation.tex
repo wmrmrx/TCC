@@ -22,6 +22,14 @@ satisfies Dirac's condition. Moreover, we use the following notations:
     \item $N_J(X)$ denotes the set of neighbors of $X$ on graph $J$.
 \end{itemize}
 
+We use the following conventions:
+
+\begin{itemize}
+    \item Some variables used on pseudocode may be defined on other parts of the same function;
+    \item The variables on the images are the same as the ones defined in the proof and the code;
+    \item The colors $c_x$ in the proof may be represented as $c(x)$ on the images.
+\end{itemize}
+
 The pseudocode is written using Python methods and conventions, such as array slicing and 
 list appending.
 
@@ -138,7 +146,7 @@ The code below implements this algorithm:
 \begin{algorithm}[H]
     \caption{Path Extension for \( \ell < \left \lceil \frac{n}{2} \right \rceil \)}
     \begin{algorithmic}[1]
-        \Function{Extend\_Path\_Small}{$G, P$}
+        \Function{Extend\_Path\_Small}{$G, P$} \Comment{$P = (x_0, \dots, x_{\ell-1})$}
         \State $color\_outside\_path \gets \text{next}(i \text{ for } i \text{ in range(n) if \textbf{not} colors\_in\_path[i]})$
 
         \For{$i \in [0, \dots, n-1]$}
@@ -213,7 +221,7 @@ This part can also be done in $O(n)$ time with the code below:
                         \State $edge\_x \gets \text{check\_edge}(G, P.vertices[0], y, c_1)$
                         \State $edge\_y \gets \text{check\_edge}(G, P.vertices[-1], y, c_2)$
                         \If{$(edge\_x \neq \text{None})$ and $(edge\_y \neq \text{None})$}
-                            \State \Return Cycle($G$, $P.vertices + [y]$, $P.edges + [edge\_y, edge\_x]$)
+                            \State \Return Cycle($G$, $P.vertices + [y]$, $P.edges + [edge\_y, edge\_x]$) \Comment{Return $\ell+1$-cycle}
                         \EndIf
                     \EndIf
                 \EndFor
@@ -224,17 +232,19 @@ This part can also be done in $O(n)$ time with the code below:
     \end{algorithmic}
 \end{algorithm}
 
-Let's define $I_1 = \{i \in [0, \ell - 3]: \{x_0, x_{i + 1}\} \in A(G_{c_x})\}$ and 
-$I_2 = \{i \in [1, \ell - 2]: \{x_i, x_{\ell-1}\} \in A(G_{c_y})\}$.
+At this point, $P = (x_0, \dots, x_{\ell-1})$. Let us define:
 
-Note that as we did not find a cycle yet, 
+$$
+I_1 = \{i \in [0, \ell - 3]: \{x_0, x_{i + 1}\} \in A(G_{c_x})\} \text{ and } I_2 = \{i \in [1, \ell - 2]: \{x_i, x_{\ell-1}\} \in A(G_{c_y})\}.
+$$
+
+Note that, as there is no vertex $y \in V \backslash V(P)$ such that $\{x_0, y\} \in A(G_{c_x})$ and $\{y, x_{\ell-1}\} \in A(G_{c_y})$,
 
 $$
 |N_{G_{c_x}}(x_0) \backslash V(P)| + |N_{G_{c_y}}(x_\ell) \backslash V(P)| \leq n - \ell,
-$$
+$$.
 
-otherwise, by Pigeonhole Principle, we would have found a cycle
-with the previous procedures. Thus, we have that
+Otherwise, by Pigeonhole Principle, we would have found a $l+1$ length cycle with the previous procedures. Thus:
 
 $$
 |I_1| + |I_2| \geq \frac{n}{2} + \frac{n}{2} - |N_{G_cx}(x_1) \backslash V(P)| - |N_{G_cy}(x_\ell) \backslash V(P)| \geq \ell.
@@ -242,31 +252,32 @@ $$
 
 As $I_1 \cap I_2 \subseteq [0, \ell - 2]$, from Pigeonhole Principle, $I_1 \cap I_2 \neq \emptyset$. Given an element
 $i \in I_1 \cap I_2$, we can build a cycle with size $\ell$ with
-the following crossing:
+the following crossing procedure:
 
+% TODO: MUDAR IMAGEM COM u e v
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{figuras/path_cycle_crossing.png}
+    \includegraphics[width=0.7\textwidth]{figuras/path_cycle_crossing.png}
     \caption{Cycle of length \( \ell + 1 \) found}
     \label{fig:path_cycle_crossing}
 \end{figure}
 
-Then, for this case, we just need to find an intersection
-for $I_1$ and $I_2$ and build the solution. This can also
+Hence in this case, we just need to find an element in the intersection
+of $I_1$ and $I_2$ and build the desired cycle. This can also
 be done in $O(n)$ with the code below:
 
 \begin{algorithm}[H]
-    \caption{Part 3: Path Extension for \( \ell > \left \lceil \frac{n}{2} \right \rceil \)}
+    \caption{Path Extension for \( \ell > \left \lceil \frac{n}{2} \right \rceil \)} - Part 3
     \begin{algorithmic}[1]
-        \Function{Extend\_Path\_Big}{$G, P$}
+        \Function{Extend\_Path\_Big}{$G, P$} \Comment{$P = (x_0, \dots, x_{\ell-1})$}
             \For{$i \in [1, \dots, P.vertices.\text{size()} - 1]$}
                 \State $u \gets P.\text{vertices}[i]$
                 \State $v \gets P.\text{vertices}[i + 1]$
-                \State $edgeX \gets \text{check\_edge}(G, P.\text{vertices}[0], v, c_x)$
-                \State $edgeY \gets \text{check\_edge}(G, u, P.\text{vertices}[-1], c_y)$
-                \If{$(edgeX \neq \text{None})$ and $(edgeY \neq \text{None})$} 
+                \State $edge\_x \gets \text{check\_edge}(G, P.\text{vertices}[0], v, c_x)$
+                \State $edge\_y \gets \text{check\_edge}(G, u, P.\text{vertices}[-1], c_y)$
+                \If{$(edge\_x \neq \text{None})$ and $(edge\_y \neq \text{None})$} 
                     \State $vertices \gets P.\text{vertices}[:i + 1] + [y] + P.\text{vertices}[i + 1:-1][::-1]$
-                    \State $edges \gets P.\text{edges}[:i] + [edgeY] + P.\text{edges}[i + 1:][::-1] + [edgeX]$
+                    \State $edges \gets P.\text{edges}[:i] + [edge\_y] + P.\text{edges}[i + 1:][::-1] + [edge\_x]$
                     \State \Return Cycle($G$, $vertices$, $edges$)
                 \EndIf
             \EndFor
@@ -278,7 +289,7 @@ be done in $O(n)$ with the code below:
 
 \subsection{Cycle of length \( \ell \)}
 
-In this case, we start with a cycle \( C = \{x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1}, x_{\ell} = x_0\} \) of length \( \ell \).
+In this case, we start with a cycle \( C = (x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1}, x_{\ell} = x_0) \) of length \( \ell \).
 To assist the process, we define the following variables:
 
 \begin{itemize}
@@ -286,19 +297,21 @@ To assist the process, we define the following variables:
     \item \texttt{vertices\_in\_cycle}: An array of size \( n \) where \texttt{vertices\_in\_cycle[i]} is \texttt{True} if vertex \( i \) is included in the cycle.
 \end{itemize}
 
-These variables can be calculated in \( O(n) \) time complexity. We may assume the cycle is of length at least \( \left \lceil \frac{n}{2} \right \rceil \).
-Let's divide the proof into two cases: when \( \ell < n - 1 \) and when \( \ell = n - 1 \).
+The values of these variables may be assigned in \( O(n) \) time. We may assume that the cycle has length at least \( \left \lceil \frac{n}{2} \right \rceil \).
+We divide the proof into two cases: when \( \ell < n - 1 \) and when \( \ell = n - 1 \).
 
-\subsection{Case 1: \(\left \lceil \frac{n}{2} \right \rceil + 1 \leq \ell \leq n - 1 \)}
+\subsection{Case 1: \(\left \lceil \frac{n}{2} \right \rceil + 1 \leq \ell < n - 1 \)}
 
-Let $c_1$ and $c_2$ be two colors that are not in the cycle. Suppose, WLOG, that 
+Let $c_1$ and $c_2$ be any two different colors that are not in the cycle. Suppose, WLOG, that 
 there is an edge $edge(u, v, c_1) \in A(G)$ not incident to the cycle. Then, because
-the adjacency of $u$ is at least $\left \lceil \frac{n}{2} \right \rceil$ and the 
+the degree of $u$ is at least $\left \lceil \frac{n}{2} \right \rceil$ and the 
 length of the cycle is $\ell \geq \left \lceil \frac{n}{2} \right \rceil + 1$, there is at least
 one vertex $w$ on the cycle such that $\{u, w\} \in A(G_{c_2})$.
 
-Thus, we can build a path of length $\ell + 1$ by removing the edge as on the diagram below:
+Thus, we can build a path of length $\ell + 1$ by removing an edge in the cycle that is incident
+to $w$ (see the diagram below):
 
+% TODO: MUDAR IMAGEM COM w
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{figuras/cycle_path_extension.png}
@@ -306,24 +319,24 @@ Thus, we can build a path of length $\ell + 1$ by removing the edge as on the di
     \label{fig:cycle_path_extension}
 \end{figure}
 
-This can be done in $O(n^2)$ time complexity with the following code:
+This can be done in $O(n^2)$ time with the following code:
 
 \begin{algorithm}[H]
-    \caption{Part 1: Cycle Extension for \( \ell < n - 1 \)}
+    \caption{Cycle Extension for \( \ell < n - 1 \) - Part 1}
     \begin{algorithmic}
         \Function{Extend\_Cycle}{$G, C$}
-            \For{$[ci, cj] \in [[c1, c2], [c2, c1]]$} \Comment{Try both color pairs}
+            \For{$[c_i, c_j] \in [[c_1, c_2], [c_2, c_1]]$} \Comment{Try both color pairs}
                 \For{$u \in [0, \dots, n-1]$}
                     \For{$v \in [u + 1, \dots, n-1]$}
                         \If{\textbf{not} $vertices\_in\_cycle[u]$ \text{and} \textbf{not} $vertices\_in\_cycle[v]$}
-                            \State $edgeU \gets \text{check\_edge}(G, u, v, ci)$
-                            \If{$edgeU \neq \text{None}$}
+                            \State $edge\_u \gets \text{check\_edge}(G, u, v, c_i)$
+                            \If{$edge\_u \neq \text{None}$}
                                 \For{$k \in [0, \dots, C.vertices.\text{size()} - 1]$}
                                     \State $w \gets C.vertices[k]$
-                                    \State $edgeW \gets \text{check\_edge}(G, w, u, cj)$
-                                    \If{$edgeW \neq \text{None}$}
+                                    \State $edge\_w \gets \text{check\_edge}(G, w, u, c_j)$
+                                    \If{$edge\_w \neq \text{None}$}
                                         \State $vertices \gets [u, v] + C.vertices[k:] + C.vertices[:k]$
-                                        \State $edges \gets [edgeU, edgeW] + C.edges[k:]$
+                                        \State $edges \gets [edge\_u, edge\_w] + C.edges[k:]$
                                         \State \hspace{3em} $+ C.edges[:k]$
                                         
                                         \State \Return $\text{Path}(G, vertices, edges)$
@@ -340,7 +353,7 @@ This can be done in $O(n^2)$ time complexity with the following code:
     \end{algorithmic}
 \end{algorithm}
 
-The complexity is in fact $O(n^2)$ because once we find valid edge $edgeU$, we 
+The complexity is in fact $O(n^2)$ because once we find valid edge $edge\_u$, we 
 just make a linear search for a valid vertex $w$ in the cycle, that will 
 certainly be found.
 
@@ -371,15 +384,15 @@ The code for finding this cycle is shown below:
         \Function{Extend\_Cycle}{$G, C$}
             \State $u \gets \text{next}(i \text{ for } i \text{ in range(n) if \textbf{not} } colors\_in\_cycle[i])$
             \For{$i \in [0, \dots, C.vertices.\text{size()} - 1]$}
-                \State $edge1 \gets \text{check\_edge}(G, u, C.vertices[i + 1], c1)$
-                \State $edge2 \gets \text{check\_edge}(G, u, C.vertices[i], c2)$
+                \State $edge_1 \gets \text{check\_edge}(G, u, C.vertices[i + 1], c1)$
+                \State $edge_2 \gets \text{check\_edge}(G, u, C.vertices[i], c2)$
                 
-                \If{$edge1 \neq \text{None} \text{ and } edge2 \neq \text{None}$}
+                \If{$edge_1 \neq \text{None} \text{ and } edge_2 \neq \text{None}$}
                     \State $vertices \gets C.vertices[i + 1:] + C.vertices[:i + 1] + [u]$
 
                     \State $edges \gets C.edges[i + 1:] +$
                     \State \hspace{3.3em} $C.edges[:i - 1] +$
-                    \State \hspace{3.3em} $[edge2, edge1]$
+                    \State \hspace{3.3em} $[edge_2, edge_1]$
                     \State \Return $\text{Cycle}(G, vertices, edges)$
                 \EndIf
             \EndFor
