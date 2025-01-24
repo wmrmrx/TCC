@@ -8,16 +8,40 @@ We will refer to this condition as Ore's condition.
 
 Ore's theorem generalizes Dirac's theorem, since if a graph satisfies Dirac's condition, it also satisfies Ore's condition.
 We want to prove that if for a collection of graphs $\mathcal{G} = (G_0, G_1, \ldots, G_{n-1})$, they all satisfy Ore's condition,
-then there exists a $\mathcal{G}-transversal$ that forms a Hamiltonian cycle.
+then there exists a $\mathcal{G}$-transversal that forms a Hamiltonian cycle.
 
-\section{Flowchart}
+From Dirac's version of the theorem, we use the same strategy of augmenting a path or a cycle   
+to prove that there exists a $\mathcal{G}$-transversal that forms a cycle of lenght $n - 1$.
 
-\subsection{Path of Length $\ell$}
+That way, if there existed a proof that built a 
+$\mathcal{G}$-transversal that forms a Hamiltonian cycle from, 
+$\mathcal{G}$-transversal that forms a cycle of length $n - 1$, 
+we would have a proof of the Rainbow version of Ore's theorem.
+Such proof was not found,
+but we will present a proof that builds a $\mathcal{G}$-transversal 
+that forms a cycle of length $n - 1$.
+
+
+\section{Proof}
+
+We will prove that given a collection of graphs $\mathcal{G} = (G_0, G_1, \ldots, G_{n-1})$ 
+that satisfy Ore's condition,
+if we have a path of length $\ell$, we can build a path of length $l + 1$  or 
+a cycle of length $\ell$.
+Otherwise, if we have a cycle of length $\ell < n - 1$ 
+we can build a path of length $\ell + 1$ or a cycle of length $\ell + 1$.
+
+\subsection{Base case}
+
+Notice there always exists a $\mathcal{G}$-transversal that forms a path of length $2$.
+since for each graph $G_i$, $\delta_{G_i}(v) \geq 2$ since by Ore's theorem,
+there graphs contain a Hamiltonian cycle. 
+
+\subsection{Path of Length $\ell \geq 2$}
 
 Suppose we have a path $ P = (x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1}, x_{\ell}) $ of length $ \ell $.
 As in the proof of the rainbow version of Dirac's theorem,
 we want to find either a path of length $ \ell+1 $ or a cycle of length $ \ell $ or $ \ell+1 $.
-
 We may assume that there always exists a path with $ \ell \geq 2 $, since every graph 
 $ G_i $ satisfies $ \delta_{G_i}(v) \geq 2 $ for all $ v \in V(G_1) $ due to Ore's condition.
 
@@ -43,10 +67,10 @@ There are two colors, $c_0$ and $c_1$, that are not in the path. Define
 and the number of neighbors of \(v\) that are in the path, respectively.
 By definition, \( \deg^{\text{in}}_{G_i}(w) +  \deg^{\text{out}}_{G_i}(w) = \deg_{G_i}(w) \).
 
-If \( \{u, v\} \in G_0 \) or \( \{u, v\} \in G_1 \), then we have a cycle of length \( \ell \).
+If \( \{u, v\} \in E(G_0) \) or \( \{u, v\} \in E(G_1) \), then we have a cycle of length \( \ell \).
 Else, by Ore's condition, \( \deg_{G_0}(u) + \deg_{G_0}(v) \geq n \) and \( \deg_{G_1}(u) + \deg_{G_1}(v) \geq n \).
-If there exists a vertex \(w\) not in the path such that \( \{u, w\} \in G_0 \) and \( \{v, w\} \in G_1 \), 
-then we have a cycle of length \( \ell + 1 \). The same is true if \( \{u, w\} \in G_1 \) and \( \{v, w\} \in G_0 \).
+If there exists a vertex \(w\) not in the path such that \( \{u, w\} \in E(G_0) \) and \( \{v, w\} \in E(G_1) \), 
+then we have a cycle of length \( \ell + 1 \). The same is true if \( \{u, w\} \in E(G_1) \) and \( \{v, w\} \in E(G_0) \).
 
 We can assume that such vertex \(w\) doesn't exists, implying 
 \( \deg^{\text{out}}_{G_0}(u) + \deg^{\text{out}}_{G_1}(v) \leq n - \ell \) and
@@ -56,9 +80,8 @@ So, we have that \( \deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_0}(v) +
 either \( \deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_1}(v) \geq \ell \) or 
 \( \deg^{\text{in}}_{G_1}(u) + \deg^{\text{in}}_{G_0}(v) \geq \ell \).
 Suppose, without loss of generality, that \( \deg^{\text{in}}_{G_0}(u) + \deg^{\text{in}}_{G_1}(v) \geq l \).
-% TODO: detalhar mais
 By the Pigeonhole Principle, there exists \(i\) such that 
-\( \{u, x_i\} \in G_0 \) and \( \{v, x_{i-1}\} \in G_1 \).
+\( \{u, x_i\} \in E(G_0) \) and \( \{v, x_{i-1}\} \in E(G_1) \).
 Implying in the existence of a cycle of length \( \ell \).
 
 \subsection{Cycle of Length $\ell < n - 1$}
