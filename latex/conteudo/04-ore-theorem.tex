@@ -7,16 +7,17 @@ $\text{d}_G(u) + \text{d}_G(v) \geq n$ for all $u, v \in V$ such that ${u, v} \n
 We will refer to this condition as Ore's condition.
 
 Ore's theorem generalizes Dirac's theorem, since if a graph satisfies Dirac's condition, it also satisfies Ore's condition.
-We want to prove that if for a collection of graphs $\mathcal{G} = (G_0, G_1, \ldots, G_{n-1})$, they all satisfy Ore's condition,
+In the Rainbow version of Ore's Theorem, we want to prove that if for a collection of graphs $\mathcal{G} = (G_0, G_1, \ldots, G_{n-1})$, they all satisfy Ore's condition,
 then there exists a $\mathcal{G}$-transversal that forms a Hamiltonian cycle.
 
-From Dirac's version of the theorem, we use the same strategy of augmenting a path or a cycle   
-to prove that there exists a $\mathcal{G}$-transversal that forms a cycle of lenght $n - 1$.
+In this chapter, we use the same strategy from the 
+Rainbow version of Dirac's Theorem of augmenting a path or a cycle   
+to prove that there exists a $\mathcal{G}$-transversal that forms a cycle of length $n - 1$.
 
 That way, if there existed a proof that built a 
-$\mathcal{G}$-transversal that forms a Hamiltonian cycle from, 
+$\mathcal{G}$-transversal that forms a Hamiltonian cycle from a
 $\mathcal{G}$-transversal that forms a cycle of length $n - 1$, 
-we would have a proof of the Rainbow version of Ore's theorem.
+we would have a proof for the Rainbow version of Ore's theorem.
 Such proof was not found,
 but we will present a proof that builds a $\mathcal{G}$-transversal 
 that forms a cycle of length $n - 1$.
@@ -26,8 +27,8 @@ that forms a cycle of length $n - 1$.
 
 We will prove that given a collection of graphs $\mathcal{G} = (G_0, G_1, \ldots, G_{n-1})$ 
 that satisfy Ore's condition,
-if we have a path of length $\ell$, we can build a path of length $l + 1$  or 
-a cycle of length $\ell$.
+if we have a path of length $\ell$, we can build a path of length $\ell + 1$  or 
+a cycle of length $\ell$ or $\ell + 1$.
 Otherwise, if we have a cycle of length $\ell < n - 1$ 
 we can build a path of length $\ell + 1$ or a cycle of length $\ell + 1$.
 
