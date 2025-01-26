@@ -835,7 +835,7 @@ Now, define:
     J_0 \coloneqq \{i \in [0, n - 3]: \{y, Q.vertices[i+1]\} \in A(G_{removed\_color})\},
 \end{equation}
 \begin{equation}
-    J_{n-1} \coloneqq \{i \in [1, n - 3] : Q.vertices[i] \in incoming\_neighborhood[Q.vertices[n-1]]\}.
+    J_{n-1} \coloneqq \{i \in [1, n - 3] : Q.vertices[i] \in incoming\_neighborhood[Q.vertices[n - 1]]\}.
 \end{equation}
 
 If $\{y, Q.vertices[0]\} \in A(G_{removed\_color})$, we can just close the cycle adding this edge.
@@ -915,16 +915,60 @@ The algorithm to find the answer in this case is the following:
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
-        
 
-\section{Time complexity analysis}
+\section{Time Complexity Analysis}
 
-We have run the algorithm for different values of $n$ to see how the time complexity behaves.
-The results are shown in the figure below:
+To evaluate the empirical performance of our implementation, we conducted extensive runtime analysis 
+across different input sizes. For each value of $n$ ranging from 6 to 100, we executed the algorithm
+3 times on each collection and recorded the average execution time.
+
+The results are shown in Figure~\ref{fig:time_complexity}, where we plot both the actual running times 
+and the theoretical $O(n^3)$ curve for comparison. The empirical results closely follow the theoretical 
+bound, confirming that our implementation achieves the expected complexity.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figuras/time_complexity.png}
-    \caption{Time complexity for different values of $n$.}
+    \caption{Empirical time complexity analysis. The blue points represent averaged execution times 
+    for different values of $n$, while the orange curve shows the theoretical $O(n^3)$ bound.}
     \label{fig:time_complexity}
 \end{figure}
+
+The dominant factors contributing to the $O(n^3)$ complexity are:
+
+\begin{itemize}
+    \item The initialization of the graph collection data structures;
+    \item Running the algorithm for incrementing object $O(n)$ times.
+\end{itemize}
+
+\section{Testing Methodology}
+
+To validate our implementation, we developed a both systematic and random approaches. 
+
+\subsection{Random Testing}
+
+The core of our testing approach relied on randomly generated test cases:
+
+\begin{itemize}
+    \item We created a generator for random graph collections satisfying Dirac's condition;
+    \item For each graph size from $n=6$ to $n=100$, we ran multiple test iterations;
+    \item Each test verified that the algorithm successfully found a valid Hamiltonian cycle.
+\end{itemize}
+
+\subsection{Edge Cases}
+
+Using brute force, we identified critical edge cases. We generated all
+possible graphs with $n = 6$ and built random collections of them.
+
+\subsection{Special Test Case}
+
+While random testing provided good coverage, we discovered an interesting edge case that required special attention. 
+This case emerged when two specific conditions aligned:
+
+\begin{itemize}
+    \item A cycle reaching length $n-1$;
+    \item Every vertex on the digraph having an in-degree below $\frac{n}{2}$.
+\end{itemize}
+
+To handle this case, we developed a dedicated test in \texttt{increment.py} called \texttt{test\_handle\_cycle\_n\_minus\_1\_upper\_bound\_degree\_D}. 
+This test uses carefully constructed inputs to verify the algorithm's behavior in this specific scenario.
