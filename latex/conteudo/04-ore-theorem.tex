@@ -1,6 +1,7 @@
 %!TeX root=../tese.tex
 
 \chapter{Rainbow version of Ore's Theorem}
+\label{chap:ore}
 
 Ore's Theorem \footnote{\cite{Ore_1960}} states that if a simple graph $G$ with $n$ vertices satisfies the condition
 $\text{d}_G(u) + \text{d}_G(v) \geq n$ for all $u, v \in V$ such that ${u, v} \not\in E(G)$, then $G$ contains a Hamiltonian cycle.
@@ -8,19 +9,19 @@ We will refer to this condition as Ore's condition.
 
 Ore's theorem generalizes Dirac's theorem, since if a graph satisfies Dirac's condition, it also satisfies Ore's condition.
 In the Rainbow version of Ore's Theorem, we want to prove that if for a collection of graphs $\mathcal{G} = (G_0, G_1, \ldots, G_{n-1})$, they all satisfy Ore's condition,
-then there exists a $\mathcal{G}$-transversal that forms a Hamiltonian cycle.
+then there exists a $\mathcal{G}$-transversal that is a Hamiltonian cycle.
 
 In this chapter, we use the same strategy from the 
 Rainbow version of Dirac's Theorem of augmenting a path or a cycle   
-to prove that there exists a $\mathcal{G}$-transversal that forms a cycle of length $n - 1$.
+to prove that there exists a $\mathcal{G}$-transversal that is a cycle of length $n - 1$.
 
 That way, if there existed a proof that built a 
-$\mathcal{G}$-transversal that forms a Hamiltonian cycle from a
-$\mathcal{G}$-transversal that forms a cycle of length $n - 1$, 
+$\mathcal{G}$-transversal that is a Hamiltonian cycle from a
+$\mathcal{G}$-transversal that is a cycle of length $n - 1$, 
 we would have a proof for the Rainbow version of Ore's theorem.
 Such proof was not found,
 but we will present a proof that builds a $\mathcal{G}$-transversal 
-that forms a cycle of length $n - 1$.
+that is a cycle of length $n - 1$.
 
 
 \section{Proof}
@@ -34,7 +35,7 @@ we can build a path of length $\ell + 1$ or a cycle of length $\ell + 1$.
 
 \subsection{Base case}
 
-Notice there always exists a $\mathcal{G}$-transversal that forms a path of length $2$.
+Notice there always exists a $\mathcal{G}$-transversal that is a path of length $2$.
 since for each graph $G_i$, $\delta_{G_i}(v) \geq 2$ since by Ore's theorem,
 there graphs contain a Hamiltonian cycle. 
 
