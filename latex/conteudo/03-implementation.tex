@@ -908,7 +908,7 @@ The algorithm to find the answer in this case is the following:
                 \If{$not inJn[k]$}
                     \State \textbf{continue}
                 \EndIf
-                \State $edge\_from\_last \gets get\_edge(G, Q.vertices[n - 1], Q.vertices[k], Q.edges[k].color)$
+                \State $edge\_from\_last \gets get\_edge(G, Q.vertices[n~-~1], Q.vertices[k], Q.edges[k].color)$
                 \State $new\_vertices \gets Q.vertices[:k+1] + Q.vertices[k+1:][::-1]$
                 \State $new\_edges \gets Q.edges[:k] +$
                 \State $\hspace{6.5em} [edge\_from\_last] +$
