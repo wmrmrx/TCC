@@ -749,11 +749,14 @@ The algorithm to find the answer in this case is the following:
                         \State \textbf{continue}
                     \EndIf
 
+                    \State $edge_1 \gets G.get\_edge(P\_vertices[i], P\_vertices[-1], P\_edges[i].color)$
+                    \State $edge_2 \gets G.get\_edge(P\_vertices[i+1], P\_vertices[0], removed\_color)$
+
                     \State $final\_vertices \gets P\_vertices[:i+1] + P\_vertices[i+1:][::-1]$
                     \State $final\_edges \gets P\_edges[:i] +$
-                    \State $\hspace{6.7em} [G.get\_edge(P\_vertices[i], P\_vertices[-1], P\_edges[i].color)] +$
+                    \State $\hspace{6.7em} [edge_1] +$
                     \State $\hspace{6.7em} P\_edges[i+1:][::-1] +$
-                    \State $\hspace{6.7em} [G.get\_edge(P\_vertices[i+1], P\_vertices[0], removed\_color)]$
+                    \State $\hspace{6.7em} [edge_2]$
 
                     \State \Return \Call{Cycle}{$G, final\_vertices, final\_edges$}
                 \EndIf
@@ -907,7 +910,10 @@ The algorithm to find the answer in this case is the following:
                 \EndIf
                 \State $edge\_from\_last \gets get\_edge(G, Q.vertices[n - 1], Q.vertices[k], Q.edges[k].color)$
                 \State $new\_vertices \gets Q.vertices[:k+1] + Q.vertices[k+1:][::-1]$
-                \State $new\_edges \gets Q.edges[:k] + [edge\_from\_last] + Q.edges[k+1:][::-1] + [edge\_from\_first]$
+                \State $new\_edges \gets Q.edges[:k] +$
+                \State $\hspace{6.5em} [edge\_from\_last] +$
+                \State $\hspace{6.5em} Q.edges[k+1:][::-1] +$
+                \State $\hspace{6.5em} [edge\_from\_first]$
                 \State \Return \Call{Cycle}{$G, new\_vertices, new\_edges$}
             \EndFor
 
