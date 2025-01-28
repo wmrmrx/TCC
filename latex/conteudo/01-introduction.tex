@@ -5,13 +5,13 @@
 \chapter*{Introduction}
 
 The problem we address in the monograph is relatively recent, although its origins trace back to classical concepts. 
-In 1978, Caccetta and Häggkvist \cite{nathanson2006caccettahaggkvistconjectureadditivenumber} formulated the conjecture 
+In 1978, Caccetta and Häggkvist (\cite{nathanson2006caccettahaggkvistconjectureadditivenumber}) formulated the conjecture 
 that every simple digraph of order $n$ with minimum outdegree $d$ 
 has a directed cycle of size at most $\lceil n/d \rceil$. This conjecture marked the beginning of investigations 
 of short cycles in digraphs with degree constraints.
 
 Nearly four decades later, in 2017, Ron Aharoni, from the Department of Mathematics at Technion, proposed a stronger 
-version of this conjecture known as a rainbow version \cite{AharonisConjecture}. His conjecture states that, given a graph $G$ of order $n$ 
+version of this conjecture known as a rainbow version (\cite{AharonisConjecture}). His conjecture states that, given a graph $G$ of order $n$ 
 with edges colored in $n$ colors, where each color appears in at most $r$ edges, there is a rainbow cycle of size 
 at most $\lceil n/r \rceil$.
 
@@ -25,13 +25,15 @@ Joos and Kim's work uses simple and elegant, yet non-trivial, techniques that en
 algorithm in the number of vertices. Moreover, they extended their results to the existence of a perfect rainbow 
 matching.
 
-More recently, in 2023, Liqing Gao and Jian Wang \cite{gao_wang_2024}, Chinese researchers, published a paper that extends the problem 
+More recently, in 2023, Liqing Gao and Jian Wang (\cite{gao_wang_2024}), Chinese researchers, published a paper that extends the problem 
 by proving the existence of a rainbow Hamiltonian cycle in graphs that satisfy a simpler Ore condition, using the 
 "shifting operator" tool. This technique, developed by Erdös, Ko, and Rado, is widely used in extremal set theory 
 and has led to significant advances in solving this problem. However, we will not cover this work in detail in 
 this paper.
 
-This work is structured as follows: In Chapter 1, prove Dirac's Theorem obtained in 1952 \cite{dirac1952} and address the Rainbow version of Dirac's Theorem. In chapter 2, we present a pseudocode and the details of the implementation of the algorithm based on the work of Joos and Kim \cite{Joos_2020}. In chapter 3, we introduce the Rainbow Version of Ore's Theorem, and work done in hope of proving such version.
+This work is structured as follows: In Chapter 1, prove Dirac's Theorem obtained in 1952 (\cite{dirac1952}) and address the Rainbow version of Dirac's 
+Theorem. In chapter 2, we present a pseudocode and the details of the implementation of the algorithm based on the work of Joos and Kim (\cite{Joos_2020}). 
+In chapter 3, we introduce the Rainbow version of Ore's Theorem, and work done in hope of proving such version.
 Finally, in Chapter 4, we make some final considerations about the work we have developed, including a graphical visualizer for our implementation.
 
 All the source code used in this project is available in \href{https://github.com/wmrmrx/TCC}{GitHub}. The code was written in C++, using the Boost 
