@@ -255,7 +255,6 @@ As $I_1 \cap I_2 \subseteq [0, \ell - 2]$, from Pigeonhole Principle, $I_1 \cap 
 $i \in I_1 \cap I_2$, we can build a cycle with size $\ell$ with
 the following crossing procedure:
 
-% TODO: MUDAR IMAGEM COM u e v
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{figuras/path_cycle_crossing.png}
@@ -312,7 +311,6 @@ one vertex $w$ on the cycle such that $\{u, w\} \in A(G_{c_2})$.
 Thus, we can build a path of length $\ell + 1$ by removing an edge in the cycle that is incident
 to $w$ (see the diagram below):
 
-% TODO: MUDAR IMAGEM COM w
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{figuras/cycle_path_extension.png}
@@ -382,7 +380,7 @@ The code to find this cycle is shown below:
     \caption{Cycle Extension for \( \ell < n - 1 \) - Part 2}
     \begin{algorithmic}
         \Function{Extend\_Cycle}{$G, C$}
-            \State $u \gets \text{next}(i \text{ for } i \text{ in range(n) if \textbf{not} } colors\_in\_cycle[i])$
+            \State $u \gets \text{next}(i \text{ for } i \text{ in range(n) if \textbf{not} } vertices\_in\_cycle[i])$
             \For{$i \in [0, \dots, C.vertices.\text{size()} - 1]$}
                 \State $edge_1 \gets \text{check\_edge}(G, u, C.vertices[i + 1], c_1)$
                 \State $edge_2 \gets \text{check\_edge}(G, u, C.vertices[i], c_2)$
