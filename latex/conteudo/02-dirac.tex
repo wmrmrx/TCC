@@ -35,7 +35,7 @@ One of them, based on the minimum degree of the vertices, is given by the Dirac'
 
 \section{Dirac's Theorem}
 
-\textbf{Theorem 1 (Dirac, 1952)} $G = (V, E)$ with $n$ vertices satisfies the condition $\deg_G(v) \geq \frac{n}{2}$ for all $v \in V$, 
+\textbf{Theorem 1 (Dirac, 1952)} $G = (V, E)$ with $n$ vertices satisfies the condition $d_G(v) \geq \frac{n}{2}$ for all $v \in V$, 
 then $G$ contains a Hamiltonian cycle.
 
 \begin{proof}
@@ -47,11 +47,11 @@ then $G$ contains a Hamiltonian cycle.
     $e = \{x, y\} \not\in E'$.
     The graph $(V, E' + e)$ must contain a Hamiltonian cycle $C = (v_1, e_1, v_2, e_2, \ldots, v_n, e_{n}, v_1)$, where 
     $v_1 = x$, $v_n = y$ and $e_n = e$, because otherwise, it would contradict the maximality of $G'$.
-    Since $G$ is a subgraph of $G'$, $\deg_G(v) \leq \deg_{G'}(v)$ for all $v \in V$.
+    Since $G$ is a subgraph of $G'$, $d_G(v) \leq d_{G'}(v)$ for all $v \in V$.
 
     Let $I_1 = \left\{i \in \{2, 3, \dots, n-2\} : \{x, v_{i+1}\} \in E'\right\}, 
     I_2 = \left\{ i \in \{2, 3, \dots, n - 2\} : \{y, v_{i}\} \in E' \right\}$.
-    We have that $|I_1| \geq \deg_{G'}(x) - 1$ and $|I_2| \geq \deg_{G'}(y) - 1$,
+    We have that $|I_1| \geq d_{G'}(x) - 1$ and $|I_2| \geq d_{G'}(y) - 1$,
     which implies $|I_1| + |I_2| > n - 3$. 
     Since $|I_1| + |I_2| = |I_1 \cup I_2| + |I_1 \cap I_2|$ and $|I_1 \cup I_2| \leq n - 3$, 
     there exists $i \in I_1 \cap I_2$.
