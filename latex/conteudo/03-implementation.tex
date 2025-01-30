@@ -8,14 +8,13 @@ In this chapter we present our implementation of the algorithm to find a Hamilto
 based on the proof of Joos and Kim (\cite{Joos_2020}). We provide the corresponding pseudocode 
 and details of the implementation.
 
-\section{Definitions, Notations and Conventions}
+\section{Definitions, Notation and Conventions}
 
 
 Throughout this chapter, we use some definitions and conventions to make the code simpler.
 
-The total number of vertices is denoted by $n$, and the collection of 
-graphs is represented by $G = \{G_1, G_2, \dots, G_n\}$, where each graph $G_i$ 
-satisfies Dirac's condition. Moreover, we use the following notations:
+The total number of vertices is denoted by $n$, and the graph that is the union of $n$ graphs is represented by $G = G_1 \cup G_2 \cup \dots \cup G_n$, where each graph $G_i$ 
+satisfies Dirac's condition. Moreover, we use the following notation:
 
 \begin{itemize}
     \item $d(c, v)$ stands for the degree of vertex $v$ in graph $G_c$;
@@ -26,15 +25,15 @@ satisfies Dirac's condition. Moreover, we use the following notations:
 We use the following conventions:
 
 \begin{itemize}
-    \item Some variables used on pseudocode may be defined on other parts of the same function;
+    \item Some variables used on a pseudocode may be defined on other parts of the same function;
     \item The variables on the images are the same as the ones defined in the proof and the code;
-    \item The colors $c_x$ in the proof may be represented as $c(x)$ on the images.
+    \item Colors $c_x$ in the proof may be represented as $c(x)$ in the images.
 \end{itemize}
 
 The pseudocode is written using Python methods and conventions, such as array slicing and 
 list appending.
 
-\subsection{Structures and Functions Abstractions}
+\subsection{Structures and functions abstractions}
 
 
 We define first some abstract structures and functions.
@@ -97,7 +96,7 @@ The algorithm begins with a single object representing an empty path. At
 each iteration, the algorithm processes this object, which may be either 
 a path or a cycle of length $\ell$, and transforms it into a new object. 
 The result may be a cycle of length $\ell$, a cycle of length $\ell+1$, or 
-a path of length $\ell+1$, as shown in the flowchart below.
+a path of length $\ell+1$. In \ref{fig:flowchart}, a $L$-Path is a path of length $L$ and a $L$-cycle is a cycle of length $L$.
 
 \begin{figure}[H]
     \centering
@@ -117,7 +116,7 @@ may occur in the algorithm.
     \label{fig:flowchart_cases}
 \end{figure}
 
-\subsection{Path of Length \( \ell \)}
+\subsection{Path of length \( \ell \)}
 
 In this case, we start with a path \( P = (x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1}, x_{\ell}) \) of length \( \ell \). 
 To assist in this process, we define the following variables:
@@ -949,7 +948,7 @@ The dominant factors contributing to the $O(n^3)$ complexity are:
 
 To validate our implementation, we developed a both systematic and random approaches. 
 
-\subsection{Random Testing}
+\subsection{Random testing}
 
 The core of our testing approach relied on randomly generated test cases:
 
@@ -959,12 +958,12 @@ The core of our testing approach relied on randomly generated test cases:
     \item Each test verified that the algorithm successfully found a valid Hamiltonian cycle.
 \end{itemize}
 
-\subsection{Edge Cases}
+\subsection{Edge cases}
 
 Using brute force, we identified critical edge cases. We generated all
 possible graphs with $n = 6$ and built random collections of them.
 
-\subsection{Special Test Case}
+\subsection{Special test case}
 
 While random testing provided good coverage, we discovered an interesting edge case that required special attention. 
 This case emerged when two specific conditions aligned:
