@@ -10,22 +10,25 @@ work developed in this monograph. We start by presenting and proving Dirac's the
 and then we formally present the rainbow version of this theorem, the main topic of this work.
 
 We assume that the reader is familiar with some basic concepts of graph theory. We present some 
-of them to estabilish the terminology and notation, which follow those used in Bondy and Murty 
-(\cite{bondy1976}).
+of them to estabilish the terminology and notation, which follow those used in 
+\cite{bondy1976}.
 
 \section{Definitions}
 
-We denote by $G = (V, E)$ a simple graph $G$ with vertex set $V$ and edge set $E$.
+We denote by $G = (V, E)$ a graph $G$ with vertex set $V$ and edge set $E$.
 
-A path $P$ of length $\ell$ in a graph $G = (V, E)$ is a sequence of vertices and edges $(v_0, e_0, v_1, e_1, \ldots, v_{\ell - 1}, e_{\ell - 1}, v_{\ell})$ such that
+A path $P$ of size $\ell$ in a graph $G = (V, E)$ is a sequence of vertices and edges $(v_0, e_0, v_1, e_1, \ldots, v_{\ell - 1}, e_{\ell - 1}, v_{\ell})$ such that
 $v_i \in V$, $e_i = \{v_i, v_{i + 1}\} \in E$, and $v_i \neq v_j$ for $0 \leq i < j \leq \ell$.
 
-A cycle $C$ of length $\ell$ in a graph $G = (V, E)$ is a sequence of vertices and edges $(v_0, e_0, v_1, e_1, \ldots, v_{\ell}, e_{\ell}, v_{\ell + 1})$ such that
+A cycle $C$ of size $\ell$ in a graph $G = (V, E)$ is a sequence of vertices and edges $(v_0, e_0, v_1, e_1, \ldots, v_{\ell}, e_{\ell}, v_{\ell + 1})$ such that
 $v_{0} = v_{\ell + 1}$, $v_i \in V$, $e_i = \{v_i, v_{i + 1}\} \in E$, and $v_i \neq v_j$ for $0 \leq i < j \leq \ell$.
+
+If $G$ is a graph with colors on the edges, a path (or cycle) in $G$ is called rainbow if all of its edges are colored differently.
 
 When convenient, if $G$ is the name of a graph, we may refer to its vertex set and edge set as $V(G)$ and $E(G)$, respectively.
 
-Given a simple graph $G = (V, E)$, a Hamiltonian cycle of $G$ is a cycle with length $|V|$.
+We recall that a graph is simple if it does not contain loops or parallel edges.
+Given a graph $G = (V, E)$, a Hamiltonian cycle of $G$ is a cycle with size $|V|$.
 Deciding whether a graph has a Hamiltonian cycle is a well-known NP-complete problem. 
 However, there are many sufficient conditions that guarantee the existence of a Hamiltonian cycle in a graph. 
 One of them, based on the minimum degree of the vertices, is given by the Dirac's theorem.
@@ -36,29 +39,34 @@ One of them, based on the minimum degree of the vertices, is given by the Dirac'
 then $G$ contains a Hamiltonian cycle.
 
 \begin{proof}
-    Let $G = (V, E)$ with be a simple graph with n vertices that satisfies the condition of the theorem. Suppose, 
+    Let $G = (V, E)$ with be a simple graph with $n \geq 3$ vertices that satisfies the condition of the theorem. Suppose, 
     by contradiction, that $G$ is not Hamiltonian. 
 
-    Let $G' \coloneqq (V, E')$ be a graph that maximizes $|E'|$ such that $G'$ is not Hamiltonian and $E \subseteq E'$. 
-    Clearly, $G'$ is not a complete graph, because otherwise it would be Hamiltonian. Consider an edge $e = \{x, y\} \not\in E'$.
+    Let $G' = (V, E')$ be a graph that maximizes $|E'|$ such that $G'$ is not Hamiltonian and $E \subseteq E'$. 
+    Clearly, $G'$ is not a complete graph, because otherwise it would be Hamiltonian. Consider a pair $x, y \in V$ such that 
+    $e = \{x, y\} \not\in E'$.
     The graph $(V, E' + e)$ must contain a Hamiltonian cycle $C = (v_1, e_1, v_2, e_2, \ldots, v_n, e_{n}, v_1)$, where 
     $v_1 = x$, $v_n = y$ and $e_n = e$, because otherwise, it would contradict the maximality of $G'$.
     Since $G$ is a subgraph of $G'$, $\deg_G(v) \leq \deg_{G'}(v)$ for all $v \in V$.
 
-    Let $I_1 \coloneqq \{i \in \{2, 3, \dots, n-2\} : \{x, v_{i+1}\} \in E'\}, 
-    I_2 \coloneqq \{ i \in \{2, 3, \dots, n - 2\} : \{y, v_{i}\} \in E' \}$.
+    Let $I_1 = \left\{i \in \{2, 3, \dots, n-2\} : \{x, v_{i+1}\} \in E'\right\}, 
+    I_2 = \left\{ i \in \{2, 3, \dots, n - 2\} : \{y, v_{i}\} \in E' \right\}$.
     We have that $|I_1| \geq \deg_{G'}(x) - 1$ and $|I_2| \geq \deg_{G'}(y) - 1$,
-    which implies $|I_1| + |I_2| > n - 3$. By the Pigeonhole Principle, there exists $i \in I_1 \cup I_2$.
+    which implies $|I_1| + |I_2| > n - 3$. 
+    Since $|I_1| + |I_2| = |I_1 \cup I_2| + |I_1 \cap I_2|$ and $|I_1 \cup I_2| \leq n - 3$, 
+    there exists $i \in I_1 \cap I_2$.
 
-    That means that there exists a cycle 
+    That means that there is a cycle 
     $(v_1, e_1, v_2, \dots, v_i, \{v_i, v_n\}, v_n, e_{n - 1}, v_{n-1} \dots , v_{i+1}, \{v_{i+1}, v_1\}, v_1)$, 
-    which is Hamiltonian and is contained in $G$, a contradiction.
+    which is Hamiltonian and is contained in $G'$, a contradiction. Thus, $G'$ does not exist,
+    and therefore $G$ must be Hamiltonian.
 
 \end{proof}
 
 \section{Rainbow version of Dirac's Theorem}
 
-Given a collection $\mathcal{G} = \{G_1, G_2, \ldots, G_n\}$ of graphs of order $n \geq 3$, each $G_i$ defined
-on the same vertex set $V$ with $|V| = n$ and satisfying Dirac's condition for each $G_i$, there exists a 
-$\mathcal{G}$-transversal that forms a Hamiltonian cycle, also known as a Rainbow Hamiltonian cycle.
-Each graph $G_i$ can be viewed as if its edges were colored with color $i$.
+Let $n\geq 3$ and $G = G_1 \cup G_2 \cup \ldots \cup
+G_n$ be a graph that is the union of $n$ pairwise edge-disjoint graphs
+$G_i$ of order $n$, all defined on a same vertex set, each one
+monochromatically edge colored but collectively using $n$ distinct
+colors.
