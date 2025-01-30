@@ -13,7 +13,8 @@ and details of the implementation.
 
 Throughout this chapter, we use some definitions and conventions to make the code simpler.
 
-The total number of vertices is denoted by $n$, and the graph that is the union of $n$ graphs is represented by $G = G_1 \cup G_2 \cup \dots \cup G_n$, where each graph $G_i$ 
+The total number of vertices is denoted by $n$, and the graph that is the union of $n$ graphs is represented by 
+$G = G_1 \cup G_2 \cup \dots \cup G_n$, where each graph $G_i$ 
 satisfies Dirac's condition. Moreover, we use the following notation:
 
 \begin{itemize}
@@ -72,7 +73,7 @@ This structure has the following methods:
 \subsubsection{Structure of $Cycle$}
 
 Same Structure as $Path$. The only difference is that a cycle contains
-at least three vertices and $vertices$ length is equal to $edges$ length.
+at least three vertices, and $vertices$ length is equal to $edges$ length.
 
 Also, this structure has only one method, \texttt{size()}, which returns the size of the cycle.
 
@@ -96,7 +97,8 @@ The algorithm begins with a single object representing an empty path. At
 each iteration, the algorithm processes this object, which may be either 
 a path or a cycle of length $\ell$, and transforms it into a new object. 
 The result may be a cycle of length $\ell$, a cycle of length $\ell+1$, or 
-a path of length $\ell+1$. In \ref{fig:flowchart}, a $L$-Path is a path of length $L$ and a $L$-cycle is a cycle of length $L$.
+a path of length $\ell+1$. In Figure \ref{fig:flowchart}, a $L$-Path is a path of length $L$ 
+and a $L$-cycle is a cycle of length $L$.
 
 \begin{figure}[H]
     \centering
@@ -105,8 +107,8 @@ a path of length $\ell+1$. In \ref{fig:flowchart}, a $L$-Path is a path of lengt
     \label{fig:flowchart}
 \end{figure}
 
-We will assume the algorithm is processing a graph of order $n \geq 6$. When $n < 6$ the result is known to hold
-and can be solved by brute force. In figure \ref{fig:flowchart_cases} we show the possible cases that
+We will assume that the algorithm is processing a graph of order $n \geq 6$. When $n < 6$ the result is known to hold
+and can be solved by brute force. In Figure \ref{fig:flowchart_cases} we show the possible cases that
 may occur in the algorithm.
 
 \begin{figure}[H]
@@ -122,8 +124,8 @@ In this case, we start with a path \( P = (x_0, e_0, \dots, x_{\ell-1}, e_{\ell-
 To assist in this process, we define the following variables:
 
 \begin{itemize}
-    \item \texttt{colors\_in\_path}: An array of size \( n \) where \texttt{colors\_in\_path[i]} is \texttt{True} if color \( i \) is used in the edges of the path.
-    \item \texttt{vertices\_in\_path}: An array of size \( n \) where \texttt{vertices\_in\_path[i]} is \texttt{True} if vertex \( i \) is included in the path.
+    \item \texttt{colors\_in\_path}: an array of size \( n \) in which \texttt{colors\_in\_path[i]} is \texttt{True} if color \( i \) is used in the edges of the path.
+    \item \texttt{vertices\_in\_path}: an array of size \( n \) in which \texttt{vertices\_in\_path[i]} is \texttt{True} if vertex \( i \) is included in the path.
 \end{itemize}
 
 Let us divide the proof into two cases: when \( \ell \geq \left \lceil \frac{n}{2} \right \rceil \) and when \( \ell < \left \lceil \frac{n}{2} \right \rceil \).
@@ -200,7 +202,7 @@ operations take $O(1)$ time.
 
 We can now check if there exists a vertex $y$ outside the path $P = (x_0, \dots, x_{\ell-1})$
 such that $y$ is adjacent to the vertices $x_0$ and $x_{\ell-1}$
-and uses colors $c_x$ and $c_y$, as shown in \ref{fig:path_vertex_outside}:
+and uses colors $c_x$ and $c_y$, as shown in Figure \ref{fig:path_vertex_outside}:
 
 \begin{figure}[H]
     \centering
@@ -235,7 +237,7 @@ This part can also be done in $O(n)$ time with the code below:
 At this point, $P = (x_0, \dots, x_{\ell-1})$. Let us define:
 
 $$
-I_1 = \{i \in [0, \ell - 3]: \{x_0, x_{i + 1}\} \in A(G_{c_x})\} \text{ and } I_2 = \{i \in [1, \ell - 2]: \{x_i, x_{\ell-1}\} \in A(G_{c_y})\}.
+I_1 = \left\{ i \in [0, \ell - 3]: \{x_0, x_{i + 1}\} \in A(G_{c_x}) \right\} \text{ and } I_2 = \left\{ i \in [1, \ell - 2]: \{x_i, x_{\ell-1}\} \in A(G_{c_y}) \right\}.
 $$
 
 Note that, as there is no vertex $y \in V \backslash V(P)$ such that $\{x_0, y\} \in A(G_{c_x})$ and $\{y, x_{\ell-1}\} \in A(G_{c_y})$,
@@ -244,13 +246,13 @@ $$
 |N_{G_{c_x}}(x_0) \backslash V(P)| + |N_{G_{c_y}}(x_\ell) \backslash V(P)| \leq n - \ell,
 $$.
 
-Otherwise, by Pigeonhole Principle, we would have found a $l+1$ length cycle with the previous procedures. Thus:
+Otherwise, by the Pigeonhole Principle, we would have found a $l+1$ length cycle with the previous procedures. Thus:
 
 $$
 |I_1| + |I_2| \geq \frac{n}{2} + \frac{n}{2} - |N_{G_cx}(x_1) \backslash V(P)| - |N_{G_cy}(x_\ell) \backslash V(P)| \geq \ell.
 $$
 
-As $I_1 \cap I_2 \subseteq [0, \ell - 2]$, from Pigeonhole Principle, $I_1 \cap I_2 \neq \emptyset$. Given an element
+As $I_1 \cap I_2 \subseteq [0, \ell - 2]$, by the Pigeonhole Principle, $I_1 \cap I_2 \neq \emptyset$. Given an element
 $i \in I_1 \cap I_2$, we can build a cycle with size $\ell$ with
 the following crossing procedure:
 
@@ -261,7 +263,7 @@ the following crossing procedure:
     \label{fig:path_cycle_crossing}
 \end{figure}
 
-Hence in this case, we just need to find an element in the intersection
+Hence, in this case we just need to find an element in the intersection
 of $I_1$ and $I_2$ and build the desired cycle. This can also
 be done in $O(n)$ with the code below:
 
@@ -292,8 +294,8 @@ In this case, we start with a cycle \( C = (x_0, e_0, \dots, x_{\ell-1}, e_{\ell
 To assist the process, we define the following variables:
 
 \begin{itemize}
-    \item \texttt{colors\_in\_cycle}: An array of size \( n \) where \texttt{colors\_in\_cycle[i]} is \texttt{True} if color \( i \) is used in the edges of the cycle.
-    \item \texttt{vertices\_in\_cycle}: An array of size \( n \) where \texttt{vertices\_in\_cycle[i]} is \texttt{True} if vertex \( i \) is included in the cycle.
+    \item \texttt{colors\_in\_cycle}: an array of size \( n \) in which \texttt{colors\_in\_cycle[i]} is \texttt{True} if color \( i \) is used in the edges of the cycle.
+    \item \texttt{vertices\_in\_cycle}: an array of size \( n \) in which \texttt{vertices\_in\_cycle[i]} is \texttt{True} if vertex \( i \) is included in the cycle.
 \end{itemize}
 
 The values of these variables may be assigned in \( O(n) \) time. We may assume that the cycle has length at least \( \left \lceil \frac{n}{2} \right \rceil \).
@@ -301,14 +303,14 @@ We divide the proof into two cases: when \( \ell < n - 1 \) and when \( \ell = n
 
 \subsection{Case 1: \(\left \lceil \frac{n}{2} \right \rceil + 1 \leq \ell < n - 1 \)}
 
-Let $c_1$ and $c_2$ be any two different colors that are not in the cycle. Suppose, WLOG, that 
+Let $c_1$ and $c_2$ be any two different colors that are not in the cycle. Suppose, wlog, that 
 there is an edge $edge(u, v, c_1) \in A(G)$ not incident to the cycle. Then, because
 the degree of $u$ is at least $\left \lceil \frac{n}{2} \right \rceil$ and the 
 length of the cycle is $\ell \geq \left \lceil \frac{n}{2} \right \rceil + 1$, there is at least
 one vertex $w$ on the cycle such that $\{u, w\} \in A(G_{c_2})$.
 
-Thus, we can build a path of length $\ell + 1$ by removing an edge in the cycle that is incident
-to $w$ (see the diagram below):
+Thus, we can build a path of length $\ell + 1$ by removing from the cycle an edge that is incident
+to $w$ (see Figure \ref{fig:cycle_path_extension}):
 
 \begin{figure}[H]
     \centering
@@ -359,12 +361,12 @@ From now on, for every vertex $u$ outside the cycle, every edge with colors $c_1
 $u$ must also be incident to the cycle. Take a vertex $u$ outside the cycle and let
 
 $$
-I_1 \coloneqq \{i \in [0, \ell - 1]: \{u, x_{i + 1}\} \in A(G_{c_1})\} \text{ and } I_2 \coloneqq \{i \in [0, \ell - 1]: \{x_i, u\} \in A(G_{c_2})\}.
+I_1 \coloneqq \left\{ i \in [0, \ell - 1]: \{u, x_{i + 1}\} \in A(G_{c_1}) \right\} \text{ and } I_2 \coloneqq \left\{ i \in [0, \ell - 1]: \{x_i, u\} \in A(G_{c_2}) \right\}.
 $$
 
 We have that $|I_1| + |I_2| = |N_{G_{c_1}}(u)| + |N_{G_{c_2}}(u)| > \ell$. Thus, 
-from Pigeonhole Principle, $I_1 \cap I_2 \neq \emptyset$. In this case, we can build a cycle of length $\ell + 1$
-as indicated in the image below:
+by the Pigeonhole Principle, $I_1 \cap I_2 \neq \emptyset$. In this case, we can build a cycle of length $\ell + 1$
+as indicated in Figure \ref{fig:cycle_cycle_extension}:
 
 \begin{figure}[H]
     \centering
@@ -409,7 +411,7 @@ to simplify the code.
 \subsubsection{Auxiliary Functions}
 
 \begin{itemize}
-    \item \texttt{find\_adjacency(u, color, vertex\_positions)}: This function gives the indexes of the 
+    \item \texttt{find\_adjacency(u, color, vertex\_positions)}. This function gives the indexes of the 
     vertices that are adjacent to $u$ with color $color$, based on the current 
     positions of the vertices. This is useful when we need to change the vertex position in the cycle.
     The algorithm is shown below.
@@ -430,9 +432,9 @@ to simplify the code.
 
     The complexity of Algorithm~\ref{alg:find_adjacency} is $O(n)$, as we just need to iterate over the adjacency list of $u$ with color $color$.
 
-    \item \texttt{find\_answer(G, y, cy, C, i)}: Let $G$ be the graph collection, $C$ a cycle with
+    \item \texttt{find\_answer(G, y, cy, C, i)}. Let $G$ be the input graph collection, $C$ a cycle with
     size $n-1$, $y$ be the only vertex outside the cycle, $c_y$ be the only color
-    outside the cycle and $i$ the index of the edge $e_i$ to be removed. This function 
+    outside the cycle and~$i$ the index of the edge $e_i$ to be removed. This function 
     builds a cycle with size $n$ by removing the edge $e_i$ and adding the edges
     $edge(x_{i}, y, e_i.color)$ and $edge(y, x_{i+1}, c_y)$.
 
@@ -456,19 +458,19 @@ to simplify the code.
 
 \subsubsection{Algorithm}
 
-This case is a bit more complicated. It is the last iteration of the algorithm and will
+This case is slightly more complicated. It is the last iteration of the algorithm and will
 find the desired cycle.
 
 Let $y$ and $c_y$ be the vertex and color that are not in the cycle. We will rearrange the labels
 of the colors such that the remaining color has label $n - 1$. Let us also define the following variables:
 
 \begin{itemize}
-    \item \texttt{new\_color\_id}: An array of size \( n \) where \texttt{new\_color\_id[i]} is the new label of color \( i \),
-    \item \texttt{vertex\_position\_on\_cycle}: An array of size \( n \) where \texttt{vertex\_position\_on\_cycle[i]} is the position of vertex \( i \) in the cycle.
-    \item \texttt{color\_in\_position}: An array of size \( n \) where \texttt{color\_in\_position[i]} is the color of the edge that connects the vertices \( i \) and \( i + 1 \) in the cycle.
+    \item \texttt{new\_color\_id}: an array of size \( n \) in which \texttt{new\_color\_id[i]} is the new label of color~\( i \),
+    \item \texttt{vertex\_position\_on\_cycle}: an array of size \( n \) in which \texttt{vertex\_position\_on\_cycle[i]} is the position of vertex~\( i \) in the cycle.
+    \item \texttt{color\_in\_position}: an array of size \( n \) in which \texttt{color\_in\_position[i]} is the color of the edge that connects the vertices~\( i \) and~\( i + 1 \) in the cycle.
 \end{itemize}
 
-These variables can be calculated in \( O(n) \) time. The algorithm is shown below:
+These variables can be calculated in \( O(n) \) time. We now describe the algorithm.
 
 \begin{algorithm}
     \caption{Cycle Extension for \( \ell = n - 1 \) - Part 1}
@@ -493,10 +495,10 @@ These variables can be calculated in \( O(n) \) time. The algorithm is shown bel
     \end{algorithmic}
 \end{algorithm}
 
-Let us build the following digraph on the same vertex set of $G$. (See figure~\ref{fig:cycle_n-1_digraph} for a visual representation.)
+Let us build the following digraph on the same vertex set of $G$. (See Figure~\ref{fig:cycle_n-1_digraph} for a visual representation.)
 
 $$
-A(D) = \bigcup_{i \in \{0,..., n - 2\}} \{\{x_i, z\} : z \neq x_{i + 1}, \{x_i, z\} \in A(G_{C.edges[i].color})\}.
+A(D) = \bigcup_{i \in \{0,..., n - 2\}} \left\{ \{x_i, z\} : z \neq x_{i + 1}, \{x_i, z\} \in A(G_{C.edges[i].color}) \right\}.
 $$
 
 \begin{figure}[H]
@@ -506,17 +508,17 @@ $$
     \label{fig:cycle_n-1_digraph}
 \end{figure}
 
-Observe that as $\delta(G_i) \geq \frac{n}{2}$ for all $i \in [0, n - 2]$, we have 
-$d^+_{D}(x) \geq \frac{n}{2} - 1$ for every vertex $x$ on the cycle. Thus,
+Since $\delta(G_i) \geq \frac{n}{2}$ for all $i \in [0, n - 2]$, we have 
+$d^+_{D}(x) \geq \frac{n}{2} - 1$ for every vertex~$x$ in the cycle. Thus,
 $|A(D)| \geq (n-1)(\frac{n}{2} - 1)$. 
 
 Now, let us define the following variables:
 
 \begin{itemize}
-    \item $in\_degree$: An array of size $n$, where $in\_degree[i]$ is the in-degree of vertex $i$ in the digraph $D$.
-    \item $incoming\_neighborhood$: An array of size $n$, where $incoming\_neighborhood[i]$ is the list of vertices that have an edge to vertex $i$ in the digraph $D$.
-    \item $I \coloneqq \{i \in [n - 1]: \{x_i, y\} \in A(D)\}$
-    \item $\bar{I} \coloneqq \{i \in [n - 1]: \{y, x_{i+1}\} \in A(G_{cy})\}$
+    \item $in\_degree$: an array of size $n$, in which $in\_degree[i]$ is the in-degree of vertex $i$ in the digraph $D$.
+    \item $incoming\_neighborhood$: an array of size $n$, in which $incoming\_neighborhood[i]$ is the list of vertices that have an edge entering vertex $i$ in the digraph $D$.
+    \item $I \coloneqq \left\{i \in [n - 1]: \{x_i, y\} \in A(D)\right\}$.
+    \item $\bar{I} \coloneqq \left\{i \in [n - 1]: \{y, x_{i+1}\} \in A(G_{cy})\right\}$.
 \end{itemize}
 
 We can build these variables with the following algorithm.
@@ -560,8 +562,8 @@ its adjacency list for a specific color. The space complexity is $O(n^2)$, as we
 
 Let us describe the construction for the case $d^-_D(y) \geq \frac{n}{2}$. We have that 
 $|I| + |\bar{I}|  \geq d^-_D(y) +  \frac{n}{2} $. 
-Thus, from Pigeonhole Principle, $I \cap \bar{I} \neq \emptyset$. In this case, we can build 
-a cycle of length $n$ with the following crossing, removing the edge $e_i$:
+Thus, by the Pigeonhole Principle, $I \cap \bar{I} \neq \emptyset$. In this case, we can build 
+a cycle of length~$n$ with the following crossing, removing the edge $e_i$:
 
 % set scale
 \begin{figure}[H]
@@ -584,20 +586,23 @@ Algorithmically, we can find the intersection and build the answer.
             \EndFor
         \EndFunction
     \end{algorithmic}
+    \label{alg:extend_cycle_case_2}
 \end{algorithm}
 
-The complexity is $O(n^2)$, as we just need to iterate over $I$, check if it's in $\bar{I}$ and, once we find an element in $\bar{I}$, 
+The complexity of Algorithm~\ref{alg:extend_cycle_case_2} is $O(n^2)$, as we just need to iterate over $I$, 
+check if an element in $I$ is in $\bar{I}$ and, once we find an element in $\bar{I}$, 
 we call the function \texttt{Find\_Answer} that has complexity $O(n)$.
 
-From now on, we will assume that $d^-_D(y) < \frac{n}{2}$. Here we will divide in two cases:
+From now on, we assume that $d^-_D(y) < \frac{n}{2}$ and consider two cases:
 
 \begin{enumerate}
     \item If there is a vertex $x_i$ such that $d^-_D(x_i) > \frac{n}{2} - 1$.
     \item Otherwise.
 \end{enumerate}
 
-Let us start with the first case. We may assume, WLOG, that $d^-_D(x_0) > \frac{n}{2} - 1$.
-For considering this, we can just find the vertex with in-degree greater than $\frac{n}{2} - 1$ and rotate the cycle, such as the following algorithm:
+Let us start with the first case. We may assume, wlog, that $d^-_D(x_0) > \frac{n}{2} - 1$.
+To do this, we can just find a vertex with in-degree greater than $\frac{n}{2} - 1$ and rotate the cycle, 
+as described in the following algorithm:
 
 \begin{algorithm}[H]
     \caption{Part 4: Cycle Extension for \( \ell < n - 1 \). Case \( d^-_D(y) < \frac{n}{2} \)}
@@ -619,39 +624,40 @@ For considering this, we can just find the vertex with in-degree greater than $\
             \EndFor
         \EndFunction
     \end{algorithmic}
+    \label{alg:extend_cycle_case_1}
 \end{algorithm}
 
-The time complexity for this is just $O(n)$, as we iterate over the vertices and
+The time complexity of Algorithm~\ref{alg:extend_cycle_case_1} is $O(n)$, as we iterate over the vertices and
 as soon as we find the desired vertex, we make $O(n)$ operations to rebuild the needed variables and then we break.
 
 Let us define the following variables:
 
 \begin{itemize}
-    \item $I_0 \coloneqq \{i \in [n - 1]: \{x_i, y\} \in A(G_{c_0})\}$
-    \item $I_{n-1} \coloneqq \{i \in [n - 1]: \{y, x_{i+1}\} \in A(G_{c_{n-1}})\}$
+    \item $I_0 \coloneqq \left\{i \in [n - 1]: \{x_i, y\} \in A(G_{c_0})\right\}$
+    \item $I_{n-1} \coloneqq \left\{i \in [n - 1]: \{y, x_{i+1}\} \in A(G_{c_{n-1}})\right\}$
 \end{itemize}
 
-We have that $I_0 + I_{n-1} \geq d(0, y) + d(n-1, y) \geq n$. Thus, 
-from Pigeonhole Principle, $I_0 \cap I_{n-1} \neq \emptyset$. Take $j \in I_0 \cap I_{n-1}$.
+We have that $|I_0| + |I_{n-1}| \geq d(0, y) + d(n-1, y) \geq n$. Thus, 
+by the Pigeonhole Principle, $I_0 \cap I_{n-1} \neq \emptyset$. Take $j \in I_0 \cap I_{n-1}$.
 If $j = 0$, we can just remove the edge $x_0$ and build the cycle of length $n$ 
 adding crossing edges $edge(x_0, y, c_0)$ and $edge(y, x_1, c_1)$. So, assume $j \neq 0$.
 
-Let us construct a $G$-transversal path $P$ such as on the figure below:
+Let us construct a Hamiltonian path $P$ indicated in Figure~\ref{fig:cycle_n-1_build_path}:
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figuras/cycle_n-1_build_path.png}
-    \caption{Building the transversal path $P$.}
+    \caption{Building a Hamiltonian path $P$.}
     \label{fig:cycle_n-1_build_path}
 \end{figure}
 
 We are going to create the following variables to manipulate the path $P$:
 
 \begin{itemize}
-    \item $removed\_color$: The color of the edge outside the path $P$, $C.edges[j].color$;
-    \item $P\_vertices$: The vertices of the path $P$, $(x_1, x_2, \dots, x_{j}, y, x_{j+1}, \dots, x_{n-2}, x_{0})$;
-    \item $P\_edges$: The edges of the path $P$, $(e_1, e_2, \dots, edge(x_j, y, e_0.color), edge(y, x_{j+1}, cy), \dots, e_{n-2}, e_{0})$;
-    \item $P\_pos$: An array to store the new index of each vertex on the path.
+    \item $removed\_color$: the color of the edge outside the path $P$, $C.edges[j].color$;
+    \item $P\_vertices$: the vertices of the path $P$, $(x_1, x_2, \dots, x_{j}, y, x_{j+1}, \dots, x_{n-2}, x_{0})$;
+    \item $P\_edges$: the edges of the path $P$, $(e_1, e_2, \dots, edge(x_j, y, e_0.color), edge(y, x_{j+1}, cy), \dots, e_{n-2}, e_{0})$;
+    \item $P\_pos$: an array to store the new index of each vertex on the path.
 \end{itemize}
 
 To compute these variables, we can use the following algorithm:
@@ -693,28 +699,31 @@ To compute these variables, we can use the following algorithm:
             \EndFor
         \EndFunction
     \end{algorithmic}
+    \label{alg:extend_cycle_case_1_build_path}
 \end{algorithm}
 
-The time complexity is $O(n^2)$, as we iterate over $I_0$, check if it's in $I_{n-1}$ and, if it is, we build the path $P$ just once.
-To build the path it is just $O(n)$ operations.
+The time complexity of Algorithm~\ref{alg:extend_cycle_case_1_build_path} is $O(n^2)$, 
+as we iterate over $I_0$, check if an element in $I_0$ is in $I_{n-1}$ and, if it is, we build the path $P$.
+To build the path it takes $O(n)$ operations.
 
 Let us now create the following variables:
 
 \begin{itemize}
-    \item $J_0 \coloneqq \{i \in [n-2]: edge(P\_vertices[0], P\_vertices[i + 1], removed\_color) \in E(G)\}$
-    \item $J_{n-1} \coloneqq \{i \in [n-2]: P\_vertices[i] \in incoming\_neighborhood[P\_vertices[n - 1]]\}$
+    \item $J_0 \coloneqq \left\{i \in [n-2]: edge(P\_vertices[0], P\_vertices[i + 1], removed\_color) \in E(G)\right\}$.
+    \item $J_{n-1} \coloneqq \left\{i \in [n-2]: P\_vertices[i] \in incoming\_neighborhood[P\_vertices[n - 1]]\right\}$.
 \end{itemize}
 
 
-If $edge(P\_vertices[0], P\_vertices[-1], removed\_color)$ in $G$, we can just 
-close the cycle adding this edge. Let us assume then we don't have this edge. 
-Thus, $|J_0| \geq \delta(G_{removed\_color}) \geq \frac{n}{2}$. Also, as $P\_vertices[-2] \in \{x_{n-2}, y\}$, 
+If $edge(P\_vertices[0], P\_vertices[-1], removed\_color)$ is in $G$, we can just 
+close the cycle adding this edge. Let us assume that this is not the case. 
+Thus, $|J_0| \geq \delta(G_{removed\_color}) \geq \frac{n}{2}$. Also, as $P\_vertices[n-2] \in \{x_{n-2}, y\}$, 
 from the construction of $D$ we guarantee that $P\_vertices[n-2] \notin N^-_D(x_0)$
 and consequently $|J_{n-1}| \geq \frac{n}{2} - \frac{1}{2}$.
 
-From Pigeonhole Principle, as $|J_0| + |J_{n-1}| \geq n$, we have that $|J_0 \cap J_{n-1}| \geq 2$. Thus,
-there is at least one element on $J_0 \cap J_{n-1}$, let us call it $k$, such that $P\_vertices[k] \neq y$.
-We can then build the following $G$-transversal cycle:
+By the Pigeonhole Principle, as $|J_0| + |J_{n-1}| \geq n$, we have that $|J_0 \cap J_{n-1}| \geq 2$. Thus,
+there is at least one element in $J_0 \cap J_{n-1}$, say $k$, such that $P\_vertices[k] \neq y$.
+We can then build the following Hamiltonian cycle:
+
 
 \begin{figure}[H]
     \centering
@@ -760,25 +769,27 @@ The algorithm to find the answer in this case is the following:
             \EndFor
         \EndFunction
     \end{algorithmic}
+    \label{alg:extend_cycle_case_1_build_cycle}
 \end{algorithm}
 
-The time complexity is $O(n^2)$, as we iterate over $J_0$ and check 
-if the element is in $J_{n-1}$. If it is, we build the cycle and return it, in $O(n)$ operations.
-Therefore, for the there exists $x_i$ such that $d^-_D(x_i) > \frac{n}{2} - 1$, we have a total 
+The time complexity of Algorithm~\ref{alg:extend_cycle_case_1_build_cycle} is $O(n^2)$, 
+as we iterate over $J_0$ and check if an element of $J_0$ is in $J_{n-1}$. If yes, 
+we build the cycle and return it, in $O(n)$ operations.
+Therefore, when there exists~$x_i$ such that $d^-_D(x_i) > \frac{n}{2} - 1$, we have a total 
 complexity of $O(n^2)$.
 
-Now, let us analyze the case where every $x_i$ satisfies $d^-_D(x_i) \leq \frac{n}{2} - 1$.
+Now, let us analyze the case in which every $x_i$ satisfies $d^-_D(x_i) \leq \frac{n}{2} - 1$.
 Define
 
 \begin{equation}
-    \mathcal{J} \coloneqq \{i \in [n-1]: d^-_D(x_i) = \lfloor \frac{n}{2} - 1 \rfloor\}.
+    \mathcal{J} \coloneqq \left\{i \in [n-1]: d^-_D(x_i) = \left\lfloor \frac{n}{2} - 1 \right\rfloor\right\}.
     \label{eq:J_definition}
 \end{equation}
 
 From the construction of $D$, as $d^+_D(y) = 0$ and $d^-_D(y) \leq \frac{n}{2} - 1$, we have:
 
 \begin{equation}
-    |A(D - y)| \geq (n - 1) (\frac{n}{2} - 1) - \frac{n}{2} + 1 > (n - 1) (\frac{n}{2} - \frac{3}{2}).
+    |A(D - y)| \geq \left(n - 1\right) \left(\frac{n}{2} - 1\right) - \frac{n}{2} + 1 > \left(n - 1\right) \left(\frac{n}{2} - \frac{3}{2}\right).
     \label{eq:A_D_minus_y}
 \end{equation}
 
@@ -786,12 +797,12 @@ Therefore, from \ref{eq:A_D_minus_y} and \ref{eq:J_definition}, if we analyze
 the sum of the in-degrees of the vertices:
 
 \begin{equation}
-    |\mathcal{J}| \lfloor \frac{n}{2} - 1 \rfloor + (n - 1 - |\mathcal{J}|) \lfloor \frac{n}{2} - 2 \rfloor \geq |A(D - y)| > (n - 1) \frac{n}{2} - \frac{3}{2}.
+    |\mathcal{J}| \left\lfloor \frac{n}{2} - 1 \right\rfloor + \left(n - 1 - |\mathcal{J}|\right) \left\lfloor \frac{n}{2} - 2 \right\rfloor \geq |A(D - y)| > \left(n - 1\right) \frac{n}{2} - \frac{3}{2}.
 \end{equation}
 
 Therefore, $|\mathcal{J}| \geq \frac{n}{2} > \frac{n - 1}{2}$. Defining 
-$\mathcal{J}' \coloneqq \{i \in [n - 1]: edge(x_{i+1}, y, c_y) \in A(G)\}$, we have that 
-$|\mathcal{J}'| + |\mathcal{J}| \geq n$. From Pigeonhole Principle, there exists 
+$\mathcal{J}' \coloneqq \left\{i \in [n - 1]: edge(x_{i+1}, y, c_y) \in A(G)\right\}$, we have that 
+$|\mathcal{J}'| + |\mathcal{J}| \geq n$. By the Pigeonhole Principle, there exists 
 $j \in \mathcal{J}' \cap \mathcal{J}$. Let us build the following transversal path $Q$:
 
 \begin{figure}[H]
@@ -932,8 +943,8 @@ bound, confirming that our implementation achieves the expected complexity.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figuras/time_complexity.png}
-    \caption{Empirical time complexity analysis. The blue points represent averaged execution times 
-    for different values of $n$, while the orange curve shows the theoretical $O(n^3)$ bound.}
+    \caption{Empirical time complexity analysis. The blue points represent the average execution times 
+    for different values of $n$, while the red curve shows the theoretical $O(n^3)$ bound.}
     \label{fig:time_complexity}
 \end{figure}
 
@@ -954,14 +965,9 @@ The core of our testing approach relied on randomly generated test cases:
 
 \begin{itemize}
     \item We created a generator for random graph collections satisfying Dirac's condition;
-    \item For each graph size from $n=6$ to $n=100$, we ran multiple test iterations;
-    \item Each test verified that the algorithm successfully found a valid Hamiltonian cycle.
+    \item For each graph of order $n$ ranging from $n=6$ to $n=100$, we ran multiple test iterations;
+    \item Each test verified that the algorithm successfully found a rainbow Hamiltonian cycle.
 \end{itemize}
-
-\subsection{Edge cases}
-
-Using brute force, we identified critical edge cases. We generated all
-possible graphs with $n = 6$ and built random collections of them.
 
 \subsection{Special test case}
 
@@ -974,4 +980,4 @@ This case emerged when two specific conditions aligned:
 \end{itemize}
 
 To handle this case, we developed a dedicated test in \texttt{increment.py} called \texttt{test\_handle\_cycle\_n\_minus\_1\_upper\_bound\_degree\_D}. 
-This test uses carefully constructed inputs to verify the algorithm's behavior in this specific scenario.
+This test uses carefully constructed input graphs to verify the algorithm's behavior in this specific scenario.
