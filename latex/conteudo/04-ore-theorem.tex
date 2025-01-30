@@ -3,126 +3,199 @@
 \chapter{Rainbow version of Ore's Theorem}
 \label{chap:ore}
 
-Ore's Theorem (\cite{Ore_1960}) states that if a simple graph $G$ with $n$ vertices satisfies the condition
-$\text{d}_G(u) + \text{d}_G(v) \geq n$ for all $u, v \in V$ such that ${u, v} \not\in E(G)$, then $G$ contains a Hamiltonian cycle.
-We will refer to this condition as Ore's condition.
+In 1960, Ore~(\cite{Ore_1960}) proved the following result.
 
-Ore's theorem generalizes Dirac's theorem, since if a graph satisfies Dirac's condition, it also satisfies Ore's condition.
-In the Rainbow version of Ore's Theorem, we want to prove that if for a collection of graphs $\mathcal{G} = (G_0, G_1, \ldots, G_{n-1})$, they all satisfy Ore's condition,
-then there exists a $\mathcal{G}$-transversal that is a Hamiltonian cycle.
+\bigskip
 
-In this chapter, we use the same strategy from the 
-Rainbow version of Dirac's Theorem of augmenting a path or a cycle   
-to prove that there exists a $\mathcal{G}$-transversal that is a cycle of length $n - 1$.
+ \ni {\textbf{Theorem 1 (Ore, 1960).}}
+  \textsl{If $G = (V, E)$ is a simple graph of order  $n\geq 3$  such that 
+  $d_G(u) + d_G(v) \geq n$ for all pair of non-adjacent vertices $u, v \in V$,
+  then $G$ contains a Hamiltonian cycle.}
 
-That way, if there existed a proof that built a 
-$\mathcal{G}$-transversal that is a Hamiltonian cycle from a
-$\mathcal{G}$-transversal that is a cycle of length $n - 1$, 
-we would have a proof for the Rainbow version of Ore's theorem.
-Such proof was not found,
-but we will present a proof that builds a $\mathcal{G}$-transversal 
-that is a cycle of length $n - 1$.
+\bigskip
+  
+In what follows, we shall refer to the above sufficient condition as \emph{Ore's condition}. 
+It is immediate that Ore's theorem generalizes Dirac's theorem. So, a natural question that arises
+is whether an analogous  rainbow version of Ore's Theorem also holds. We conjecture that
+the answer is yes. For the moment, we are able to prove that the following (weaker) result holds.
+
+\bigskip
+
+\ni{\textbf{Theorem 2.}}
+\textsl{Let $n\geq 3$ and $G = G_0 \cup G_1 \cup \ldots \cup G_{n-1}$ be a
+graph that is the union of $n$ pairwise edge-disjoint simple graphs
+$G_i$ of order $n$, all defined on a same vertex set, each one
+monochromatically edge colored but collectively using $n$ distinct
+colors. If each $G_i$ satisfies Ore's condition, then $G$ has a
+rainbow path and a rainbow cycle of length $n-1$.}
+
+\medskip
+
+\begin{proof} %Proof of Theorem 2
+
+As in the proof of the rainbow version of Dirac's theorem, we consider two cases.
+
+\begin{itemize}
+  
+\item[]\textbf{Case (a):} Given a rainbow path in $G$ of length $\ell < n-1$, how to extend it to a rainbow path
+of length $\ell +1 $ or to a rainbow cycle of length $\ell$ ou $\ell + 1$. \\
+
+\item[]\textbf{Case (b):} Given a rainbow cycle in $G$ of length $\ell < n-1$, how to obtain a rainbow cycle of length $\ell + 1$ or a rainbow path of length $\ell + 1$.
+
+\end{itemize}
+
+\smallskip
+
+We note that, it is immediate that $G$ has a rainbow path of length~$2$. Thus, starting with such a path,
+and considering the two cases above, we are able to construct a rainbow path in $G$ of length $n-1$
+and a rainbow  cycle of length $n-1$. 
+
+From now on, whenever we refer to a path or a cycle, these are always
+rainbow, so we omit stating this (but it should be understood). To
+simplify notation, as here we do not have many indices for the
+vertices, when  referring to an edge with endpoints $u$ and $v$, instead of 
+writing  $\{u,v\}$, we may represent it as $uv$.  Also, to state that
+an edge $uv$ has color $c$, we write $uv \in G_c$.
+
+\bigskip
 
 
-\section{Proof}
+\ni \textbf{Case (a):  Path of length $\ell$}
 
-We will prove that given a collection of graphs $\mathcal{G} = (G_0, G_1, \ldots, G_{n-1})$ 
-that satisfy Ore's condition,
-if we have a path of length $\ell$, we can build a path of length $\ell + 1$  or 
-a cycle of length $\ell$ or $\ell + 1$.
-Otherwise, if we have a cycle of length $\ell < n - 1$ 
-we can build a path of length $\ell + 1$ or a cycle of length $\ell + 1$.
 
-\subsection{Base case}
+Let $P = (x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1}, x_{\ell})$ be a
+path in $G$ of length~$\ell$. \\
 
-Notice there always exists a $\mathcal{G}$-transversal that is a path of length $2$.
-since for each graph $G_i$, $\delta_{G_i}(v) \geq 2$ since by Ore's theorem,
-there graphs contain a Hamiltonian cycle. 
+\smallskip
 
-\subsection{Path of Length $\ell \geq 2$}
+\begin{itemize}
+  
+\item[]\textbf{Case (a1): \(\ell < n/2 \)} \\
 
-Suppose we have a path $ P = (x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1}, x_{\ell}) $ of length $ \ell $.
-As in the proof of the rainbow version of Dirac's theorem,
-we want to find either a path of length $ \ell+1 $ or a cycle of length $ \ell $ or $ \ell+1 $.
-We may assume that there always exists a path with $ \ell \geq 2 $, since every graph 
-$ G_i $ satisfies $ \delta_{G_i}(v) \geq 2 $ for all $ v \in V(G_1) $ due to Ore's condition.
 
-\subsubsection{Case 1: \( \ell < \frac{n}{2} \)}
+Let \( c \) be a color that is not in the path $P$, and let  \(u \coloneqq x_0\) and \(v \coloneqq x_{\ell}\). 
+If \(uv \in G_c \), then by adding the edge $vu$ to $P$ we obtain a cycle of length \(\ell+1 \).
+% 
+Else, since \( uv \not\in G_c \), by Ore's condition, we have that
+\( d_{G_c}(u) + d_{G_c}(v) \geq n \), and hence there is a
+vertex \( w \notin V(P)\) such that \( uw \in G_c \) or
+\( vw \in G_c \). Indeed, if such a vertex $w$ does not exist, then
+\( d_{G_c}(u) \leq \ell \) and \( d_{G_c}(v) \leq \ell \). But
+in this case, we have that 
+\( d_{G_c}(u) + d_{G_c}(v) \leq 2\ell < n \), a contradiction.
+Given such a vertex \(w\), we can construct a path of length \(\ell+1 \)
+by appending $w$ to the path~$P$ and using precisely one of the edges \(uw\) or \(vw\).\\ 
 
-Let \( c \) be a color that is not in the path and \(u \coloneqq x_0\), \(v \coloneqq x_{\ell}\). 
-If \( \{u, v\} \in G_c \), then we have a cycle of length \( \ell+1 \).
-Else, since \( \{u, v\} \not\in G_c \), by Ore's condition, 
-we have that \( \text{d}_{G_c}(u) + \text{d}_{G_c}(v) \geq n \), which implies there exists a 
-vertex \( w \) such that \( \{u, w\} \in G_c \) or \( \{v, w\} \in G_c \), because otherwise
-\( \text{d}_{G_c}(u) \leq \ell  \) and \( \text{d}_{G_c}(v) \leq \ell \), 
-which would imply \( \text{d}_{G_c}(u) + \text{d}_{G_c}(v) \leq 2l < n \), a contradiction.
-Given such \(w\), we can construct a path of length \( \ell+1 \) by appending \(w\) to the path.
 
-\subsubsection{Case 2: \( \ell \geq \frac{n}{2} \)}
+\item[] \textbf{Case (a2): \( n/2 \leq \ell < n-1 \)} \\ 
 
-This case is analogous to Rainbow Dirac's equivalent case.
 
-Consider the path $P'$ as being the path $P$ with the last vertex removed, i.e., $P' = (x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1})$.
-There are two colors, $c_0$ and $c_1$, that are not in the path. Define 
-\(G_0 \coloneqq G_{c_0}, G_1 \coloneqq G_{c_1}, u \coloneqq x_0, v \coloneqq x_{\ell-1}\), and 
-\( \text{d}^{\text{out}}_{G_i}(w), \text{d}^{\text{in}}_{G_i}(w) \) as the number of neighbors of \(w \in V(G_i)\) that are not in the path
-and the number of neighbors of \(v\) that are in the path, respectively.
-By definition, \( \text{d}^{\text{in}}_{G_i}(w) +  \text{d}^{\text{out}}_{G_i}(w) = \text{d}_{G_i}(w) \).
+Let $P'$ be the path obtained from $P$ after removing its last vertex~$x_\ell$, i.e., $P' = (x_0, e_0, \dots, x_{l-1})$. There are two colors, say $c_0$ and $c_1$, that are not present
+in~$P'$. We may assume, without loss of generality, that
+\(G_0 \coloneqq G_{c_0}\) and \(G_1 \coloneqq G_{c_1}\).
 
-If \( \{u, v\} \in E(G_0) \) or \( \{u, v\} \in E(G_1) \), then we have a cycle of length \( \ell \).
-Else, by Ore's condition, \( \text{d}_{G_0}(u) + \text{d}_{G_0}(v) \geq n \) and \( \text{d}_{G_1}(u) + \text{d}_{G_1}(v) \geq n \).
-If there exists a vertex \(w\) not in the path such that \( \{u, w\} \in E(G_0) \) and \( \{v, w\} \in E(G_1) \), 
-then we have a cycle of length \( \ell + 1 \). The same is true if \( \{u, w\} \in E(G_1) \) and \( \{v, w\} \in E(G_0) \).
+Let
+\(u \coloneqq x_0\) and \( v \coloneqq x_{\ell-1}\). 
+% 
+For a vertex $w\in V(G_i)$, let \( d^{\text{out}}_{G_i}(w)\) denote
+the number of neighbors of \(w\) in $G_i$ that are not in the path $P$
+(they are out of $P$).  Analogously, let \(d^{\text{in}}_{G_i}(w) \)
+denote the number of neighbors of \(w\) in $G_i$ that are in the path
+$P$.
+%
+By definition, \( d^{\text{in}}_{G_i}(w) + d^{\text{out}}_{G_i}(w) = d_{G_i}(w) \).
 
-We can assume that such vertex \(w\) doesn't exists, implying 
-\( \text{d}^{\text{out}}_{G_0}(u) + \text{d}^{\text{out}}_{G_1}(v) \leq n - \ell \) and
-\( \text{d}^{\text{out}}_{G_1}(u) + \text{d}^{\text{out}}_{G_0}(v) \leq n - \ell \). 
-So, we have that \( \text{d}^{\text{in}}_{G_0}(u) + \text{d}^{\text{in}}_{G_0}(v) + 
-\text{d}^{\text{in}}_{G_1}(u) + \text{d}^{\text{in}}_{G_1}(v)  \geq 2 n - 2 ( n - \ell  ) = 2 \ell \). We must have that 
-either \( \text{d}^{\text{in}}_{G_0}(u) + \text{d}^{\text{in}}_{G_1}(v) \geq \ell \) or 
-\( \text{d}^{\text{in}}_{G_1}(u) + \text{d}^{\text{in}}_{G_0}(v) \geq \ell \).
-Suppose, without loss of generality, that \( \text{d}^{\text{in}}_{G_0}(u) + \text{d}^{\text{in}}_{G_1}(v) \geq l \).
-By the Pigeonhole Principle, there exists \(i\) such that 
-\( \{u, x_i\} \in E(G_0) \) and \( \{v, x_{i-1}\} \in E(G_1) \).
-Implying in the existence of a cycle of length \( \ell \).
+If \(uv \in G_0 \) or \( uv \in G_1 \), then we can extend $P'$ to a cycle of length~\( \ell \)
+by adding $uv$ to $P'$.  Else, by Ore's condition, \( d_{G_0}(u) + d_{G_0}(v) \geq n \) and \( d_{G_1}(u) + d_{G_1}(v) \geq n \).
+If there exists a vertex \(w\) not in~$P'$ such that both \(uw \in G_0 \) and \(vw \in G_1 \), 
+then we can extend $P'$ to a  cycle of length \( \ell + 1 \) by adding $w$ and the edges $vw$ and $wv$.
+Such an extension is also possible if \( uw \in G_1 \) and \( vw \in G_0 \).
 
-\subsection{Cycle of Length $\ell < n - 1$}
 
-Let \( C = \{x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1}, x_{\ell}\} \) be a cycle of length \( \ell < n - 1 \).
-There are two colors, $c_0$ and $c_1$, that are not in the cycle. Define \(G_0 \coloneqq G_{c_0}, G_1 \coloneqq G_{c_1} \).
+So, let us assume that such a vertex \(w\) does not exist. In this case, we have that 
+\( d^{\text{out}}_{G_0}(u) + d^{\text{out}}_{G_1}(v) \leq n - \ell \) and
+\( d^{\text{out}}_{G_1}(u) + d^{\text{out}}_{G_0}(v) \leq n - \ell \). 
+So, we have that \( d^{\text{in}}_{G_0}(u) + d^{\text{in}}_{G_0}(v) + 
+d^{\text{in}}_{G_1}(u) + d^{\text{in}}_{G_1}(v)  \geq 2 n - 2 ( n - \ell  ) = 2 \ell \). We must have that 
+either \( d^{\text{in}}_{G_0}(u) + d^{\text{in}}_{G_1}(v) \geq \ell \) or 
+\( d^{\text{in}}_{G_1}(u) + d^{\text{in}}_{G_0}(v) \geq \ell \).
+Suppose, without loss of generality, that \( d^{\text{in}}_{G_0}(u) + d^{\text{in}}_{G_1}(v) \geq \ell \).
+By the Pigeonhole Principle, there exists \(i\) such that
+\( ux_i \in G_0 \) and \(vx_{i-1} \in G_1 \). Thus, we can construct a
+a cycle of length \( \ell \).
 
-\subsubsection{Case 1: \( \ell < \frac{n}{2} \)}
 
-From Ore's theorem, we know \(G_0\) is a connected graph, since it contains a Hamiltonian cycle. 
-Then, there exists a edge \( \{u, v\} \in E(G_0) \) such that \( u \in C \) and \( v \not\in C \). 
-Let \(w\) be a vertex adjacent to \(u\) in \(C\). 
-If \(\{v, w\} \in G_1\), then we have a rainbow cycle of length \( \ell+1 \). 
-Else, since \( \{v, w\} \not\in G_1 \), by Ore's condition, \( \text{d}_{G_1}(v) + \text{d}_{G_1}(w) \geq n \),
-which implies there exists a vertex \( z \) such that \( \{v, z\} \in G_1 \) or \( \{w, z\} \in G_1 \), because otherwise
-\( \text{d}_{G_1}(v) \leq \ell \) and \( \text{d}_{G_1}(w) \leq \ell - 1 \), implying 
-\( \text{d}_{G_1}(v) + \text{d}_{G_1}(w) \leq 2\ell - 1 < n \), a contradiction.
-Given such \(z\), we can construct a path of length \( \ell+1 \) if \( \{v, z\} \in G_1 \) or 
-\( z = w \) and \( \{w, z\} \in E(G_1) \), or a cycle of length \( \ell+1 \) if \( \{w, z\} \in E(G_1) \) and \(z \neq w\).
+\end{itemize}
 
-\subsubsection{Case 2: \( \ell \geq \frac{n}{2} \)}
 
-Suppose there exists two vertices \( u, v \not\in C \) such that \( \{u, v\} \in E(G_0) \) and \( \{u, v) \not\in E(G_1) \).
-By Ore's condition, 
-\( \text{d}_{G_1}(u) + \text{d}_{G_1}(v) \geq n \), 
-implying there exists a vertex \( w \in C \) such that \( \{u, w\} \in E(G_1) \) or \( \{v, w\} \in E(G_1) \) 
---- otherwise \( \text{d}_{G_1}(u) + \text{d}_{G_1}(v) \leq 2 (n - \ell - 1) < n \).
-With this, we can build a rainbow path of length \( \ell+1 \).
-Otherwise, we have that for all \( u, v \not\in C \), 
-\[ \{u, v\} \in E(G_0) \leftrightarrow \{u, v\} \in E(G_1). \]
-Since \(G_0\) and \(G_1\) if there exists \(u, v \not\in C\) such that \( \{u, v\} \in E(G_0) \), 
-then we have a path with endpoint in \(u\) or \(v\) and in a vertex in the cycle, creating a path of length at 
-least \( \ell + 1 \).
+\ni \textbf{Case (b):  Cycle of length $\ell < n - 1$}
 
-We now assume that there is no such \(u, v \not \in C\) such that \( \{u, v\} \in E(G_0) \).
-Consider \( u, v \not\in C \). By Ore's condition, 
-\( \text{d}_{G_0}(u) + \text{d}_{G_0}(v) \geq n \) and \( \text{d}_{G_1}(u) + \text{d}_{G_1}(v) \geq n \). 
-We also know that every neighbor of \(u\) and \(v\) in \(G_0, G_1\) is in the cycle, and
-given \( \text{d}_{G_0}(u) + \text{d}_{G_0}(v) + \text{d}_{G_1}(u) + \text{d}_{G_1}(v) \geq 2n > 2\ell \), we 
-can assume without loss of generality that \( \text{d}_{G_0}(u) + \text{d}_{G_1}(v) > \ell \).
-This means that there exists adjacent vertices in \(C\) \(w, z\) such that
-\( \{u, w\} \in E(G_0) \) and \( \{v, z\} \in E(G_1) \), creating a path of length \( \ell+1 \).
+Let \( C = \{x_0, e_0, \dots, x_{\ell-1}, e_{\ell-1}, x_{\ell}\} \) be a cycle
+of length \(\ell < n - 1 \), and let  $c_0$ and $c_1$ be two colors that
+are not present in~$C$.  Define \(G_0 \coloneqq G_{c_0}\) and \(G_1 \coloneqq G_{c_1} \).
+
+\smallskip
+
+\begin{itemize}
+  
+\item[]\textbf{Case (b1): \(\ell < n/2 \)} \\
+
+As \(G_0\) satisfies Ore's condition, \(G_0\) is connected.  Then,
+there exists an edge \( uv \in G_0 \) such that \( u \in C \)
+and \( v \not\in C \).  Let \(w\) be a vertex adjacent to \(u\) in
+\(C\).  If \(vw \in G_1\), then we have a rainbow cycle of
+length \(\ell+1\).  Else, since \( vw \not\in G_1 \), by Ore's
+condition, \( d_{G_1}(v) + d_{G_1}(w) \geq n \), and therefore there exists 
+a vertex \( z  \not\in C\) such that \(vz \in G_1 \) or
+\( wz \in G_1 \). Indeed, if not, we would have \( d_{G_1}(v) \leq \ell \)
+and \( d_{G_1}(w) \leq \ell - 1 \), and we could conclude that 
+\( d_{G_1}(v) + d_{G_1}(w) \leq 2\ell - 1 < n \), a contradiction.
+%
+Given such a vertex \(z\), we can construct a path of length \(\ell+1 \) if
+\( vz \in G_1 \) or \( wz \in G_1 \). \\ 
+% yw tirou  isso (como z nao pertence a z, z \neq w):  or we can construct a cycle of length \(\ell+1 \) if
+% \( \{w, z\} \in G_1 \) and \(z \neq w\).
+
+  
+\item[]\textbf{Case (b2): \(n/2 \leq  \ell < n-1 \)}\\
+
+Suppose there exists two vertices \( u, v \not\in C \) such that
+\( uv \in G_0 \) and \( uv \not\in G_1 \).  By Ore's
+condition, \( d_{G_1}(u) + d_{G_1}(v) \geq n \), which implies the
+existence of a vertex \( w \in C \) such that \( uw \in G_1 \) or
+\( vw \in G_1 \) --- otherwise
+\( d_{G_1}(u) + d_{G_1}(v) \leq 2 (n - \ell - 1) < n \). Thus, we can
+build a rainbow path of length \( \ell+1 \).  Otherwise, we have that for
+all vertices \( u, v \not\in C \), 
+\[ uv \in G_0 \Longleftrightarrow uv \in G_1. \]
+Since \(G_0\) and \(G_1\) are connected graphs, if there is a pair of vertices 
+\(u, v \not\in C\) such that \( uv \in G_0 \), then we can obtain a 
+path with endpoint in \(u\) or \(v\) and in a vertex in the cycle,
+that has  length at least \( \ell + 1 \).
+
+We now assume that there is no pair of vertices \(u, v \not \in C\)
+such that \( uv \in G_0 \).  Consider \( u, v \not\in C \). By Ore's
+condition, \( d_{G_0}(u) + d_{G_0}(v) \geq n \) and
+\( d_{G_1}(u) + d_{G_1}(v) \geq n \).  We also know that every
+neighbor of \(u\) and \(v\) in \(G_0\) (resp. \(G_1\)) is in the
+cycle~$C$, and therefore,
+\( d_{G_0}(u) + d_{G_0}(v) + d_{G_1}(u) + d_{G_1}(v) \geq 2n > 2\ell \).
+We can assume without loss of generality that
+\( d_{G_0}(u) + d_{G_1}(v) > \ell \).  This means that there exist
+adjacent vertices \(w\) and \(z\) in \(C\) such that \( uw \in G_0 \)
+and \( zv \in G_1 \).  Thus, we can remove the edge $wz$ from $C$ and
+add to the resulting path $C-wz$ the edges $uw$ and $zv$ and obtain a
+path of length \(\ell+1\).
+
+\end{itemize}
+
+\end{proof}
+
+
+\bigskip
+
+We hope that from the rainbow Hamiltonian path in $G$ guaranteed to
+exist by Theorem 2, we may succeed proving that $G$ has a
+rainbow Hamiltonian cycle. This result would give us a theorem that is
+precisely \emph{the rainbow version of Ore's theorem}. Anyway, we
+think Theorem~2 is an interesting result by its own right.
