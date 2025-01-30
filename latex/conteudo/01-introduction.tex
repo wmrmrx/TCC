@@ -2,43 +2,53 @@
 %("dica" para o editor de texto: este arquivo é parte de um documento maior)
 % para saber mais: https://tex.stackexchange.com/q/78101
 
-\chapter*{Introduction}
+\chapter*{Introduction}   %%%% versao de 28 jan -- yw revisou 
 
-The problem we address in the monograph is relatively recent, although its origins trace back to classical concepts. 
-In 1978, Caccetta and Häggkvist (\cite{nathanson2006caccettahaggkvistconjectureadditivenumber}) formulated the conjecture 
-that every simple digraph of order $n$ with minimum outdegree $d$ 
-has a directed cycle of size at most $\lceil n/d \rceil$. This conjecture marked the beginning of investigations 
-of short cycles in digraphs with degree constraints.
+The problem we address in this monograph is relatively recent, although its origin traces back to
+classical concepts.  In 1978, Caccetta and Häggkvist
+(\cite{nathanson2006caccettahaggkvistconjectureadditivenumber}) formulated the conjecture that every
+simple digraph of order $n$ with minimum outdegree~$d$ has a directed cycle of length at most
+$\lceil n/d \rceil$. This conjecture marked the beginning of investigations of short cycles in
+digraphs with degree constraints.
 
-Nearly four decades later, in 2017, Ron Aharoni, from the Department of Mathematics at Technion, proposed a stronger 
-version of this conjecture known as a rainbow version (\cite{AharonisConjecture}). His conjecture states that, given a graph $G$ of order $n$ 
-with edges colored in $n$ colors, where each color appears in at most $r$ edges, there is a rainbow cycle of size 
-at most $\lceil n/r \rceil$.
+Nearly four decades later, in 2017 Ron Aharoni, from the Department of Mathematics at Technion,
+proposed a stronger version of this conjecture, known as a rainbow version
+(\cite{AharonisConjecture}). His conjecture states that, given a graph~$G$ of order~$n$ with edges
+colored in $n$ colors, if each color appears in at most $r$ edges, then $G$ has a rainbow cycle of
+length at most~$\lceil n/r \rceil$.
 
-In 2019, Felix Joos, from the University of Heidelberg, and Jaehoon Kim, from KAIST, 
-proved the existence of a rainbow Hamiltonian cycle in a graph $G$ that results from the union of $n$ graphs
-$G_i$ ($1 \leq i \leq n$) defined on the same set of $n$ vertices, each $G_i$ monochromatically edge colored
-and collectively using $n$ distinct colors, each one satisfying Dirac's condition. A rainbows cycle is a cycle 
-in which all edges are colored differently. This result gave strong support to Aharoni's conjecture.
+In 2019, Felix Joos, from the University of Heidelberg, and Jaehoon Kim, from KAIST, proved the
+existence of a rainbow Hamiltonian cycle in a graph $G$ that results from the union of $n$
+edge-disjoint graphs $G_i$ ($1 \leq i \leq n$) defined on a same set of $n$ vertices, each $G_i$
+monochromatically edge colored but collectively using $n$ distinct colors, and each one satisfying
+Dirac's condition. A rainbow cycle is a cycle in which all edges are colored differently. This
+result gave strong support to Aharoni's conjecture.
 
-Joos and Kim's work uses simple and elegant, yet non-trivial, techniques that enabled the development of an $O(n^3)$ 
-algorithm in the number of vertices. Moreover, they extended their results to the existence of a perfect rainbow 
-matching.
+The proof presented by Joos and Kim uses simple and elegant (yet non-trivial) techniques that
+enabled the development of an $O(n^3)$ algorithm in the number of vertices.  They also extended
+their result proving the existence of a perfect rainbow matching.
 
-More recently, in 2023, Liqing Gao and Jian Wang (\cite{gao_wang_2024}), Chinese researchers, published a paper that extends the problem 
-by proving the existence of a rainbow Hamiltonian cycle in graphs that satisfy a simpler Ore condition, using the 
-"shifting operator" tool. This technique, developed by Erdös, Ko, and Rado, is widely used in extremal set theory 
-and has led to significant advances in solving this problem. However, we will not cover this work in detail in 
-this paper.
+More recently, in 2023 Liqing Gao and Jian Wang (\cite{gao_wang_2024}) proved the existence of a
+rainbow Hamiltonian cycle in graphs that satisfy a condition stated in a theorem (also known as
+Ore's theorem, but different from the one we mention in Chapter~....) using the ``shifting
+operator'' tool. This technique, developed by Erdös, Ko, and Rado, is widely used in extremal set
+theory and has led to significant advances in solving problems in this area. However, we will not
+cover this work here.
 
-This work is structured as follows: In Chapter 1, prove Dirac's Theorem obtained in 1952 (\cite{dirac1952}) and address the Rainbow version of Dirac's 
-Theorem. In chapter 2, we present a pseudocode and the details of the implementation of the algorithm based on the work of Joos and Kim (\cite{Joos_2020}). 
-In chapter 3, we introduce the Rainbow version of Ore's Theorem, and work done in hope of proving such version.
-Finally, in Chapter 4, we make some final considerations about the work we have developed, including a graphical visualizer for our implementation.
+This monograph is structured as follows. In Chapter~1, we present some basic definitions, then we
+present the well-known Dirac's theorem obtained in 1952 (\cite{dirac1952}, and state the theorem
+known as the \emph{rainbow version of Dirac's theorem}, the central topic of this monograph.  In
+Chapter~2, we present a pseudocode and the details of the implementation of the algorithm based on
+the work of Joos and Kim (\cite{Joos_2020}).  In Chapter~3, we present a statement which we call the
+\emph{rainbow version of Ore's theorem}, which is analogous to the rainbow version of Dirac's
+theorem, but is based on a (weaker) sufficient condition for a graph to be Hamiltonian proved by Ore
+in 1960.  We conjecture that this statement on the existence of a rainbow Hamiltonian cycle in the
+union graph $G$ is true. If so, this result would generalize the rainbow version of Dirac's
+theorem. We show a partial result that we have obtained (so far) for this statement: that the union
+graph $G$, of order $n$, has a rainbow Hamiltonian path and also  a rainbow cycle of length
+$n-1$.  Finally, in Chapter~4, we make some final considerations about the work we have developed,
+including a graphical visualizer for our implementation.
 
-All the source code used in this project is available in \href{https://github.com/wmrmrx/TCC}{GitHub}. The code was written in C++, using the Boost 
-library, and in Python, which supports an animation made using the Graph-Tool framework.
-
-
-
-
+The source codes developed in this project are available in
+\href{https://github.com/wmrmrx/TCC}{GitHub}. There is a code written in C++, using the Boost
+library, and also a code in Python, as it supports an animation using the Graph-Tool framework.

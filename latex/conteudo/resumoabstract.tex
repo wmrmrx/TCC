@@ -4,30 +4,49 @@
 
 % As palavras-chave são obrigatórias, em português e em inglês, e devem ser
 % definidas antes do resumo/abstract. Acrescente quantas forem necessárias.
-\palavraschave{Teorema de Dirac, Versão Rainbow, Implementação}
+\palavraschave{Teorema de Dirac, Versão Rainbow, Circuito Hamiltoniano,  Implementação}
 
-\keywords{Dirac Theorem, Rainbow version, Implementation}
 
-% O resumo é obrigatório, em português e inglês. Estes comandos também
-% geram automaticamente a referência para o próprio documento, conforme
-% as normas sugeridas da USP.
+
+\keywords{Dirac Theorem, Rainbow version, Hamiltonian Cycle, Implementation}    %% Versao de 28 jan %%%%%%%%%%%%%%
+
 \resumo{
-Dada uma coleção $G = {G_1, G_2, \ldots, G_n}$ de grafos de ordem $n$, definidos 
-sobre o mesmo conjunto de vértices e que satisfazem a condição de Dirac para cada 
-$G_i$, existe um $G$-transversal que forma um circuito Hamiltoniano, também conhecido
-como Circuito Hamiltoniano Rainbow. Uma demonstração da existência desse circuito 
-é apresentada em \cite{Joos_2020}. Neste trabalho, explicamos passo a passo um 
-algoritmo que encontra um Circuito Hamiltoniano Rainbow, apresentando pseudocódigo
- para cada etapa, detalhando o funcionamento de cada uma delas e realizando uma 
- animação gráfica para ilustrar o processo.
+Seja $n\geq 3$ e $G = G_1 \cup G_2 \cup \ldots \cup G_n$ um
+grafo que é a união de $n$ grafos dois a dois aresta-disjuntos $G_i$
+de ordem $n$, todos definidos sobre um mesmo conjunto de vértices,
+cada qual com arestas monocromaticamente coloridas mas coletivamente
+usando $n$ cores distintas.  Joos and Kim~(2020) provou que se cada
+$G_i$ satisfaz a condição de Dirac (i.e. tem grau mínimo pelo menos
+$n/2$), então $G$ tem um circuito Hamiltonian rainbow (um circuito em
+que todas as arestas têm cores distintas).  Nesta monografia
+apresentamos uma versão algoritmica dessa prova, e explicamos passo a
+passo um algoritmo que constrói um circuito Hamiltoniano rainbow
+em~$G$. Apresentamos um pseudocódigo para cada procedimento que é
+descrito, detalhando as estruturas que são usadas e analisando sua
+complexidade computacional. Mostramos que o algoritmo que
+implementamos tem complexidade $O(n^3)$, assintoticamente a melhor
+complexidade possível, pois o grafo de entrada~$G$ tem $O(n^3)$
+arestas.  Adicionalmente, incluímos neste trabalho uma animação
+gráfica que criamos para ilustrar o processo de construção de um
+circuito Hamiltoniano rainbow no grafo~$G$.
 }
 
 \abstract{
-Given a collection $G = {G_1, G_2, \ldots, G_n}$ of graphs of order $n$, defined 
-over the same set of vertices and satisfying Dirac's condition for each $G_i$, 
-there exists a $G$-transversal that forms a Hamiltonian circuit, also known as a 
-Rainbow Hamiltonian Circuit. A proof of the existence of this circuit is presented 
-in \cite{Joos_2020}. In this paper, we explain step by step an algorithm that finds 
-a Rainbow Hamiltonian Circuit, providing pseudocode for each step, detailing the 
-workings of each one, and creating a graphical animation to illustrate the process.
+Let $n\geq 3$ and $G = G_1 \cup G_2 \cup \ldots \cup
+G_n$ be a graph that is the union of $n$ pairwise edge-disjoint graphs
+$G_i$ of order $n$, all defined on a same vertex set, each one
+monochromatically edge colored but collectively using $n$ distinct
+colors. Joos and Kim~(2020) proved that if each $G_i$ satisfies
+Dirac's condition (i.e. has minimum degree at least $n/2$), then $G$
+has a rainbow Hamiltonian cycle (a cycle in which all edges have
+disctinct colors).  In this monograph, we present an algorithmic
+version of this proof, and explain step by step an algorithm that
+builds a rainbow Hamiltonian cycle in~$G$. We present a pseudocode for
+each procedure that is described, providing details on the structures
+that are used and analysing its computational complexity.  We show
+that the algorithm that we implemented has time complexity $O(n^3)$,
+asymptotically the best possible, as the input graph~$G$ has $O(n^3)$
+edges. Additionally, we include in this work a graphical animation
+that we created to illustrate the process of building  a rainbow
+Hamiltonian cycle in~$G$.
 }
