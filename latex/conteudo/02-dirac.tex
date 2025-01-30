@@ -27,16 +27,16 @@ If $G$ is a graph with colors on the edges, a path (or cycle) in $G$ is called r
 
 When convenient, if $G$ is the name of a graph, we may refer to its vertex set and edge set as $V(G)$ and $E(G)$, respectively.
 
-We recall that a graph is simple if it does not contain loops or parallel edges.
-Given a graph $G = (V, E)$, a Hamiltonian cycle of $G$ is a cycle with size $|V|$.
-Deciding whether a graph has a Hamiltonian cycle is a well-known NP-complete problem. 
+A Hamiltonian cycle in a graph $G$ of order $n \geq 3$ of length~$n$. The concept of Hamiltonian path is defined analogously (it contains all vertices of the graph).
+A graph is Hamiltonian if it contains a Hamiltonian cycle.
+Deciding whether a graph is Hamiltonian is a well-known NP-complete problem. 
 However, there are many sufficient conditions that guarantee the existence of a Hamiltonian cycle in a graph. 
-One of them, based on the minimum degree of the vertices, is given by the Dirac's theorem.
+One of them, based on the minimum degree of the graph, is given by the Dirac's theorem.
 
 \section{Dirac's Theorem}
 
-\textbf{Theorem 1 (Dirac, 1952)} $G = (V, E)$ with $n$ vertices satisfies the condition $d_G(v) \geq \frac{n}{2}$ for all $v \in V$, 
-then $G$ contains a Hamiltonian cycle.
+\textbf{Theorem 1 (Dirac, 1952)} If a simple graph $G = (V, E)$ with $n \geq 3$ vertices satisfies the condition $\d_G(v)~\geq~\frac{n}{2}$ for all $v \in V$, 
+then $G$ is Hamiltonian.
 
 \begin{proof}
     Let $G = (V, E)$ with be a simple graph with $n \geq 3$ vertices that satisfies the condition of the theorem. Suppose, 
@@ -64,6 +64,8 @@ then $G$ contains a Hamiltonian cycle.
 \end{proof}
 
 \section{Rainbow version of Dirac's Theorem}
+
+Define rainbow path (or cycle) as a path (or cycle) in which all edges have distinct colors.
 
 Let $n\geq 3$ and $G = G_1 \cup G_2 \cup \ldots \cup
 G_n$ be a graph that is the union of $n$ pairwise edge-disjoint graphs
